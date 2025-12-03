@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# 仮想環境
+.venv/
+
+# Linter/Formatter キャッシュ
+.ruff_cache/
+.mypy_cache/
+
+# テスト
+.pytest_cache/
+.coverage
+
+# IDE
+.vscode/
+
+# macOS
+.DS_Store
+
+# uv ロックファイル
+uv.lock
+
+# 一時ファイル
+*.tmp
+*.bak
+*~
+
+# プロジェクト固有 - 大きなデータファイル
+data/*.csv
