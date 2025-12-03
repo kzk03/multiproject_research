@@ -1,8 +1,59 @@
 #!/usr/bin/env python3
 """
-レビュー承諾予測のクロス評価を実行
+============================================================
+クロス評価スクリプト - 訓練期間×評価期間の性能評価
+============================================================
 
-訓練期間と評価期間の組み合わせで評価を行う
+【目的】
+異なる訓練期間と評価期間の組み合わせで、モデルの性能を評価します。
+これにより、以下を確認できます:
+- 訓練に使う将来窓の長さがモデル性能に与える影響
+- 評価に使う将来窓の長さが予測難易度に与える影響
+- 最適な訓練・評価期間の組み合わせ
+
+【クロス評価の仕組み】
+訓練期間（将来窓）: 0-3m, 3-6m, 6-9m, 9-12m
+評価期間（将来窓）: 0-3m, 3-6m, 6-9m, 9-12m
+
+合計: 4 × 4 = 16 通りの組み合わせ
+
+例:
+- train_0-3m / eval_0-3m: 直近0-3ヶ月の継続で訓練 → 直近0-3ヶ月の継続を予測
+- train_0-3m / eval_9-12m: 直近0-3ヶ月の継続で訓練 → 9-12ヶ月後の継続を予測
+
+【実行フロー】
+1. 各訓練期間でモデルを訓練（4モデル）
+   - train_0-3m: 訓練期間の将来窓を0-3ヶ月に設定
+   - train_3-6m: 訓練期間の将来窓を3-6ヶ月に設定
+   - train_6-9m: 訓練期間の将来窓を6-9ヶ月に設定
+   - train_9-12m: 訓練期間の将来窓を9-12ヶ月に設定
+
+2. 各モデルで全評価期間を評価（4×4=16評価）
+   - 各訓練モデルを読み込み
+   - 評価期間の将来窓を変えて4回評価
+   - メトリクス（AUC-ROC、AUC-PR、F1など）を保存
+
+【出力構造】
+outputs/cross_eval/
+├── train_0-3m/
+│   ├── irl_model.pt            # 訓練されたモデル
+│   ├── eval_0-3m/metrics.json  # 評価結果
+│   ├── eval_3-6m/metrics.json
+│   ├── eval_6-9m/metrics.json
+│   └── eval_9-12m/metrics.json
+├── train_3-6m/
+│   └── ...
+├── train_6-9m/
+│   └── ...
+└── train_9-12m/
+    └── ...
+
+【使用方法】
+直接実行:
+    uv run python scripts/evaluate/cross_evaluate.py
+
+結果の可視化:
+    uv run python scripts/evaluate/create_heatmaps.py
 """
 import logging
 import subprocess
@@ -11,11 +62,14 @@ from pathlib import Path
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# ========================================
+# 設定: ファイルパスと期間定義
+# ========================================
 BASE_OUTPUT_DIR = Path("outputs/cross_eval")
 TRAIN_SCRIPT = "scripts/train/train_model.py"
 REVIEWS_DATA = "data/review_requests_openstack_multi_5y_detail.csv"
 
-# 訓練期間と評価期間の定義
+# 訓練期間と評価期間の定義（将来窓）
 train_periods = ['0-3m', '3-6m', '6-9m', '9-12m']
 eval_periods = ['0-3m', '3-6m', '6-9m', '9-12m']
 

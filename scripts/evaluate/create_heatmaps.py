@@ -1,6 +1,44 @@
 #!/usr/bin/env python3
 """
-クロス評価結果からヒートマップを生成
+============================================================
+ヒートマップ生成スクリプト - クロス評価結果の可視化
+============================================================
+
+【目的】
+cross_evaluate.pyで生成されたクロス評価結果（16通りの組み合わせ）を
+ヒートマップとして可視化します。
+
+【可視化するメトリクス】
+1. AUC-ROC: ROC曲線の下側面積（全体的な分類性能）
+2. AUC-PR: Precision-Recall曲線の下側面積（クラス不均衡に強い）
+3. F1 Score: 精度と再現率の調和平均
+4. Precision: 精度（正と予測したうち実際に正の割合）
+5. Recall: 再現率（実際に正のうち正と予測した割合）
+
+【ヒートマップの読み方】
+- X軸: 評価期間の将来窓（0-3m, 3-6m, 6-9m, 9-12m）
+- Y軸: 訓練期間の将来窓（0-3m, 3-6m, 6-9m, 9-12m）
+- 色: 緑=高性能、黄=中性能、赤=低性能
+- ★マーク: 最高性能の組み合わせ
+
+【出力】
+- all_metrics_heatmaps_improved.png: 5つのメトリクスのヒートマップ
+- コンソール: 各メトリクスの最高値・平均値・標準偏差
+
+【使用方法】
+直接実行:
+    uv run python scripts/evaluate/create_heatmaps.py
+
+前提条件:
+    cross_evaluate.pyを実行済みであること
+    outputs/cross_eval/ に結果が存在すること
+
+【実装の詳細】
+1. 全組み合わせのmetrics.jsonを読み込み
+2. 各メトリクスについて4×4の行列を作成
+3. seabornでヒートマップを描画
+4. 最高値を見つけて★マークで強調
+5. PNGファイルとして保存
 """
 import json
 import numpy as np
@@ -8,12 +46,28 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
 
+# ========================================
+# 設定: 入力ディレクトリと期間定義
+# ========================================
 BASE_DIR = Path("outputs/review_acceptance_cross_eval_nova")
 train_periods = ['0-3m', '3-6m', '6-9m', '9-12m']
 eval_periods = ['0-3m', '3-6m', '6-9m', '9-12m']
 
 def collect_metrics():
-    """全組み合わせのメトリクスを収集"""
+    """
+    全組み合わせのメトリクスを収集して行列形式に変換
+
+    処理フロー:
+    1. 各メトリクス（AUC-ROC、AUC-PR、F1、Precision、Recall）について
+    2. 4×4のゼロ行列を作成
+    3. 各組み合わせのmetrics.jsonを読み込み
+    4. 対応するセルに値を格納
+    5. 全メトリクスの行列を辞書で返す
+
+    Returns:
+        metrics_data: メトリクス名 → 4×4行列の辞書
+                      例: {'auc_roc': [[0.6, 0.5, ...], ...], ...}
+    """
     metrics_data = {}
     for metric_name in ['auc_roc', 'auc_pr', 'f1', 'precision', 'recall']:
         matrix = np.zeros((len(train_periods), len(eval_periods)))

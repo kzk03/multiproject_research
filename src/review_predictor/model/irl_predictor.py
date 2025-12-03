@@ -50,115 +50,197 @@ class DeveloperAction:
 
 
 class RetentionIRLNetwork(nn.Module):
-    """継続予測のためのIRLネットワーク (拡張: 時系列対応)"""
-    
+    """
+    継続予測のための逆強化学習ニューラルネットワーク (時系列対応版)
+
+    このネットワークは以下の2つを学習します:
+    1. 報酬関数: 開発者の状態・行動から、その行動の「継続への寄与度」を予測
+    2. 継続確率: 学習した報酬関数をもとに、将来の継続確率を予測
+
+    アーキテクチャ:
+        状態エンコーダー: state_dim → 128 → 64
+        行動エンコーダー: action_dim → 128 → 64
+        LSTM (時系列): hidden_dim=128, 1層
+        報酬予測器: 128 → 64 → 1
+        継続確率予測器: 128 → 64 → 1 → Sigmoid
+    """
+
     def __init__(self, state_dim: int, action_dim: int, hidden_dim: int = 128, sequence: bool = False, seq_len: int = 10, dropout: float = 0.1):
+        """
+        ネットワークの初期化
+
+        Args:
+            state_dim: 状態の次元数（デフォルト: 10次元）
+            action_dim: 行動の次元数（デフォルト: 5次元）
+            hidden_dim: 隠れ層の次元数（デフォルト: 128）
+            sequence: 時系列モードの有効化（デフォルト: False）
+            seq_len: シーケンスの長さ（0の場合は可変長、デフォルト: 10）
+            dropout: Dropout率（過学習防止、デフォルト: 0.1）
+        """
         super().__init__()
         self.sequence = sequence
         self.seq_len = seq_len
 
-        # 状態エンコーダー（Dropout削減: 0.3 → 0.1）
+        # ========================================
+        # 状態エンコーダー: 開発者の状態（10次元）を高次元空間（128次元）に埋め込み
+        # その後、低次元（64次元）に圧縮して特徴抽出
+        # Dropout: 過学習防止のため0.1に設定
+        # ========================================
         self.state_encoder = nn.Sequential(
-            nn.Linear(state_dim, hidden_dim),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-            nn.Linear(hidden_dim, hidden_dim // 2),
-            nn.ReLU(),
-            nn.Dropout(dropout)
+            nn.Linear(state_dim, hidden_dim),      # 10 → 128: 高次元埋め込み
+            nn.ReLU(),                              # 非線形活性化
+            nn.Dropout(dropout),                    # 過学習防止（0.1）
+            nn.Linear(hidden_dim, hidden_dim // 2), # 128 → 64: 特徴圧縮
+            nn.ReLU(),                              # 非線形活性化
+            nn.Dropout(dropout)                     # 過学習防止（0.1）
         )
 
-        # 行動エンコーダー（Dropout削減: 0.3 → 0.1）
+        # ========================================
+        # 行動エンコーダー: 開発者の行動（5次元）を高次元空間（128次元）に埋め込み
+        # その後、低次元（64次元）に圧縮して特徴抽出
+        # 状態エンコーダーと同じ構造で対称性を保つ
+        # ========================================
         self.action_encoder = nn.Sequential(
-            nn.Linear(action_dim, hidden_dim),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-            nn.Linear(hidden_dim, hidden_dim // 2),
-            nn.ReLU(),
-            nn.Dropout(dropout)
+            nn.Linear(action_dim, hidden_dim),      # 5 → 128: 高次元埋め込み
+            nn.ReLU(),                              # 非線形活性化
+            nn.Dropout(dropout),                    # 過学習防止（0.1）
+            nn.Linear(hidden_dim, hidden_dim // 2), # 128 → 64: 特徴圧縮
+            nn.ReLU(),                              # 非線形活性化
+            nn.Dropout(dropout)                     # 過学習防止（0.1）
         )
 
+        # ========================================
+        # LSTM: 時系列データ（月次の状態・行動）を処理
+        # 可変長シーケンスに対応（pack_padded_sequenceを使用）
+        # 入力: 64次元（エンコード後の状態+行動）、出力: 128次元
+        # ========================================
         if self.sequence:
-            # LSTM for sequence（dropout付き）
+            # LSTM: 時系列パターンを学習（1層、hidden_dim=128）
             self.lstm = nn.LSTM(hidden_dim // 2, hidden_dim, num_layers=1, batch_first=True, dropout=0.0 if dropout == 0 else dropout)
 
-        # 報酬予測器（Dropout削減: 0.3 → 0.1）
+        # ========================================
+        # 報酬予測器: LSTMの隠れ状態から報酬スコアを予測
+        # 報酬スコア: その行動が継続にどれだけ寄与するか（-1〜1の範囲）
+        # ========================================
         self.reward_predictor = nn.Sequential(
-            nn.Linear(hidden_dim, hidden_dim // 2),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-            nn.Linear(hidden_dim // 2, 1)
+            nn.Linear(hidden_dim, hidden_dim // 2), # 128 → 64: 特徴抽出
+            nn.ReLU(),                              # 非線形活性化
+            nn.Dropout(dropout),                    # 過学習防止（0.1）
+            nn.Linear(hidden_dim // 2, 1)           # 64 → 1: 報酬スコア出力
         )
 
-        # 継続確率予測器（Dropout削減: 0.3 → 0.1）
+        # ========================================
+        # 継続確率予測器: LSTMの隠れ状態から継続確率を予測
+        # 継続確率: 将来もレビュー依頼を承諾し続ける確率（0〜1の範囲）
+        # Sigmoid: 出力を0〜1の範囲に制限
+        # ========================================
         self.continuation_predictor = nn.Sequential(
-            nn.Linear(hidden_dim, hidden_dim // 2),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-            nn.Linear(hidden_dim // 2, 1),
-            nn.Sigmoid()
+            nn.Linear(hidden_dim, hidden_dim // 2), # 128 → 64: 特徴抽出
+            nn.ReLU(),                              # 非線形活性化
+            nn.Dropout(dropout),                    # 過学習防止（0.1）
+            nn.Linear(hidden_dim // 2, 1),          # 64 → 1: 継続確率（ロジット）
+            nn.Sigmoid()                            # 0〜1の範囲に正規化
         )
     
     def forward(self, state: torch.Tensor, action: torch.Tensor, lengths: Optional[torch.Tensor] = None, return_hidden: bool = False) -> Tuple[torch.Tensor, torch.Tensor] | Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         """
-        前向き計算 (拡張: 時系列対応、可変長対応)
-        
+        ニューラルネットワークの前向き計算 (時系列対応・可変長対応)
+
+        2つのモードをサポート:
+        1. シーケンスモード: 時系列データ（月次の状態・行動）を処理
+        2. 単一ステップモード: 最新の状態・行動のみを処理（スナップショット評価用）
+
         Args:
-            state: 開発者状態 [batch_size, seq_len, state_dim] if sequence else [batch_size, state_dim]
-            action: 開発者行動 [batch_size, seq_len, action_dim] if sequence else [batch_size, action_dim]
-            lengths: 各シーケンスの実際の長さ [batch_size] (可変長の場合)
-            return_hidden: 隠れ状態も返すかどうか
-            
+            state: 開発者状態テンソル
+                   - シーケンスモード: [batch_size, seq_len, state_dim]
+                   - 単一ステップ: [batch_size, state_dim]
+            action: 開発者行動テンソル
+                    - シーケンスモード: [batch_size, seq_len, action_dim]
+                    - 単一ステップ: [batch_size, action_dim]
+            lengths: 各シーケンスの実際の長さ [batch_size]（可変長の場合のみ）
+            return_hidden: 隠れ状態も返すかどうか（デバッグ用）
+
         Returns:
-            reward: 予測報酬 [batch_size, 1]
+            reward: 予測報酬スコア [batch_size, 1]
             continuation_prob: 継続確率 [batch_size, 1]
-            hidden: 隠れ状態 [batch_size, hidden_dim] (return_hidden=Trueの場合)
+            hidden: 隠れ状態 [batch_size, hidden_dim] (return_hidden=Trueの場合のみ)
         """
+        # ========================================
+        # モード判定: シーケンスモード（3次元テンソル）か単一ステップモード（2次元テンソル）か
+        # ========================================
         if self.sequence and len(state.shape) == 3:
-            # Sequence mode: (batch, seq, dim)
+            # ========================================
+            # シーケンスモード: 時系列データを処理
+            # ========================================
             batch_size, seq_len, _ = state.shape
+
+            # ステップ1: 状態と行動をエンコード
+            # 各タイムステップの状態・行動を独立にエンコード
+            # view(-1, dim)で2次元に変換 → エンコード → view(batch, seq, dim)で3次元に戻す
             state_encoded = self.state_encoder(state.view(-1, state.shape[-1])).view(batch_size, seq_len, -1)
             action_encoded = self.action_encoder(action.view(-1, action.shape[-1])).view(batch_size, seq_len, -1)
-            
-            combined = state_encoded + action_encoded  # Simple addition
-            
+
+            # ステップ2: 状態と行動を結合（要素ごとの加算）
+            # 加算により、状態と行動の情報を融合（次元数は変わらず64次元を保持）
+            combined = state_encoded + action_encoded
+
+            # ========================================
+            # 可変長シーケンス処理: pack_padded_sequenceを使用
+            # 異なる長さのシーケンスを効率的に処理
+            # ========================================
             if lengths is not None:
-                # 可変長シーケンスの処理
-                # 長さでソートして pack_padded_sequence を使用
+                # ステップ3a: 可変長シーケンスの処理
+                # PyTorchのLSTMは降順にソートされたシーケンスを要求
                 lengths_cpu = lengths.cpu()
                 sorted_lengths, sorted_idx = lengths_cpu.sort(descending=True)
-                _, unsort_idx = sorted_idx.sort()
-                
+                _, unsort_idx = sorted_idx.sort()  # 元の順序に戻すためのインデックス
+
+                # ソート後のシーケンスをpack
                 combined_sorted = combined[sorted_idx]
                 packed = nn.utils.rnn.pack_padded_sequence(
                     combined_sorted, sorted_lengths, batch_first=True, enforce_sorted=True
                 )
+
+                # LSTMで処理
                 lstm_out_packed, _ = self.lstm(packed)
+
+                # unpack して元の順序に戻す
                 lstm_out_sorted, _ = nn.utils.rnn.pad_packed_sequence(
                     lstm_out_packed, batch_first=True
                 )
                 lstm_out = lstm_out_sorted[unsort_idx]
-                
-                # 各シーケンスの実際の最終ステップを取得
+
+                # ステップ4: 各シーケンスの実際の最終ステップを取得
+                # パディング部分を無視し、実際のデータの最終ステップのみを使用
                 hidden = torch.zeros(batch_size, lstm_out.size(-1), device=state.device)
                 for i in range(batch_size):
                     actual_len = lengths[i].item()
-                    hidden[i] = lstm_out[i, actual_len - 1, :]
+                    hidden[i] = lstm_out[i, actual_len - 1, :]  # 実際の最終ステップ
             else:
-                # 固定長シーケンスの処理
+                # ステップ3b: 固定長シーケンスの処理
+                # 全シーケンスが同じ長さの場合、packせずに直接LSTM処理
                 lstm_out, _ = self.lstm(combined)
-                hidden = lstm_out[:, -1, :]  # Last timestep
+                hidden = lstm_out[:, -1, :]  # 最終タイムステップの隠れ状態
         else:
-            # Single step mode (スナップショット評価用)
-            state_encoded = self.state_encoder(state)
-            action_encoded = self.action_encoder(action)
-            combined = torch.cat([state_encoded, action_encoded], dim=1)  # Concat for full hidden_dim
+            # ========================================
+            # 単一ステップモード: スナップショット評価用
+            # 最新の状態・行動のみを処理（時系列情報なし）
+            # ========================================
+            state_encoded = self.state_encoder(state)      # [batch, state_dim] → [batch, 64]
+            action_encoded = self.action_encoder(action)   # [batch, action_dim] → [batch, 64]
+            combined = torch.cat([state_encoded, action_encoded], dim=1)  # [batch, 128]: 結合
             hidden = combined
-        
-        reward = self.reward_predictor(hidden)
-        continuation_prob = self.continuation_predictor(hidden)
-        
+
+        # ========================================
+        # ステップ5: 報酬と継続確率を予測
+        # 隠れ状態から最終的な予測を行う
+        # ========================================
+        reward = self.reward_predictor(hidden)                # 報酬スコア（-1〜1の範囲）
+        continuation_prob = self.continuation_predictor(hidden)  # 継続確率（0〜1の範囲）
+
+        # 結果を返す
         if return_hidden:
-            return reward, continuation_prob, hidden
+            return reward, continuation_prob, hidden  # デバッグ用: 隠れ状態も返す
         else:
             return reward, continuation_prob
     
@@ -302,39 +384,82 @@ class RetentionIRLSystem:
     def focal_loss(self, predictions: torch.Tensor, targets: torch.Tensor,
                    sample_weights: Optional[torch.Tensor] = None) -> torch.Tensor:
         """
-        Focal Loss の計算（重み付きバイナリラベル対応）
+        Focal Loss の計算（クラス不均衡対策）
 
-        FL(p_t) = -alpha_t * (1 - p_t)^gamma * log(p_t) * sample_weight
+        Focal Lossは、クラス不均衡問題に対処するための損失関数です。
+        - 簡単な例（正しく予測できている例）の損失を減らす
+        - 難しい例（間違って予測している例）の損失を増やす
+        - 少数クラス（正例）により多くの重みを与える
+
+        数式: FL(p_t) = -alpha_t * (1 - p_t)^gamma * log(p_t) * sample_weight
+
+        パラメータ:
+        - alpha: クラス重み（0～1、小さいほど正例重視）
+          例: alpha=0.25の場合、正例の重み=0.25、負例の重み=0.75
+        - gamma: フォーカスパラメータ（0～5、大きいほど難しい例重視）
+          例: gamma=1.0の場合、p_t=0.9の例は重みが0.1^1.0=0.1に減少
+        - sample_weight: サンプルごとの重み
+          例: 依頼なし=0.5、依頼あり=1.0
 
         Args:
             predictions: 予測確率 [batch_size] or [batch_size, 1]
+                         値の範囲: 0～1（Sigmoidの出力）
             targets: ターゲットラベル [batch_size] or [batch_size, 1]
-            sample_weights: サンプル重み [batch_size] or None（依頼なし=0.5、依頼あり=1.0）
+                     値: 0（負例: 離脱）または 1（正例: 継続）
+            sample_weights: サンプル重み [batch_size] or None
+                           依頼なし（拡張期間のみ依頼あり）=0.1、依頼あり=1.0
 
         Returns:
-            Focal Loss
+            Focal Loss（スカラー値）
         """
+        # ========================================
+        # ステップ1: テンソルの形状を整える
+        # [batch_size, 1] → [batch_size]
+        # ========================================
         predictions = predictions.squeeze()
         targets = targets.squeeze()
 
-        # BCE loss
+        # ========================================
+        # ステップ2: Binary Cross Entropy (BCE) Lossを計算
+        # BCE: -[y*log(p) + (1-y)*log(1-p)]
+        # ========================================
         bce_loss = F.binary_cross_entropy(predictions, targets, reduction='none')
 
-        # p_t の計算
+        # ========================================
+        # ステップ3: p_t を計算（正しいクラスの予測確率）
+        # p_t = p (y=1の場合) または 1-p (y=0の場合)
+        # 例: y=1, p=0.8 → p_t=0.8（正しく予測）
+        #     y=0, p=0.2 → p_t=0.8（正しく予測）
+        #     y=1, p=0.2 → p_t=0.2（間違って予測）
+        # ========================================
         p_t = predictions * targets + (1 - predictions) * (1 - targets)
 
-        # alpha_t の計算
+        # ========================================
+        # ステップ4: alpha_t を計算（クラスごとの重み）
+        # alpha_t = alpha (y=1の場合) または 1-alpha (y=0の場合)
+        # 例: alpha=0.25, y=1 → alpha_t=0.25（正例の重み）
+        #     alpha=0.25, y=0 → alpha_t=0.75（負例の重み）
+        # ========================================
         alpha_t = self.focal_alpha * targets + (1 - self.focal_alpha) * (1 - targets)
 
-        # Focal Loss
+        # ========================================
+        # ステップ5: Focal Lossの重みを計算
+        # focal_weight = alpha_t * (1 - p_t)^gamma
+        # 例: p_t=0.9, gamma=1.0 → (1-0.9)^1.0 = 0.1（簡単な例は重みが小さい）
+        #     p_t=0.2, gamma=1.0 → (1-0.2)^1.0 = 0.8（難しい例は重みが大きい）
+        # ========================================
         focal_weight = alpha_t * torch.pow(1 - p_t, self.focal_gamma)
         focal_loss = focal_weight * bce_loss
 
-        # Sample weightを適用
+        # ========================================
+        # ステップ6: サンプル重みを適用（オプション）
+        # 依頼なし（拡張期間のみ依頼あり）のサンプルは重みを下げる
+        # ========================================
         if sample_weights is not None:
             sample_weights = sample_weights.squeeze()
             focal_loss = focal_loss * sample_weights
 
+        # 平均を返す（バッチ全体の損失）
         return focal_loss.mean()
     
     def extract_developer_state(self, 
@@ -970,17 +1095,48 @@ class RetentionIRLSystem:
                                        expert_trajectories: List[Dict[str, Any]],
                                        epochs: int = 50) -> Dict[str, Any]:
         """
-        時系列軌跡でIRLモデルを訓練
-        
+        時系列軌跡データを用いた逆強化学習（IRL）モデルの訓練
+
+        訓練の流れ:
+        1. 各レビュアーの月次活動履歴から状態・行動シーケンスを構築
+        2. LSTMで時系列パターンを学習
+        3. 各月時点での継続確率を予測
+        4. Focal Lossで損失を計算（クラス不均衡対策）
+        5. バックプロパゲーションで重みを更新
+
+        軌跡データの構造:
+        {
+            'developer_info': {...},                    # 開発者の基本情報
+            'activity_history': [...],                  # 全期間の活動履歴
+            'monthly_activity_histories': [[...], ...], # 各月時点の活動履歴（LSTM用）
+            'step_labels': [0, 1, 1, 0, ...],          # 各月の継続ラベル（0=離脱, 1=継続）
+            'sample_weight': 1.0 or 0.1                # サンプル重み（依頼あり=1.0, なし=0.1）
+        }
+
+        実装の詳細:
+        - 各月時点での状態を動的に計算（その月までの履歴のみを使用）
+        - データリーク防止: 将来のデータは一切使用しない
+        - 可変長シーケンスに対応（pack_padded_sequence使用）
+        - 月次集約ラベル: 各月から将来窓を見て継続判定
+
         Args:
-            expert_trajectories: 時系列軌跡データ
-            epochs: エポック数
-            
+            expert_trajectories: 時系列軌跡データのリスト
+                                 各要素は1レビュアーの時系列データ
+            epochs: 訓練エポック数（デフォルト: 50）
+
         Returns:
-            訓練結果
+            訓練結果を含む辞書
+            {
+                'training_losses': [float, ...],  # 各エポックの損失
+                'final_loss': float,              # 最終エポックの損失
+                'epochs_trained': int             # 訓練したエポック数
+            }
         """
+        logger.info("=" * 60)
         logger.info("時系列IRL訓練開始")
         logger.info(f"軌跡数: {len(expert_trajectories)}")
+        logger.info(f"エポック数: {epochs}")
+        logger.info("=" * 60)
         
         self.network.train()
         training_losses = []

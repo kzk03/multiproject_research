@@ -2,18 +2,54 @@
 """
 データセット構築パイプライン
 
-Gerrit APIからデータを取得し、特徴量付きCSVを生成する。
-新規プロジェクトに対応するための統合スクリプト。
+Gerrit REST APIからコードレビューデータを取得し、レビュー承諾予測のための
+特徴量付きCSVデータセットを生成します。
+
+主要な処理フロー:
+1. Gerrit APIから変更（Change）データを取得
+   - プロジェクト、日付範囲で絞り込み
+   - ページネーションで全件取得（500件ずつ）
+   - 詳細情報を含む（アカウント、ラベル、メッセージ、ファイル）
+
+2. レビュー依頼の抽出
+   - 各変更に対するレビュアーを特定
+   - 明示的レビュアー（reviewersフィールド）
+   - 実際に応答したレビュアー（messagesから抽出）
+   - レビュー応答の有無を判定（14日以内）
+
+3. 特徴量の計算（約65種類）
+   a) 基本情報: change_id, project, owner_email, reviewer_email, request_time
+   b) ラベル: label (1=承諾, 0=拒否)
+   c) 履歴ベース特徴量:
+      - 過去30/90/180日のレビュー数
+      - レビュー負荷（7/30/180日）
+      - 過去の応答率（180日）
+      - オーナーの活動（30/90/180日）
+      - オーナーとレビュアーの過去のやりとり（180日）
+   d) パス類似度特徴量:
+      - Jaccard係数（グローバル/プロジェクト）
+      - Dice係数（グローバル/プロジェクト）
+      - Overlap係数（グローバル）
+      - Cosine類似度（グローバル）
+
+4. CSV出力
+   - 時系列順にソート
+   - 特徴量とラベルを含む完全なデータセット
+
+実装の特徴:
+- ボットアカウントの自動除外（zuul, jenkins, ci@など）
+- データリーク防止: 各レビュー依頼時点での履歴のみを使用
+- 時系列整合性: 過去のデータのみで特徴量を計算
 
 使用例:
-    # 基本的な使い方
+    # 基本的な使い方（単一プロジェクト）
     uv run python scripts/pipeline/build_dataset.py \
         --gerrit-url https://review.opendev.org \
         --project openstack/nova \
         --start-date 2020-01-01 \
         --end-date 2024-01-01 \
         --output data/nova_dataset.csv
-    
+
     # 複数プロジェクト
     uv run python scripts/pipeline/build_dataset.py \
         --gerrit-url https://review.opendev.org \
@@ -21,6 +57,12 @@ Gerrit APIからデータを取得し、特徴量付きCSVを生成する。
         --start-date 2020-01-01 \
         --end-date 2024-01-01 \
         --output data/openstack_dataset.csv
+
+出力CSVのフォーマット:
+    change_id, project, owner_email, reviewer_email, request_time,
+    label, response_latency_days, insertions, deletions, files_changed,
+    reviewer_past_reviews_30d, reviewer_past_reviews_90d, ...,
+    path_jaccard_files_global, path_dice_files_global, ...
 """
 
 import argparse
@@ -44,39 +86,83 @@ logger = logging.getLogger(__name__)
 
 
 class GerritDataFetcher:
-    """Gerrit APIからデータを取得するクラス"""
-    
+    """
+    Gerrit REST APIからコードレビューデータを取得するクラス
+
+    Gerrit APIの仕様:
+    - REST API: /changes/ エンドポイントを使用
+    - 認証: 公開プロジェクトは認証不要でアクセス可能
+    - ページネーション: _more_changes フラグで次ページの有無を判定
+    - XSSI保護: レスポンスの先頭に ")]}'" が付加される
+
+    実装の詳細:
+    - requests.Sessionを使用して接続を再利用（パフォーマンス向上）
+    - タイムアウトを設定してハングアップを防止
+    - エラーハンドリングでAPI障害に対応
+    """
+
     def __init__(self, gerrit_url: str, timeout: int = 30):
         """
-        初期化
-        
+        GerritDataFetcherの初期化
+
         Args:
-            gerrit_url: GerritサーバーのURL
-            timeout: リクエストタイムアウト（秒）
+            gerrit_url: GerritサーバーのベースURL
+                        例: https://review.opendev.org
+            timeout: HTTPリクエストのタイムアウト（秒、デフォルト: 30）
+                     大規模プロジェクトでは長めに設定
         """
-        self.gerrit_url = gerrit_url.rstrip('/')
+        self.gerrit_url = gerrit_url.rstrip('/')  # 末尾のスラッシュを削除
         self.timeout = timeout
-        self.session = requests.Session()
-        
+        self.session = requests.Session()  # 接続を再利用してパフォーマンス向上
+
     def _make_request(self, endpoint: str, params: Dict = None) -> Any:
-        """APIリクエストを実行"""
-        url = f"{self.gerrit_url}/a/{endpoint}" if "/a/" not in endpoint else f"{self.gerrit_url}/{endpoint}"
-        
-        # 認証なしでアクセス可能なエンドポイントを試す
+        """
+        Gerrit API にHTTPリクエストを送信し、JSONレスポンスを取得
+
+        実装の詳細:
+        1. エンドポイントURLを構築
+        2. HTTP GETリクエストを送信
+        3. Gerrit特有のXSSI保護プレフィックス ")]}'" を除去
+        4. JSONをパースして返す
+
+        Gerrit APIの特徴:
+        - XSSI (Cross-Site Script Inclusion) 攻撃を防ぐため、
+          すべてのJSONレスポンスの先頭に ")]}'" が付加される
+        - このプレフィックスを除去しないとJSONパースに失敗する
+
+        Args:
+            endpoint: APIエンドポイント（例: "changes/"）
+            params: クエリパラメータ（辞書形式）
+                    例: {"q": "project:nova", "n": 500}
+
+        Returns:
+            パースされたJSONレスポンス（辞書またはリスト）
+
+        Raises:
+            Exception: APIリクエストが失敗した場合（タイムアウト、HTTPエラーなど）
+        """
+        # エンドポイントURLを構築（認証なしでアクセス）
         url = f"{self.gerrit_url}/{endpoint}"
-        
+
         try:
+            # HTTP GETリクエストを送信
             response = self.session.get(url, params=params, timeout=self.timeout)
-            response.raise_for_status()
-            
-            # Gerrit APIのレスポンスは")]}'"で始まる
+            response.raise_for_status()  # HTTPエラーをチェック（4xx, 5xx）
+
+            # レスポンスボディを取得
             content = response.text
+
+            # Gerrit特有のXSSI保護プレフィックスを除去
+            # レスポンスが ")]}'" で始まる場合、最初の4文字をスキップ
             if content.startswith(")]}'"):
                 content = content[4:]
-            
+
+            # JSONをパースして返す
             import json
             return json.loads(content)
+
         except Exception as e:
+            # エラーログを出力して例外を再スロー
             logger.error(f"API request failed: {url} - {e}")
             raise
     
