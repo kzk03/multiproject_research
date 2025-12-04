@@ -586,8 +586,7 @@ class RetentionIRLSystem:
         self.network.eval()
 
         with torch.no_grad():
-            # 状態と行動を抽出
-            state = self.extract_developer_state(developer, activity_history, context_date)
+            # 行動を抽出
             actions = self.extract_developer_actions(activity_history, context_date)
 
             if not actions:
@@ -600,10 +599,12 @@ class RetentionIRLSystem:
             # 時系列モード: 全活動を可変長シーケンスとして使用
             # 状態テンソル: 各タイムステップで状態を構築
             state_tensors = []
+            states = []  # デバッグ/理由生成用に保存
             for i in range(len(actions)):
                 # 各ステップまでの履歴を使用
                 step_history = activity_history[:i+1]
                 step_state = self.extract_developer_state(developer, step_history, context_date)
+                states.append(step_state)
                 state_tensors.append(self.state_to_tensor(step_state))
 
             state_seq = torch.stack(state_tensors).unsqueeze(0)  # [1, seq_len, state_dim]
@@ -618,6 +619,8 @@ class RetentionIRLSystem:
                 state_seq, action_seq, lengths
             )
 
+            # 最終ステップの状態と行動を取得
+            state = states[-1]
             recent_action = actions[-1]
 
             continuation_prob = predicted_continuation.item()
@@ -1073,11 +1076,10 @@ class RetentionIRLSystem:
                     
                     if not activity_history:
                         continue
-                    
-                    # 状態と行動を抽出
-                    state = self.extract_developer_state(developer, activity_history, context_date)
+
+                    # 行動を抽出
                     actions = self.extract_developer_actions(activity_history, context_date)
-                    
+
                     if not actions:
                         continue
 
