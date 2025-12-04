@@ -65,7 +65,7 @@ class RetentionIRLNetwork(nn.Module):
         継続確率予測器: 128 → 64 → 1 → Sigmoid
     """
 
-    def __init__(self, state_dim: int, action_dim: int, hidden_dim: int = 128, sequence: bool = False, seq_len: int = 10, dropout: float = 0.1):
+    def __init__(self, state_dim: int, action_dim: int, hidden_dim: int = 128, dropout: float = 0.1):
         """
         ネットワークの初期化
 
@@ -73,13 +73,9 @@ class RetentionIRLNetwork(nn.Module):
             state_dim: 状態の次元数（デフォルト: 10次元）
             action_dim: 行動の次元数（デフォルト: 5次元）
             hidden_dim: 隠れ層の次元数（デフォルト: 128）
-            sequence: 時系列モードの有効化（デフォルト: False）
-            seq_len: シーケンスの長さ（0の場合は可変長、デフォルト: 10）
             dropout: Dropout率（過学習防止、デフォルト: 0.1）
         """
         super().__init__()
-        self.sequence = sequence
-        self.seq_len = seq_len
 
         # ========================================
         # 状態エンコーダー: 開発者の状態（10次元）を高次元空間（128次元）に埋め込み
@@ -114,9 +110,8 @@ class RetentionIRLNetwork(nn.Module):
         # 可変長シーケンスに対応（pack_padded_sequenceを使用）
         # 入力: 64次元（エンコード後の状態+行動）、出力: 128次元
         # ========================================
-        if self.sequence:
-            # LSTM: 時系列パターンを学習（1層、hidden_dim=128）
-            self.lstm = nn.LSTM(hidden_dim // 2, hidden_dim, num_layers=1, batch_first=True, dropout=0.0 if dropout == 0 else dropout)
+        # LSTM: 時系列パターンを学習（1層、hidden_dim=128）
+        self.lstm = nn.LSTM(hidden_dim // 2, hidden_dim, num_layers=1, batch_first=True, dropout=dropout)
 
         # ========================================
         # 報酬予測器: LSTMの隠れ状態から報酬スコアを予測
@@ -142,120 +137,83 @@ class RetentionIRLNetwork(nn.Module):
             nn.Sigmoid()                            # 0〜1の範囲に正規化
         )
     
-    def forward(self, state: torch.Tensor, action: torch.Tensor, lengths: Optional[torch.Tensor] = None, return_hidden: bool = False) -> Tuple[torch.Tensor, torch.Tensor] | Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    def forward(self, state: torch.Tensor, action: torch.Tensor, lengths: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         ニューラルネットワークの前向き計算 (時系列対応・可変長対応)
 
-        2つのモードをサポート:
-        1. シーケンスモード: 時系列データ（月次の状態・行動）を処理
-        2. 単一ステップモード: 最新の状態・行動のみを処理（スナップショット評価用）
-
         Args:
-            state: 開発者状態テンソル
-                   - シーケンスモード: [batch_size, seq_len, state_dim]
-                   - 単一ステップ: [batch_size, state_dim]
-            action: 開発者行動テンソル
-                    - シーケンスモード: [batch_size, seq_len, action_dim]
-                    - 単一ステップ: [batch_size, action_dim]
-            lengths: 各シーケンスの実際の長さ [batch_size]（可変長の場合のみ）
-            return_hidden: 隠れ状態も返すかどうか（デバッグ用）
+            state: 開発者状態テンソル [batch_size, seq_len, state_dim]
+            action: 開発者行動テンソル [batch_size, seq_len, action_dim]
+            lengths: 各シーケンスの実際の長さ [batch_size] (必須)
 
         Returns:
             reward: 予測報酬スコア [batch_size, 1]
             continuation_prob: 継続確率 [batch_size, 1]
-            hidden: 隠れ状態 [batch_size, hidden_dim] (return_hidden=Trueの場合のみ)
         """
-        # ========================================
-        # モード判定: シーケンスモード（3次元テンソル）か単一ステップモード（2次元テンソル）か
-        # ========================================
-        if self.sequence and len(state.shape) == 3:
-            # ========================================
-            # シーケンスモード: 時系列データを処理
-            # ========================================
-            batch_size, seq_len, _ = state.shape
+        batch_size, seq_len, _ = state.shape
 
-            # ステップ1: 状態と行動をエンコード
-            # 各タイムステップの状態・行動を独立にエンコード
-            # view(-1, dim)で2次元に変換 → エンコード → view(batch, seq, dim)で3次元に戻す
-            state_encoded = self.state_encoder(state.view(-1, state.shape[-1])).view(batch_size, seq_len, -1)
-            action_encoded = self.action_encoder(action.view(-1, action.shape[-1])).view(batch_size, seq_len, -1)
+        # ステップ1: 状態と行動をエンコード
+        # 各タイムステップの状態・行動を独立にエンコード
+        # view(-1, dim)で2次元に変換 → エンコード → view(batch, seq, dim)で3次元に戻す
+        state_encoded = self.state_encoder(state.view(-1, state.shape[-1])).view(batch_size, seq_len, -1)
+        action_encoded = self.action_encoder(action.view(-1, action.shape[-1])).view(batch_size, seq_len, -1)
 
-            # ステップ2: 状態と行動を結合（要素ごとの加算）
-            # 加算により、状態と行動の情報を融合（次元数は変わらず64次元を保持）
-            combined = state_encoded + action_encoded
-
-            # ========================================
-            # 可変長シーケンス処理: pack_padded_sequenceを使用
-            # 異なる長さのシーケンスを効率的に処理
-            # ========================================
-            if lengths is not None:
-                # ステップ3a: 可変長シーケンスの処理
-                # PyTorchのLSTMは降順にソートされたシーケンスを要求
-                lengths_cpu = lengths.cpu()
-                sorted_lengths, sorted_idx = lengths_cpu.sort(descending=True)
-                _, unsort_idx = sorted_idx.sort()  # 元の順序に戻すためのインデックス
-
-                # ソート後のシーケンスをpack
-                combined_sorted = combined[sorted_idx]
-                packed = nn.utils.rnn.pack_padded_sequence(
-                    combined_sorted, sorted_lengths, batch_first=True, enforce_sorted=True
-                )
-
-                # LSTMで処理
-                lstm_out_packed, _ = self.lstm(packed)
-
-                # unpack して元の順序に戻す
-                lstm_out_sorted, _ = nn.utils.rnn.pad_packed_sequence(
-                    lstm_out_packed, batch_first=True
-                )
-                lstm_out = lstm_out_sorted[unsort_idx]
-
-                # ステップ4: 各シーケンスの実際の最終ステップを取得
-                # パディング部分を無視し、実際のデータの最終ステップのみを使用
-                hidden = torch.zeros(batch_size, lstm_out.size(-1), device=state.device)
-                for i in range(batch_size):
-                    actual_len = lengths[i].item()
-                    hidden[i] = lstm_out[i, actual_len - 1, :]  # 実際の最終ステップ
-            else:
-                # ステップ3b: 固定長シーケンスの処理
-                # 全シーケンスが同じ長さの場合、packせずに直接LSTM処理
-                lstm_out, _ = self.lstm(combined)
-                hidden = lstm_out[:, -1, :]  # 最終タイムステップの隠れ状態
-        else:
-            # ========================================
-            # 単一ステップモード: スナップショット評価用
-            # 最新の状態・行動のみを処理（時系列情報なし）
-            # ========================================
-            state_encoded = self.state_encoder(state)      # [batch, state_dim] → [batch, 64]
-            action_encoded = self.action_encoder(action)   # [batch, action_dim] → [batch, 64]
-            combined = torch.cat([state_encoded, action_encoded], dim=1)  # [batch, 128]: 結合
-            hidden = combined
+        # ステップ2: 状態と行動を結合（要素ごとの加算）
+        # 加算により、状態と行動の情報を融合（次元数は変わらず64次元を保持）
+        combined = state_encoded + action_encoded
 
         # ========================================
-        # ステップ5: 報酬と継続確率を予測
+        # 可変長シーケンス処理: pack_padded_sequenceを使用
+        # 異なる長さのシーケンスを効率的に処理
+        # PyTorchのLSTMは降順にソートされたシーケンスを要求
+        # ========================================
+        lengths_cpu = lengths.cpu()
+        sorted_lengths, sorted_idx = lengths_cpu.sort(descending=True)
+        _, unsort_idx = sorted_idx.sort()  # 元の順序に戻すためのインデックス
+
+        # ソート後のシーケンスをpack
+        combined_sorted = combined[sorted_idx]
+        packed = nn.utils.rnn.pack_padded_sequence(
+            combined_sorted, sorted_lengths, batch_first=True, enforce_sorted=True
+        )
+
+        # LSTMで処理
+        lstm_out_packed, _ = self.lstm(packed)
+
+        # unpack して元の順序に戻す
+        lstm_out_sorted, _ = nn.utils.rnn.pad_packed_sequence(
+            lstm_out_packed, batch_first=True
+        )
+        lstm_out = lstm_out_sorted[unsort_idx]
+
+        # 各シーケンスの実際の最終ステップを取得
+        # パディング部分を無視し、実際のデータの最終ステップのみを使用
+        hidden = torch.zeros(batch_size, lstm_out.size(-1), device=state.device)
+        for i in range(batch_size):
+            actual_len = lengths[i].item()
+            hidden[i] = lstm_out[i, actual_len - 1, :]  # 実際の最終ステップ
+
+        # ========================================
+        # 報酬と継続確率を予測
         # 隠れ状態から最終的な予測を行う
         # ========================================
         reward = self.reward_predictor(hidden)                # 報酬スコア（-1〜1の範囲）
         continuation_prob = self.continuation_predictor(hidden)  # 継続確率（0〜1の範囲）
 
-        # 結果を返す
-        if return_hidden:
-            return reward, continuation_prob, hidden  # デバッグ用: 隠れ状態も返す
-        else:
-            return reward, continuation_prob
+        return reward, continuation_prob
     
-    def forward_all_steps(self, state: torch.Tensor, action: torch.Tensor, 
-                          lengths: Optional[torch.Tensor] = None,
+    def forward_all_steps(self, state: torch.Tensor, action: torch.Tensor,
+                          lengths: torch.Tensor,
                           return_reward: bool = False) -> Union[torch.Tensor, Tuple[torch.Tensor, torch.Tensor]]:
         """
         全ステップで継続確率（と報酬）を予測（可変長対応）
-        
+
         Args:
             state: [batch_size, max_seq_len, state_dim]
             action: [batch_size, max_seq_len, action_dim]
-            lengths: [batch_size] 各シーケンスの実際の長さ
+            lengths: [batch_size] 各シーケンスの実際の長さ (必須)
             return_reward: Trueの場合、報酬も返す
-            
+
         Returns:
             return_reward=False: predictions [batch_size, max_seq_len] 各ステップの継続確率
             return_reward=True: (reward, continuation) のタプル
@@ -263,27 +221,23 @@ class RetentionIRLNetwork(nn.Module):
         batch_size, max_seq_len, _ = state.shape
         state_encoded = self.state_encoder(state.view(-1, state.shape[-1])).view(batch_size, max_seq_len, -1)
         action_encoded = self.action_encoder(action.view(-1, action.shape[-1])).view(batch_size, max_seq_len, -1)
-        
+
         combined = state_encoded + action_encoded
-        
-        if lengths is not None:
-            # 可変長シーケンスの処理
-            lengths_cpu = lengths.cpu()
-            sorted_lengths, sorted_idx = lengths_cpu.sort(descending=True)
-            _, unsort_idx = sorted_idx.sort()
-            
-            combined_sorted = combined[sorted_idx]
-            packed = nn.utils.rnn.pack_padded_sequence(
-                combined_sorted, sorted_lengths, batch_first=True, enforce_sorted=True
-            )
-            lstm_out_packed, _ = self.lstm(packed)
-            lstm_out_sorted, _ = nn.utils.rnn.pad_packed_sequence(
-                lstm_out_packed, batch_first=True, total_length=max_seq_len
-            )
-            lstm_out = lstm_out_sorted[unsort_idx]
-        else:
-            # 固定長シーケンスの処理
-            lstm_out, _ = self.lstm(combined)
+
+        # 可変長シーケンスの処理
+        lengths_cpu = lengths.cpu()
+        sorted_lengths, sorted_idx = lengths_cpu.sort(descending=True)
+        _, unsort_idx = sorted_idx.sort()
+
+        combined_sorted = combined[sorted_idx]
+        packed = nn.utils.rnn.pack_padded_sequence(
+            combined_sorted, sorted_lengths, batch_first=True, enforce_sorted=True
+        )
+        lstm_out_packed, _ = self.lstm(packed)
+        lstm_out_sorted, _ = nn.utils.rnn.pad_packed_sequence(
+            lstm_out_packed, batch_first=True, total_length=max_seq_len
+        )
+        lstm_out = lstm_out_sorted[unsort_idx]
         
         # 各ステップで予測
         lstm_out_flat = lstm_out.reshape(-1, lstm_out.size(-1))
@@ -308,18 +262,16 @@ class RetentionIRLSystem:
         self.state_dim = config.get('state_dim', 10)
         self.action_dim = config.get('action_dim', 5)
         self.hidden_dim = config.get('hidden_dim', 128)
-        self.sequence = config.get('sequence', False)
-        self.seq_len = config.get('seq_len', 10)
         self.dropout = config.get('dropout', 0.1)
         # 予測確率の温度スケーリング（1.0で無効、<1でシャープ、>1でフラット）
         self.output_temperature = float(config.get('output_temperature', 1.0))
-        
+
         # デバイス設定
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        
+
         # ネットワーク初期化
         self.network = RetentionIRLNetwork(
-            self.state_dim, self.action_dim, self.hidden_dim, self.sequence, self.seq_len, self.dropout
+            self.state_dim, self.action_dim, self.hidden_dim, self.dropout
         ).to(self.device)
         
         # オプティマイザー（学習率を増加: 0.001 → 0.0003がデフォルト、さらに調整可能）
@@ -645,61 +597,28 @@ class RetentionIRLSystem:
                     'reasoning': '活動履歴が不足しているため、デフォルト確率を返します'
                 }
 
-            if self.sequence:
-                # 時系列モード: シーケンスとして予測
-                # seq_lenが0（可変長）の場合は全活動を使用
-                if self.seq_len == 0 or self.seq_len is None:
-                    # 可変長：全活動を使用
-                    padded_actions = actions
-                    actual_seq_len = len(actions)
-                elif len(actions) < self.seq_len:
-                    # パディング: 最初のアクションを繰り返す
-                    padded_actions = [actions[0]] * (self.seq_len - len(actions)) + actions
-                    actual_seq_len = self.seq_len
-                else:
-                    # トランケート: 最新のseq_lenアクションを使用
-                    padded_actions = actions[-self.seq_len:]
-                    actual_seq_len = self.seq_len
+            # 時系列モード: 全活動を可変長シーケンスとして使用
+            # 状態テンソル: 各タイムステップで状態を構築
+            state_tensors = []
+            for i in range(len(actions)):
+                # 各ステップまでの履歴を使用
+                step_history = activity_history[:i+1]
+                step_state = self.extract_developer_state(developer, step_history, context_date)
+                state_tensors.append(self.state_to_tensor(step_state))
 
-                # 状態テンソル: 各タイムステップで状態を構築
-                state_tensors = []
-                for i in range(len(padded_actions)):
-                    # 各ステップまでの履歴を使用
-                    step_history = activity_history[:i+1]
-                    step_state = self.extract_developer_state(developer, step_history, context_date)
-                    state_tensors.append(self.state_to_tensor(step_state))
-                
-                state_seq = torch.stack(state_tensors).unsqueeze(0)  # [1, seq_len, state_dim]
+            state_seq = torch.stack(state_tensors).unsqueeze(0)  # [1, seq_len, state_dim]
 
-                # 行動テンソル: 時系列順序を保持
-                action_tensors = [self.action_to_tensor(action) for action in padded_actions]
-                action_seq = torch.stack(action_tensors).unsqueeze(0)  # [1, seq_len, action_dim]
+            # 行動テンソル: 時系列順序を保持
+            action_tensors = [self.action_to_tensor(action) for action in actions]
+            action_seq = torch.stack(action_tensors).unsqueeze(0)  # [1, seq_len, action_dim]
 
-                # 可変長の場合はlengthsを渡す
-                if self.seq_len == 0 or self.seq_len is None:
-                    lengths = torch.tensor([actual_seq_len], dtype=torch.long, device=self.device)
-                    predicted_reward, predicted_continuation = self.network(
-                        state_seq, action_seq, lengths
-                    )
-                else:
-                    # 予測実行
-                    predicted_reward, predicted_continuation = self.network(
-                        state_seq, action_seq
-                    )
+            # 可変長シーケンスとして処理
+            lengths = torch.tensor([len(actions)], dtype=torch.long, device=self.device)
+            predicted_reward, predicted_continuation = self.network(
+                state_seq, action_seq, lengths
+            )
 
-                recent_action = actions[-1]
-            else:
-                # 非時系列モード: 最近の行動を使用
-                recent_action = actions[-1]
-
-                # テンソルに変換
-                state_tensor = self.state_to_tensor(state).unsqueeze(0)
-                action_tensor = self.action_to_tensor(recent_action).unsqueeze(0)
-
-                # 予測実行
-                predicted_reward, predicted_continuation = self.network(
-                    state_tensor, action_tensor
-                )
+            recent_action = actions[-1]
 
             continuation_prob = predicted_continuation.item()
             reward_score = predicted_reward.item()
@@ -1161,106 +1080,77 @@ class RetentionIRLSystem:
                     
                     if not actions:
                         continue
-                    
+
                     # 時系列データとして処理
-                    if self.sequence:
-                        # 各ステップで損失を計算（月次集約ラベル）
-                        step_labels = trajectory.get('step_labels', [])
-                        monthly_histories = trajectory.get('monthly_activity_histories', [])
-                        
-                        if not step_labels or not monthly_histories:
+                    # 各ステップで損失を計算（月次集約ラベル）
+                    step_labels = trajectory.get('step_labels', [])
+                    monthly_histories = trajectory.get('monthly_activity_histories', [])
+
+                    if not step_labels or not monthly_histories:
+                        continue
+
+                    # 各月の時点での状態を計算（LSTM用）
+                    state_tensors = []
+                    action_tensors = []
+
+                    min_len = min(len(monthly_histories), len(step_labels))
+
+                    for i in range(min_len):
+                        month_history = monthly_histories[i]
+                        if not month_history:
+                            # 活動履歴がない場合はゼロ状態
+                            state_tensors.append(torch.zeros(self.state_dim, device=self.device))
+                            action_tensors.append(torch.zeros(self.action_dim, device=self.device))
                             continue
-                        
-                        # 各月の時点での状態を計算（LSTM用）
-                        state_tensors = []
-                        action_tensors = []
-                        
-                        min_len = min(len(monthly_histories), len(step_labels))
-                        
-                        for i in range(min_len):
-                            month_history = monthly_histories[i]
-                            if not month_history:
-                                # 活動履歴がない場合はゼロ状態
-                                state_tensors.append(torch.zeros(self.state_dim, device=self.device))
-                                action_tensors.append(torch.zeros(self.action_dim, device=self.device))
-                                continue
-                            
-                            # この月時点での状態を計算
-                            month_context_date = month_history[-1]['timestamp']  # 最新の活動時刻
-                            month_state = self.extract_developer_state(developer, month_history, month_context_date)
-                            month_actions = self.extract_developer_actions(month_history, month_context_date)
-                            
-                            state_tensors.append(self.state_to_tensor(month_state))
-                            
-                            # 行動は最新のものを使用
-                            if month_actions:
-                                action_tensors.append(self.action_to_tensor(month_actions[-1]))
-                            else:
-                                action_tensors.append(torch.zeros(self.action_dim, device=self.device))
-                        
-                        if not state_tensors or not action_tensors:
-                            continue
-                        
-                        # 3Dテンソルとして構築（LSTM用: [batch=1, sequence_length, features]）
-                        state_sequence = torch.stack(state_tensors).unsqueeze(0)  # [1, seq_len, state_dim]
-                        action_sequence = torch.stack(action_tensors).unsqueeze(0)  # [1, seq_len, action_dim]
-                        
-                        # forward_all_stepsで報酬と継続確率を予測
-                        predicted_reward, predicted_continuation = self.network.forward_all_steps(
-                            state_sequence, action_sequence, return_reward=True
-                        )
-                        # [1, seq_len] → [seq_len] にflatten
-                        predicted_reward_flat = predicted_reward.squeeze(0)
-                        predicted_continuation_flat = predicted_continuation.squeeze(0)
-                        
-                        # 損失計算（月次集約ラベルを使用）
-                        targets = torch.tensor([1.0 if label else 0.0 for label in step_labels[:min_len]], device=self.device)
 
-                        # サンプル重みを取得（依頼なし=0.5、依頼あり=1.0）
-                        sample_weight = trajectory.get('sample_weight', 1.0)
-                        sample_weights = torch.full([min_len], sample_weight, device=self.device)
+                        # この月時点での状態を計算
+                        month_context_date = month_history[-1]['timestamp']  # 最新の活動時刻
+                        month_state = self.extract_developer_state(developer, month_history, month_context_date)
+                        month_actions = self.extract_developer_actions(month_history, month_context_date)
 
-                        # 継続予測損失（Focal Loss を使用、重み付き）
-                        continuation_loss = self.focal_loss(
-                            predicted_continuation_flat, targets, sample_weights
-                        )
-                        
-                        # 報酬損失（月次集約ラベルから逆算）
-                        reward_loss = F.mse_loss(
-                            predicted_reward_flat, targets * 2.0 - 1.0  # -1 to 1
-                        )
-                        
-                        loss_per_step = continuation_loss + reward_loss
+                        state_tensors.append(self.state_to_tensor(month_state))
 
-                    # 単一ステップモードは使用しない（LSTMモードのみ使用）
-                    # else:
-                    #     # 単一ステップ処理（最新のラベルを使用）
-                    #     recent_action = actions[-1]
-                    #     state_tensor = self.state_to_tensor(state)
-                    #     action_tensor = self.action_to_tensor(recent_action)
-                    #
-                    #     predicted_reward, predicted_continuation = self.network(
-                    #         state_tensor.unsqueeze(0), action_tensor.unsqueeze(0)
-                    #     )
-                    #
-                    #     # 損失計算（最新の月次集約ラベルを使用）
-                    #     step_labels = trajectory.get('step_labels', [])
-                    #     if step_labels:
-                    #         latest_label = step_labels[-1]
-                    #         target = torch.tensor([1.0 if latest_label else 0.0], device=self.device)
-                    #     else:
-                    #         target = torch.tensor([0.0], device=self.device)
-                    #
-                    #     continuation_loss = self.focal_loss(
-                    #         predicted_continuation.squeeze(), target
-                    #     )
-                    #
-                    #     reward_loss = F.mse_loss(
-                    #         predicted_reward.squeeze(), target * 2.0 - 1.0
-                    #     )
-                    #
-                    #     loss_per_step = continuation_loss + reward_loss
-                    
+                        # 行動は最新のものを使用
+                        if month_actions:
+                            action_tensors.append(self.action_to_tensor(month_actions[-1]))
+                        else:
+                            action_tensors.append(torch.zeros(self.action_dim, device=self.device))
+
+                    if not state_tensors or not action_tensors:
+                        continue
+
+                    # 3Dテンソルとして構築（LSTM用: [batch=1, sequence_length, features]）
+                    state_sequence = torch.stack(state_tensors).unsqueeze(0)  # [1, seq_len, state_dim]
+                    action_sequence = torch.stack(action_tensors).unsqueeze(0)  # [1, seq_len, action_dim]
+                    lengths = torch.tensor([min_len], dtype=torch.long, device=self.device)
+
+                    # forward_all_stepsで報酬と継続確率を予測
+                    predicted_reward, predicted_continuation = self.network.forward_all_steps(
+                        state_sequence, action_sequence, lengths, return_reward=True
+                    )
+                    # [1, seq_len] → [seq_len] にflatten
+                    predicted_reward_flat = predicted_reward.squeeze(0)
+                    predicted_continuation_flat = predicted_continuation.squeeze(0)
+
+                    # 損失計算（月次集約ラベルを使用）
+                    targets = torch.tensor([1.0 if label else 0.0 for label in step_labels[:min_len]], device=self.device)
+
+                    # サンプル重みを取得（依頼なし=0.5、依頼あり=1.0）
+                    sample_weight = trajectory.get('sample_weight', 1.0)
+                    sample_weights = torch.full([min_len], sample_weight, device=self.device)
+
+                    # 継続予測損失（Focal Loss を使用、重み付き）
+                    continuation_loss = self.focal_loss(
+                        predicted_continuation_flat, targets, sample_weights
+                    )
+
+                    # 報酬損失（月次集約ラベルから逆算）
+                    reward_loss = F.mse_loss(
+                        predicted_reward_flat, targets * 2.0 - 1.0  # -1 to 1
+                    )
+
+                    loss_per_step = continuation_loss + reward_loss
+
                     # バックプロパゲーション
                     self.optimizer.zero_grad()
                     loss_per_step.backward()
@@ -1323,10 +1213,15 @@ class RetentionIRLSystem:
             latest_action = actions[-1]
             state_tensor = self.state_to_tensor(state)
             action_tensor = self.action_to_tensor(latest_action)
-            
+
+            # 3次元テンソルに変換（seq_len=1）
+            state_seq = state_tensor.unsqueeze(0).unsqueeze(0)  # [1, 1, state_dim]
+            action_seq = action_tensor.unsqueeze(0).unsqueeze(0)  # [1, 1, action_dim]
+            lengths = torch.tensor([1], dtype=torch.long, device=self.device)
+
             # 予測
             predicted_reward, predicted_continuation = self.network(
-                state_tensor.unsqueeze(0), action_tensor.unsqueeze(0)
+                state_seq, action_seq, lengths
             )
             
             continuation_prob = predicted_continuation.item()
