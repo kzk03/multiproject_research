@@ -276,3 +276,135 @@ class RetentionIRLRredictor:
         # 開発者の行動ベクトルを抽出
         actions = []
         
+        for activity in activity_history:
+            try:
+                action_type= activity.get('type', 'unknown')
+                intensity = self._calulate_action_intensity(activity)
+                collaboration = self._calculate_action_collaboration(activity)
+                response_time = self._calculate_response_time(activity, context_date)
+                review_size = self._calculate_review_size(activity)
+                timestamp_str = activity.get('timestamp', context_date.isoformat())
+                if isinstance(timestamp_str, str):
+                    timestamp = datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
+                else:
+                    timestamp = timestamp_str
+                
+                actions.append(DeveloperAction(
+                    action_type=action_type,
+                    intensity=intensity,
+                    collaboration=collaboration,
+                    response_time=response_time,
+                    review_size=review_size,
+                    timestamp=timestamp
+                ))
+            except Exception as e:
+                logger.error(f"Activity processing error: {e}, activity: {activity}")  
+                continue
+
+        return actions
+    
+    def state_to_tensor(self, state: DeveloperState) -> torch.Tensor:
+        # 状態をテンソルに変換(0-1の範囲に正規化)
+
+        trend_encoding = {
+            'increasing': 1.0,
+            'stabele': 0.5,
+            'decreasing': 0.0,
+            'unknown': 2.5
+        }
+
+        # 全特徴量を0-1の範囲に正規化（上限でクリップ）
+        features = [
+            min(state.experience_days / 730.0, 1.0),  # 2年でキャップ
+            min(state.total_changes / 500.0, 1.0),    # 500件でキャップ
+            min(state.total_reviews / 500.0, 1.0),    # 500件でキャップ
+            # min(state.project_count / 5.0, 1.0),    # マルチプロジェクト対応時に有効化
+            min(state.recent_activity_frequency, 1.0), # 既に0-1
+            min(state.avg_activity_gap / 60.0, 1.0),  # 60日でキャップ
+            trend_encoding.get(state.activity_trend, 0.25), # 既に0-1
+            min(state.collaboration_score, 1.0),      # 既に0-1
+            min(state.code_quality_score, 1.0),       # 既に0-1
+            min(state.recent_acceptance_rate, 1.0),   # 既に0-1（直近30日の受諾率）
+            min(state.review_load, 1.0)               # 既に0-1（負荷比率、正規化済み）
+        ]
+
+        return torch.tensor(features, dtype=torch.float32, device=self.device)
+    
+    def action_to_tensor(self, action: DeveloperAction) -> torch.Tensor:
+        # 行動をテンソルに変換
+        response_speed = 1.0 / (1.0+ action.response_time / 3.0)
+
+        features = [
+            min(action.intensity / 10.0, 1.0),
+            min(action.collaboration / 10.0, 1.0), 
+            response_speed,  # 0-1の範囲
+            min(action.review_size / 100.0, 1.0), 
+        ]
+
+        return torch.tensor(features, dtype=torch.float32, device=self.device)
+    
+    def predict_continuation_probability(self,
+                                         developer: Dict[str, Any],
+                                         activity_history: List[Dict[str, Any]],
+                                            context_date: Optional[datetime] = None) -> Dict[str, Any]:
+        if context_date is None:
+            context_date = datetime.now()
+
+        self.network.eval()
+
+##ここら辺からデバッグ少し雑
+        with torch.no_grad():
+            actions = self.extract_developer_action(activity_history, context_date)
+            if not actions:
+                    return {
+                        'continuation_probability': 0.5,
+                        'confidence': 0.0,
+                        'reasoning': '活動履歴が不足しているため、デフォルト確率を返します'
+                    }
+            # 時系列モード: 全活動を可変長シーケンスとして使用
+            # 状態テンソル: 各タイムステップで状態を構築
+            state_tensors = []
+            states = []  # デバッグ/理由生成用に保存
+            for i in range(len(actions)):
+                # 各活動時点での状態を抽出
+                step_history = activity_history[:i+1]
+                step_state = self.extract_developer_state(developer, step_history, context_date)
+                states.append(step_state)
+                state_tensors.append(self.state_to_tensor(step_state)
+                )
+            state_seq = torch.stack(state_tensors).unsqueeze(0)  # (1, seq_len, state_dim)
+
+            action_tensors = [self.action_to_tensor(action) for action in actions]
+            action_seq = torch.stack(action_tensors).unsqueeze(0)  # (1, seq_len, action_dim)
+
+            lengths = torch.tensor([len(actions)], dtype=torch.long, device=self.device)
+            predicted_reward, predicted_continuation = self.network(
+                state_seq, action_seq, lengths
+            )
+            # 最終ステップの状態と行動を取得
+            state = states[-1]
+            recent_action = actions[-1]
+
+            continuation_prob = predicted_continuation.item()
+            reward_score = predicted_reward.item()
+
+            # 信頼度計算（簡易版）
+            confidence = min(abs(continuation_prob - 0.5) * 2, 1.0)
+
+            # 理由生成
+            reasoning = self._generate_irl_reasoning(
+                state, recent_action, continuation_prob, reward_score
+            )
+
+            return {
+                'continuation_probability': continuation_prob,
+                'reward_score': reward_score,
+                'confidence': confidence,
+                'reasoning': reasoning,
+                'state_features': {
+                    'experience_days': state.experience_days,
+                    'recent_activity_frequency': state.recent_activity_frequency,
+                    'collaboration_score': state.collaboration_score,
+                    'code_quality_score': state.code_quality_score
+                }
+            }
