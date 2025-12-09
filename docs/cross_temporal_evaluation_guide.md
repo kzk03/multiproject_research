@@ -47,10 +47,11 @@ uv run python scripts/pipeline/build_dataset.py \
 全10パターンの訓練・評価を自動実行:
 
 ```bash
-# 単一プロジェクト
+# 単一プロジェクト（既存結果と同じ期間設定）
 uv run python scripts/train/train_cross_temporal_multiproject.py \
   --reviews data/nova_reviews.csv \
-  --base-start 2023-01-01 \
+  --train-base-start 2021-01-01 \
+  --eval-base-start 2023-01-01 \
   --total-months 12 \
   --output results/cross_temporal_nova \
   --project openstack/nova \
@@ -59,7 +60,8 @@ uv run python scripts/train/train_cross_temporal_multiproject.py \
 # 複数プロジェクト
 uv run python scripts/train/train_cross_temporal_multiproject.py \
   --reviews data/openstack_multi_reviews.csv \
-  --base-start 2023-01-01 \
+  --train-base-start 2021-01-01 \
+  --eval-base-start 2023-01-01 \
   --total-months 12 \
   --output results/cross_temporal_multiproject \
   --epochs 20
@@ -68,12 +70,30 @@ uv run python scripts/train/train_cross_temporal_multiproject.py \
 #### パラメータ説明
 
 - `--reviews`: レビュー依頼CSVファイルのパス
-- `--base-start`: ベース開始日（YYYY-MM-DD形式）
+- `--train-base-start`: 訓練期間のベース開始日（YYYY-MM-DD、デフォルト: 2021-01-01）
+- `--eval-base-start`: 評価期間のベース開始日（YYYY-MM-DD、デフォルト: 2023-01-01）
 - `--total-months`: 総期間（月数、デフォルト12ヶ月）
 - `--output`: 出力ディレクトリ
 - `--project`: プロジェクト名（省略時は全プロジェクト）
 - `--epochs`: 訓練エポック数（デフォルト20）
 - `--min-history-events`: 最小履歴イベント数（デフォルト3）
+
+**実際の日付**:
+```
+訓練期間（2021-01-01起点）:
+  0-3m:  2021-01-01 ～ 2021-04-01
+  3-6m:  2021-04-01 ～ 2021-07-01
+  6-9m:  2021-07-01 ～ 2021-10-01
+  9-12m: 2021-10-01 ～ 2022-01-01
+
+評価期間（2023-01-01起点）:
+  0-3m:  2023-01-01 ～ 2023-04-01
+  3-6m:  2023-04-01 ～ 2023-07-01
+  6-9m:  2023-07-01 ～ 2023-10-01
+  9-12m: 2023-10-01 ～ 2024-01-01
+```
+
+これは既存の `results/review_acceptance_cross_eval_nova/` と同じ期間設定です。
 
 ### 3. ヒートマップの作成
 

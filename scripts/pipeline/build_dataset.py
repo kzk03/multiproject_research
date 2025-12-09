@@ -664,6 +664,8 @@ class FeatureBuilder:
             'reviewer_tenure_days', 'owner_tenure_days',
             'change_insertions', 'change_deletions', 'change_files_count',
             'work_in_progress', 'subject_len',
+            # マルチプロジェクト特徴量
+            'is_cross_project', 'reviewer_project_count',
         ]
         
         # パス特徴量カラム

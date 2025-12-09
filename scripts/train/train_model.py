@@ -96,6 +96,7 @@ from sklearn.metrics import (
     precision_score,
     recall_score,
     roc_auc_score,
+    roc_curve,
 )
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -637,28 +638,65 @@ def extract_evaluation_trajectories(
     return trajectories
 
 
-def find_optimal_threshold(y_true: np.ndarray, y_pred: np.ndarray) -> Dict[str, float]:
+def find_optimal_threshold(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    metric: str = "f1",
+    recall_floor: float = 0.8
+) -> Dict[str, float]:
     """
     最適な閾値を探索
-    
+
     Args:
         y_true: 真のラベル
         y_pred: 予測確率
-        
+        metric: 閾値選択指標
+            - "f1": F1最大化（従来動作）
+            - "precision_at_recall_floor": recallがrecall_floor以上の点でPrecision最大
+            - "youden": Youden J (TPR - FPR) 最大化
+        recall_floor: metricがprecision_at_recall_floorの場合の下限リコール
+
     Returns:
-        最適閾値と各メトリクス
+        閾値と主要指標
     """
-    precision, recall, thresholds = precision_recall_curve(y_true, y_pred)
+    metric = metric.lower()
+
+    # Precision-Recall based candidates
+    precision, recall, pr_thresholds = precision_recall_curve(y_true, y_pred)
     f1_scores = 2 * (precision * recall) / (precision + recall + 1e-10)
-    
-    best_idx = np.argmax(f1_scores)
-    best_threshold = thresholds[best_idx] if best_idx < len(thresholds) else 0.5
-    
+
+    if metric == "f1":
+        best_idx = np.argmax(f1_scores)
+    elif metric == "precision_at_recall_floor":
+        valid_idx = np.where(recall >= recall_floor)[0]
+        if len(valid_idx) == 0:
+            best_idx = np.argmax(f1_scores)
+        else:
+            best_idx = valid_idx[np.argmax(precision[valid_idx])]
+    elif metric == "youden":
+        fpr, tpr, roc_thresholds = roc_curve(y_true, y_pred)
+        j = tpr - fpr
+        j_best = np.argmax(j)
+        best_threshold = roc_thresholds[j_best] if j_best < len(roc_thresholds) else 0.5
+        return {
+            'threshold': float(best_threshold),
+            'precision': float(precision[np.argmax(f1_scores)]),
+            'recall': float(recall[np.argmax(f1_scores)]),
+            'f1': float(f1_scores[np.argmax(f1_scores)]),
+            'metric': 'youden'
+        }
+    else:
+        # フォールバックは従来のF1最大化
+        best_idx = np.argmax(f1_scores)
+
+    best_threshold = pr_thresholds[best_idx] if best_idx < len(pr_thresholds) else 0.5
+
     return {
         'threshold': float(best_threshold),
         'precision': float(precision[best_idx]),
         'recall': float(recall[best_idx]),
-        'f1': float(f1_scores[best_idx])
+        'f1': float(f1_scores[best_idx]),
+        'metric': metric
     }
 
 
