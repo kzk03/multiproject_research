@@ -7,8 +7,26 @@ gerrit:
     username: "" # 環境変数で設定
     password: "" # 環境変数で設定
   projects:
-    - "project-a"
-    - "project-b"
+    - "openstack/keystone"
+    - "openstack/nova"
+    - "openstack/placement"
+    - "openstack/neutron"
+    - "openstack/glance"
+    - "openstack/cinder"
+    - "openstack/swift"
+    - "openstack/octavia"
+    - "openstack/heat"
+    - "openstack/barbican"
+    - "openstack/manila"
+    - "openstack/ironic"
+    - "openstack/magnum"
+    - "openstack/designate"
+    - "openstack/horizon"
+    - "openstack/kolla"
+    - "openstack/openstack-ansible"
+    - "openstack/openstack-helm"
+    - "openstack/trove"
+    - "openstack/zun"
 
   # データ抽出設定
   data_extraction:

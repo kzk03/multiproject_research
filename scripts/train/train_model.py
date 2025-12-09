@@ -138,7 +138,7 @@ def extract_review_acceptance_trajectories(
     train_end: pd.Timestamp,
     future_window_start_months: int = 0,
     future_window_end_months: int = 3,
-    min_history_requests: int = 3,
+    min_history_requests: int = 0,
     reviewer_col: str = 'reviewer_email',
     date_col: str = 'request_time',
     label_col: str = 'label',
@@ -432,7 +432,7 @@ def extract_evaluation_trajectories(
     history_window_months: int = 12,
     future_window_start_months: int = 0,
     future_window_end_months: int = 3,
-    min_history_requests: int = 3,
+    min_history_requests: int = 0,
     reviewer_col: str = 'reviewer_email',
     date_col: str = 'request_time',
     label_col: str = 'label',
@@ -755,7 +755,7 @@ def main():
     parser.add_argument(
         "--min-history-events",
         type=int,
-        default=3,
+        default=0,
         help="最小履歴イベント数"
     )
     parser.add_argument(

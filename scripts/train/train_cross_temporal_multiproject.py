@@ -126,7 +126,8 @@ def train_and_evaluate_pattern(
     output_base: Path,
     project: str = None,
     epochs: int = 20,
-    min_history: int = 3,
+    min_history: int = 0,
+    learning_rate: float = 0.0001,
     threshold_metric: str = "f1",
     recall_floor: float = 0.8,
     focal_alpha: float = None,
@@ -223,7 +224,7 @@ def train_and_evaluate_pattern(
         'hidden_dim': 128,
         'sequence': True,
         'seq_len': 0,
-        'learning_rate': 0.0001,
+        'learning_rate': learning_rate,
         'dropout': 0.2,
     }
     irl_system = RetentionIRLSystem(config)
@@ -501,8 +502,14 @@ def main():
     parser.add_argument(
         "--min-history-events",
         type=int,
-        default=3,
+        default=0,
         help="最小履歴イベント数"
+    )
+    parser.add_argument(
+        "--learning-rate",
+        type=float,
+        default=0.0001,
+        help="学習率 (デフォルト: 1e-4)"
     )
 
     args = parser.parse_args()
@@ -536,6 +543,7 @@ def main():
             project=args.project,
             epochs=args.epochs,
             min_history=args.min_history_events,
+            learning_rate=args.learning_rate,
             threshold_metric=args.threshold_metric,
             recall_floor=args.recall_floor,
             focal_alpha=args.focal_alpha,
