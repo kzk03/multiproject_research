@@ -126,7 +126,11 @@ def train_and_evaluate_pattern(
     output_base: Path,
     project: str = None,
     epochs: int = 20,
-    min_history: int = 3
+    min_history: int = 3,
+    threshold_metric: str = "f1",
+    recall_floor: float = 0.8,
+    focal_alpha: float = None,
+    focal_gamma: float = None
 ) -> Dict:
     """
     1つのパターンで訓練・評価を実行
@@ -157,24 +161,32 @@ def train_and_evaluate_pattern(
     logger.info(f"評価期間: {pattern['eval_start']} ～ {pattern['eval_end']}")
     logger.info("=" * 80)
 
-    # train_model.pyをインポート
-    from scripts.train.train_model import (
-        load_review_requests,
-        extract_review_acceptance_trajectories,
-        extract_evaluation_trajectories,
-        find_optimal_threshold
-    )
-    from review_predictor.model.irl_predictor import RetentionIRLSystem
+    # train_model.pyから関数をインポート
+    # パスを追加
+    import sys
+    from pathlib import Path as PathLib
+    script_dir = PathLib(__file__).resolve().parent
+    if str(script_dir) not in sys.path:
+        sys.path.insert(0, str(script_dir))
+
     import numpy as np
     import torch
     from sklearn.metrics import (
         auc,
+        f1_score,
         precision_recall_curve,
         precision_score,
         recall_score,
-        f1_score,
-        roc_auc_score
+        roc_auc_score,
     )
+    from train_model import (
+        extract_evaluation_trajectories,
+        extract_review_acceptance_trajectories,
+        find_optimal_threshold,
+        load_review_requests,
+    )
+
+    from review_predictor.model.irl_predictor import RetentionIRLSystem
 
     # データ読み込み
     df = load_review_requests(reviews_csv)
@@ -203,10 +215,11 @@ def train_and_evaluate_pattern(
         logger.error("訓練用軌跡が抽出できませんでした")
         return None
 
-    # IRLシステムを初期化
+    # IRLシステムを初期化（マルチプロジェクト対応）
+    # data/multiproject_paper_data.csv を使用する場合は14次元
     config = {
-        'state_dim': 14,
-        'action_dim': 5,
+        'state_dim': 14,  # マルチプロジェクト対応: 14次元（プロジェクト特徴量4つ追加）
+        'action_dim': 5,  # マルチプロジェクト対応: 5次元（is_cross_project追加）
         'hidden_dim': 128,
         'sequence': True,
         'seq_len': 0,
@@ -219,8 +232,11 @@ def train_and_evaluate_pattern(
     positive_count = sum(1 for t in train_trajectories if t['future_acceptance'])
     positive_rate = positive_count / len(train_trajectories)
     logger.info(f"訓練データ正例率: {positive_rate:.1%} ({positive_count}/{len(train_trajectories)})")
-
-    irl_system.auto_tune_focal_loss(positive_rate)
+    if focal_alpha is not None and focal_gamma is not None:
+        irl_system.set_focal_loss_params(focal_alpha, focal_gamma)
+        logger.info(f"Focal Loss 手動設定: alpha={focal_alpha:.3f}, gamma={focal_gamma:.3f}")
+    else:
+        irl_system.auto_tune_focal_loss(positive_rate)
 
     # 訓練
     logger.info("IRLモデルを訓練...")
@@ -248,7 +264,12 @@ def train_and_evaluate_pattern(
     train_y_pred = np.array(train_y_pred)
 
     # F1スコアを最大化する閾値を探索
-    train_optimal_threshold_info = find_optimal_threshold(train_y_true, train_y_pred)
+    train_optimal_threshold_info = find_optimal_threshold(
+        train_y_true,
+        train_y_pred,
+        metric=threshold_metric,
+        recall_floor=recall_floor
+    )
     train_optimal_threshold = train_optimal_threshold_info['threshold']
 
     logger.info(f"最適閾値: {train_optimal_threshold:.4f}")
@@ -453,6 +474,31 @@ def main():
         help="訓練エポック数"
     )
     parser.add_argument(
+        "--threshold-metric",
+        type=str,
+        default="f1",
+        choices=["f1", "precision_at_recall_floor", "youden"],
+        help="閾値探索指標 (f1/precision_at_recall_floor/youden)"
+    )
+    parser.add_argument(
+        "--recall-floor",
+        type=float,
+        default=0.8,
+        help="precision_at_recall_floorで要求する最低Recall"
+    )
+    parser.add_argument(
+        "--focal-alpha",
+        type=float,
+        default=None,
+        help="Focal Loss alpha (指定時は自動調整を上書き)"
+    )
+    parser.add_argument(
+        "--focal-gamma",
+        type=float,
+        default=None,
+        help="Focal Loss gamma (指定時は自動調整を上書き)"
+    )
+    parser.add_argument(
         "--min-history-events",
         type=int,
         default=3,
@@ -489,7 +535,11 @@ def main():
             output_base,
             project=args.project,
             epochs=args.epochs,
-            min_history=args.min_history_events
+            min_history=args.min_history_events,
+            threshold_metric=args.threshold_metric,
+            recall_floor=args.recall_floor,
+            focal_alpha=args.focal_alpha,
+            focal_gamma=args.focal_gamma
         )
 
         if metrics is None:

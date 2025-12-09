@@ -60,6 +60,7 @@
 # 引数で設定を変更
 ./scripts/run_cross_temporal_evaluation.sh \
   data/nova_reviews.csv \
+  2021-01-01 \
   2023-01-01 \
   12 \
   results/cross_temporal_nova \
@@ -69,11 +70,12 @@
 
 引数の順序:
 1. レビューCSVファイル
-2. ベース開始日
-3. 総期間（月数）
-4. 出力ディレクトリ
-5. プロジェクト名（空=""で全プロジェクト）
-6. エポック数
+2. 訓練期間ベース開始日
+3. 評価期間ベース開始日
+4. 総期間（月数）
+5. 出力ディレクトリ
+6. プロジェクト名（空=""で全プロジェクト）
+7. エポック数
 
 ## 手動で実行（詳細制御）
 
@@ -103,7 +105,8 @@ uv run python scripts/pipeline/build_dataset.py \
 # 全10パターンの訓練・評価
 uv run python scripts/train/train_cross_temporal_multiproject.py \
   --reviews data/openstack_multi_reviews.csv \
-  --base-start 2023-01-01 \
+  --train-base-start 2021-01-01 \
+  --eval-base-start 2023-01-01 \
   --total-months 12 \
   --output results/cross_temporal_multiproject \
   --epochs 20
