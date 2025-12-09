@@ -1,0 +1,508 @@
+#!/usr/bin/env python3
+"""
+複数プロジェクト対応のクロス時間評価スクリプト
+
+既存のresults/review_acceptance_cross_eval_nova/と同じ期間設定:
+- 訓練期間: 2021-01-01 ～ 2022-01-01（12ヶ月、4期間 × 3ヶ月）
+- 評価期間: 2023-01-01 ～ 2024-01-01（12ヶ月、4期間 × 3ヶ月）
+
+訓練期間<=評価期間の制約で、3ヶ月間隔の全10パターンを評価:
+- 0-3m → 0-3m, 3-6m, 6-9m, 9-12m (4パターン)
+- 3-6m → 3-6m, 6-9m, 9-12m (3パターン)
+- 6-9m → 6-9m, 9-12m (2パターン)
+- 9-12m → 9-12m (1パターン)
+
+合計: 10パターン
+
+実際の日付:
+訓練期間（2021-01-01起点）:
+  0-3m:  2021-01-01 ～ 2021-04-01
+  3-6m:  2021-04-01 ～ 2021-07-01
+  6-9m:  2021-07-01 ～ 2021-10-01
+  9-12m: 2021-10-01 ～ 2022-01-01
+
+評価期間（2023-01-01起点）:
+  0-3m:  2023-01-01 ～ 2023-04-01
+  3-6m:  2023-04-01 ～ 2023-07-01
+  6-9m:  2023-07-01 ～ 2023-10-01
+  9-12m: 2023-10-01 ～ 2024-01-01
+"""
+
+import argparse
+import json
+import logging
+import sys
+from pathlib import Path
+from typing import Dict, List
+
+import pandas as pd
+
+# パス設定
+ROOT = Path(__file__).resolve().parents[2]
+SRC = ROOT / "src"
+if str(SRC) not in sys.path:
+    sys.path.append(str(SRC))
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+
+def get_date_offset(base_date: pd.Timestamp, months: int) -> pd.Timestamp:
+    """日付にN月を加算"""
+    return base_date + pd.DateOffset(months=months)
+
+
+def generate_evaluation_patterns(
+    train_base_start: pd.Timestamp,
+    eval_base_start: pd.Timestamp,
+    total_months: int = 12
+) -> List[Dict]:
+    """
+    評価パターンを生成（訓練期間<=評価期間の制約）
+
+    Args:
+        train_base_start: 訓練期間のベース開始日（例: 2021-01-01）
+        eval_base_start: 評価期間のベース開始日（例: 2023-01-01）
+        total_months: 総期間（月数、デフォルト12ヶ月）
+
+    Returns:
+        評価パターンのリスト
+    """
+    patterns = []
+
+    # 訓練期間を定義（3ヶ月間隔）
+    train_periods = []
+    for i in range(0, total_months, 3):
+        start = get_date_offset(train_base_start, i)
+        end = get_date_offset(train_base_start, i + 3)
+        train_periods.append({
+            'name': f'{i}-{i+3}m',
+            'start': start,
+            'end': end,
+            'start_month': i,
+            'end_month': i + 3
+        })
+
+    # 評価期間を定義（3ヶ月間隔）
+    eval_periods = []
+    for i in range(0, total_months, 3):
+        start = get_date_offset(eval_base_start, i)
+        end = get_date_offset(eval_base_start, i + 3)
+        eval_periods.append({
+            'name': f'{i}-{i+3}m',
+            'start': start,
+            'end': end,
+            'start_month': i,
+            'end_month': i + 3
+        })
+
+    # 訓練期間 <= 評価期間の制約でパターンを生成
+    for i, train_period in enumerate(train_periods):
+        for j, eval_period in enumerate(eval_periods):
+            # 制約: 訓練期間の開始 <= 評価期間の開始
+            if train_period['start_month'] <= eval_period['start_month']:
+                patterns.append({
+                    'train_name': train_period['name'],
+                    'eval_name': eval_period['name'],
+                    'train_start': train_period['start'],
+                    'train_end': train_period['end'],
+                    'eval_start': eval_period['start'],
+                    'eval_end': eval_period['end']
+                })
+
+    logger.info(f"生成されたパターン数: {len(patterns)}")
+    for p in patterns:
+        logger.info(f"  {p['train_name']} → {p['eval_name']}")
+
+    return patterns
+
+
+def train_and_evaluate_pattern(
+    pattern: Dict,
+    reviews_csv: str,
+    output_base: Path,
+    project: str = None,
+    epochs: int = 20,
+    min_history: int = 3
+) -> Dict:
+    """
+    1つのパターンで訓練・評価を実行
+
+    Args:
+        pattern: 評価パターン
+        reviews_csv: レビュー依頼CSVファイル
+        output_base: 出力ベースディレクトリ
+        project: プロジェクト名（Noneの場合は全プロジェクト）
+        epochs: 訓練エポック数
+        min_history: 最小履歴イベント数
+
+    Returns:
+        評価結果
+    """
+    train_name = pattern['train_name']
+    eval_name = pattern['eval_name']
+
+    # 出力ディレクトリ
+    train_dir = output_base / f"train_{train_name}"
+    eval_dir = train_dir / f"eval_{eval_name}"
+    train_dir.mkdir(parents=True, exist_ok=True)
+    eval_dir.mkdir(parents=True, exist_ok=True)
+
+    logger.info("=" * 80)
+    logger.info(f"パターン: {train_name} → {eval_name}")
+    logger.info(f"訓練期間: {pattern['train_start']} ～ {pattern['train_end']}")
+    logger.info(f"評価期間: {pattern['eval_start']} ～ {pattern['eval_end']}")
+    logger.info("=" * 80)
+
+    # train_model.pyをインポート
+    from scripts.train.train_model import (
+        load_review_requests,
+        extract_review_acceptance_trajectories,
+        extract_evaluation_trajectories,
+        find_optimal_threshold
+    )
+    from review_predictor.model.irl_predictor import RetentionIRLSystem
+    import numpy as np
+    import torch
+    from sklearn.metrics import (
+        auc,
+        precision_recall_curve,
+        precision_score,
+        recall_score,
+        f1_score,
+        roc_auc_score
+    )
+
+    # データ読み込み
+    df = load_review_requests(reviews_csv)
+
+    # 訓練期間のラベル計算（評価期間を将来窓として使用）
+    future_window_start_months = 0
+    # 訓練終了から評価開始までの月数を計算
+    months_to_eval = int((pattern['eval_start'] - pattern['train_end']).days / 30)
+    future_window_end_months = months_to_eval + 3  # 評価期間の長さ（3ヶ月）
+
+    logger.info(f"将来窓設定: {future_window_start_months}～{future_window_end_months}ヶ月")
+
+    # 訓練用軌跡を抽出
+    logger.info("訓練用軌跡を抽出...")
+    train_trajectories = extract_review_acceptance_trajectories(
+        df,
+        train_start=pattern['train_start'],
+        train_end=pattern['train_end'],
+        future_window_start_months=future_window_start_months,
+        future_window_end_months=future_window_end_months,
+        min_history_requests=min_history,
+        project=project
+    )
+
+    if not train_trajectories:
+        logger.error("訓練用軌跡が抽出できませんでした")
+        return None
+
+    # IRLシステムを初期化
+    config = {
+        'state_dim': 14,
+        'action_dim': 5,
+        'hidden_dim': 128,
+        'sequence': True,
+        'seq_len': 0,
+        'learning_rate': 0.0001,
+        'dropout': 0.2,
+    }
+    irl_system = RetentionIRLSystem(config)
+
+    # 訓練データの正例率を計算してFocal Lossを調整
+    positive_count = sum(1 for t in train_trajectories if t['future_acceptance'])
+    positive_rate = positive_count / len(train_trajectories)
+    logger.info(f"訓練データ正例率: {positive_rate:.1%} ({positive_count}/{len(train_trajectories)})")
+
+    irl_system.auto_tune_focal_loss(positive_rate)
+
+    # 訓練
+    logger.info("IRLモデルを訓練...")
+    irl_system.train_irl_temporal_trajectories(
+        train_trajectories,
+        epochs=epochs
+    )
+
+    # 訓練データ上で最適閾値を決定
+    logger.info("訓練データ上で最適閾値を決定...")
+    train_y_true = []
+    train_y_pred = []
+
+    for traj in train_trajectories:
+        developer = traj.get('developer', traj.get('developer_info', {}))
+        result = irl_system.predict_continuation_probability_snapshot(
+            developer,
+            traj['activity_history'],
+            traj['context_date']
+        )
+        train_y_true.append(1 if traj['future_acceptance'] else 0)
+        train_y_pred.append(result['continuation_probability'])
+
+    train_y_true = np.array(train_y_true)
+    train_y_pred = np.array(train_y_pred)
+
+    # F1スコアを最大化する閾値を探索
+    train_optimal_threshold_info = find_optimal_threshold(train_y_true, train_y_pred)
+    train_optimal_threshold = train_optimal_threshold_info['threshold']
+
+    logger.info(f"最適閾値: {train_optimal_threshold:.4f}")
+    logger.info(f"訓練データ性能: Precision={train_optimal_threshold_info['precision']:.3f}, "
+                f"Recall={train_optimal_threshold_info['recall']:.3f}, "
+                f"F1={train_optimal_threshold_info['f1']:.3f}")
+
+    # モデルと閾値を保存
+    model_path = train_dir / "irl_model.pt"
+    torch.save(irl_system.network.state_dict(), model_path)
+    logger.info(f"モデルを保存: {model_path}")
+
+    threshold_path = train_dir / "optimal_threshold.json"
+    with open(threshold_path, 'w') as f:
+        json.dump(train_optimal_threshold_info, f, indent=2)
+    logger.info(f"最適閾値を保存: {threshold_path}")
+
+    # 評価用軌跡を抽出
+    logger.info("評価用軌跡を抽出...")
+    history_window_months = int((pattern['train_end'] - pattern['train_start']).days / 30)
+
+    eval_trajectories = extract_evaluation_trajectories(
+        df,
+        cutoff_date=pattern['train_end'],
+        history_window_months=history_window_months,
+        future_window_start_months=months_to_eval,
+        future_window_end_months=future_window_end_months,
+        min_history_requests=min_history,
+        project=project
+    )
+
+    if not eval_trajectories:
+        logger.error("評価用軌跡が抽出できませんでした")
+        return None
+
+    # 予測
+    logger.info("予測を実行...")
+    y_true = []
+    y_pred = []
+    predictions = []
+
+    for traj in eval_trajectories:
+        result = irl_system.predict_continuation_probability_snapshot(
+            traj['developer'],
+            traj['activity_history'],
+            traj['context_date']
+        )
+        prob = result['continuation_probability']
+        true_label = 1 if traj['future_acceptance'] else 0
+
+        y_true.append(true_label)
+        y_pred.append(prob)
+
+        predictions.append({
+            'reviewer_email': traj['reviewer'],
+            'predicted_prob': float(prob),
+            'true_label': true_label,
+            'history_request_count': traj['history_request_count'],
+            'history_acceptance_rate': traj['developer']['acceptance_rate'],
+            'eval_request_count': traj['eval_request_count'],
+            'eval_accepted_count': traj['eval_accepted_count'],
+            'eval_rejected_count': traj['eval_rejected_count']
+        })
+
+    y_true = np.array(y_true)
+    y_pred = np.array(y_pred)
+
+    # メトリクスを計算（訓練データで決定した閾値を使用）
+    y_pred_binary = (y_pred >= train_optimal_threshold).astype(int)
+
+    auc_roc = roc_auc_score(y_true, y_pred)
+    precision, recall, _ = precision_recall_curve(y_true, y_pred)
+    auc_pr = auc(recall, precision)
+
+    precision_at_threshold = precision_score(y_true, y_pred_binary)
+    recall_at_threshold = recall_score(y_true, y_pred_binary)
+    f1_at_threshold = f1_score(y_true, y_pred_binary)
+
+    metrics = {
+        'auc_roc': float(auc_roc),
+        'auc_pr': float(auc_pr),
+        'optimal_threshold': float(train_optimal_threshold),
+        'threshold_source': 'train_data',
+        'precision': float(precision_at_threshold),
+        'recall': float(recall_at_threshold),
+        'f1_score': float(f1_at_threshold),
+        'positive_count': int(y_true.sum()),
+        'negative_count': int((1 - y_true).sum()),
+        'total_count': int(len(y_true))
+    }
+
+    logger.info("=" * 80)
+    logger.info(f"評価結果 ({train_name} → {eval_name}):")
+    logger.info(f"  AUC-ROC: {metrics['auc_roc']:.4f}")
+    logger.info(f"  AUC-PR: {metrics['auc_pr']:.4f}")
+    logger.info(f"  Precision: {metrics['precision']:.4f}")
+    logger.info(f"  Recall: {metrics['recall']:.4f}")
+    logger.info(f"  F1 Score: {metrics['f1_score']:.4f}")
+    logger.info("=" * 80)
+
+    # 結果を保存
+    with open(eval_dir / "metrics.json", "w") as f:
+        json.dump(metrics, f, indent=2)
+
+    predictions_df = pd.DataFrame(predictions)
+    predictions_df['predicted_binary'] = y_pred_binary
+    predictions_df.to_csv(eval_dir / "predictions.csv", index=False)
+
+    logger.info(f"結果を保存: {eval_dir}")
+
+    return metrics
+
+
+def create_matrices(output_base: Path, patterns: List[Dict]):
+    """メトリクスマトリクスを作成"""
+
+    logger.info("=" * 80)
+    logger.info("メトリクスマトリクスを作成中...")
+    logger.info("=" * 80)
+
+    # 期間名のリスト
+    period_names = sorted(list(set([p['train_name'] for p in patterns])))
+
+    # 各メトリクスのマトリクスを初期化
+    metrics_names = ['AUC_ROC', 'AUC_PR', 'PRECISION', 'RECALL', 'f1_score']
+    matrices = {metric: pd.DataFrame(index=period_names, columns=period_names, dtype=float)
+                for metric in metrics_names}
+
+    # メトリクスを収集
+    for pattern in patterns:
+        train_name = pattern['train_name']
+        eval_name = pattern['eval_name']
+
+        metrics_file = output_base / f"train_{train_name}" / f"eval_{eval_name}" / "metrics.json"
+
+        if metrics_file.exists():
+            with open(metrics_file) as f:
+                metrics = json.load(f)
+
+            matrices['AUC_ROC'].loc[train_name, eval_name] = metrics.get('auc_roc', None)
+            matrices['AUC_PR'].loc[train_name, eval_name] = metrics.get('auc_pr', None)
+            matrices['PRECISION'].loc[train_name, eval_name] = metrics.get('precision', None)
+            matrices['RECALL'].loc[train_name, eval_name] = metrics.get('recall', None)
+            matrices['f1_score'].loc[train_name, eval_name] = metrics.get('f1_score', None)
+
+    # マトリクスを保存
+    for metric_name, matrix in matrices.items():
+        output_file = output_base / f"matrix_{metric_name}.csv"
+        matrix.to_csv(output_file)
+        logger.info(f"保存: {output_file}")
+        logger.info(f"\n{matrix}")
+
+    logger.info("=" * 80)
+    logger.info("マトリクス作成完了")
+    logger.info("=" * 80)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="複数プロジェクト対応のクロス時間評価"
+    )
+    parser.add_argument(
+        "--reviews",
+        type=str,
+        required=True,
+        help="レビュー依頼CSVファイルのパス"
+    )
+    parser.add_argument(
+        "--train-base-start",
+        type=str,
+        default="2021-01-01",
+        help="訓練期間のベース開始日 (YYYY-MM-DD、デフォルト: 2021-01-01)"
+    )
+    parser.add_argument(
+        "--eval-base-start",
+        type=str,
+        default="2023-01-01",
+        help="評価期間のベース開始日 (YYYY-MM-DD、デフォルト: 2023-01-01)"
+    )
+    parser.add_argument(
+        "--total-months",
+        type=int,
+        default=12,
+        help="総期間（月数、デフォルト12ヶ月）"
+    )
+    parser.add_argument(
+        "--output",
+        type=str,
+        required=True,
+        help="出力ディレクトリ"
+    )
+    parser.add_argument(
+        "--project",
+        type=str,
+        default=None,
+        help="プロジェクト名（指定しない場合は全プロジェクト）"
+    )
+    parser.add_argument(
+        "--epochs",
+        type=int,
+        default=20,
+        help="訓練エポック数"
+    )
+    parser.add_argument(
+        "--min-history-events",
+        type=int,
+        default=3,
+        help="最小履歴イベント数"
+    )
+
+    args = parser.parse_args()
+
+    # 出力ディレクトリを作成
+    output_base = Path(args.output)
+    output_base.mkdir(parents=True, exist_ok=True)
+
+    # ベース開始日をパース
+    train_base_start = pd.Timestamp(args.train_base_start)
+    eval_base_start = pd.Timestamp(args.eval_base_start)
+
+    logger.info(f"訓練期間ベース: {train_base_start}")
+    logger.info(f"評価期間ベース: {eval_base_start}")
+
+    # 評価パターンを生成
+    patterns = generate_evaluation_patterns(train_base_start, eval_base_start, args.total_months)
+
+    # 各パターンで訓練・評価
+    logger.info("=" * 80)
+    logger.info(f"全{len(patterns)}パターンの訓練・評価を開始")
+    logger.info("=" * 80)
+
+    for i, pattern in enumerate(patterns, 1):
+        logger.info(f"\n【{i}/{len(patterns)}】パターン実行中...")
+
+        metrics = train_and_evaluate_pattern(
+            pattern,
+            args.reviews,
+            output_base,
+            project=args.project,
+            epochs=args.epochs,
+            min_history=args.min_history_events
+        )
+
+        if metrics is None:
+            logger.warning(f"パターン {pattern['train_name']} → {pattern['eval_name']} をスキップ")
+
+    # メトリクスマトリクスを作成
+    create_matrices(output_base, patterns)
+
+    logger.info("=" * 80)
+    logger.info("全パターンの訓練・評価が完了しました")
+    logger.info(f"結果: {output_base}")
+    logger.info("=" * 80)
+
+
+if __name__ == "__main__":
+    main()

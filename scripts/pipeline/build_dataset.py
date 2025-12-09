@@ -343,6 +343,7 @@ class FeatureBuilder:
                 review_request = {
                     'change_id': change_id,
                     'project': project,
+                    'project_id': project,  # マルチプロジェクト対応: project_idを追加
                     'owner_email': owner_email,
                     'reviewer_email': reviewer_email,
                     'request_time': created.isoformat(),
@@ -364,37 +365,47 @@ class FeatureBuilder:
         
         return review_requests
     
-    def _compute_history_features(self, 
+    def _compute_history_features(self,
                                    requests: List[Dict],
                                    changes: List[Dict]) -> pd.DataFrame:
         """
         履歴ベースの特徴量を計算
-        
+
         時間順に処理し、各依頼時点での履歴情報を使用（データリーク防止）
         """
         # 時間順にソート
         requests_sorted = sorted(requests, key=lambda x: x['request_time'])
-        
+
         # 各開発者の初出現日を記録
         first_seen: Dict[str, datetime] = {}
+
+        # マルチプロジェクト対応: 各開発者が活動したプロジェクトを追跡
+        developer_projects: Dict[str, Set[str]] = defaultdict(set)
         
         # 変更データを時間順にインデックス化
         for change in changes:
             created = self._parse_timestamp(change.get('created', ''))
             owner = change.get('owner', {}).get('email', '')
-            
+            project = change.get('project', '')
+
             if created and owner and not self._is_bot(owner):
                 if owner not in first_seen or created < first_seen[owner]:
                     first_seen[owner] = created
-                
+
+                # マルチプロジェクト対応: オーナーのプロジェクト履歴を記録
+                developer_projects[owner].add(project)
+
                 # メッセージからレビュアーの初出現も記録
                 for msg in change.get('messages', []):
                     author = msg.get('author', {}).get('email', '')
                     msg_date = self._parse_timestamp(msg.get('date', ''))
-                    
+
                     if author and msg_date and not self._is_bot(author):
                         if author not in first_seen or msg_date < first_seen[author]:
                             first_seen[author] = msg_date
+
+                        # マルチプロジェクト対応: レビュアーのプロジェクト履歴を記録
+                        developer_projects[author].add(project)
         
         # 履歴を時間順に構築
         reviewer_reviews: Dict[str, List[Tuple[datetime, Dict]]] = defaultdict(list)
@@ -499,10 +510,15 @@ class FeatureBuilder:
                 reviewer, project, files, reviewer_paths, context_date
             )
             
+            # マルチプロジェクト対応: is_cross_project フラグを計算
+            # この時点でのレビュアーのプロジェクト数が2以上ならクロスプロジェクト
+            reviewer_project_count = len(developer_projects.get(reviewer, set()))
+            is_cross_project = reviewer_project_count > 1
+
             # 応答履歴を更新（この依頼の結果）
             responded = req['label'] == 1
             reviewer_responses[reviewer].append((context_date, responded))
-            
+
             features = {
                 **req,
                 'days_since_last_activity': days_since_last,
@@ -521,6 +537,9 @@ class FeatureBuilder:
                 'reviewer_past_response_rate_180d': response_rate,
                 'reviewer_tenure_days': reviewer_tenure,
                 'owner_tenure_days': owner_tenure,
+                # マルチプロジェクト対応: 新しい特徴量
+                'is_cross_project': is_cross_project,
+                'reviewer_project_count': reviewer_project_count,
                 **path_features
             }
             

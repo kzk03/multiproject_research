@@ -338,9 +338,14 @@ def extract_review_acceptance_trajectories(
                     'timestamp': row[date_col],  # タイムスタンプは常にdate_col
                     'action_type': 'review',
                     'project': row.get('project', 'unknown'),
+                    'project_id': row.get('project', 'unknown'),  # Multi-project: project_id
                     'request_time': row.get('request_time', row[date_col]),
                     'response_time': row.get('first_response_time'),  # response_time計算用
                     'accepted': row.get(label_col, 0) == 1,
+                    'is_cross_project': row.get('is_cross_project', False),  # Multi-project: cross-project flag
+                    'files_changed': row.get('change_files_count', 0),
+                    'lines_added': row.get('change_insertions', 0),
+                    'lines_deleted': row.get('change_deletions', 0),
                 }
                 monthly_activities.append(activity)
             monthly_activity_histories.append(monthly_activities)
@@ -352,14 +357,20 @@ def extract_review_acceptance_trajectories(
                 'timestamp': row[date_col],  # タイムスタンプは常にdate_col
                 'action_type': 'review',
                 'project': row.get('project', 'unknown'),
+                'project_id': row.get('project', 'unknown'),  # Multi-project: project_id
                 'request_time': row.get('request_time', row[date_col]),
                 'response_time': row.get('first_response_time'),  # response_time計算用
                 'accepted': row.get(label_col, 0) == 1,
+                'is_cross_project': row.get('is_cross_project', False),  # Multi-project: cross-project flag
+                'files_changed': row.get('change_files_count', 0),
+                'lines_added': row.get('change_insertions', 0),
+                'lines_deleted': row.get('change_deletions', 0),
             }
             activity_history.append(activity)
         
         # 開発者情報
         developer_info = {
+            'developer_id': reviewer,  # Multi-project: use developer_id
             'developer_email': reviewer,
             'first_seen': reviewer_history[date_col].min(),
             'changes_authored': 0,
@@ -562,9 +573,11 @@ def extract_evaluation_trajectories(
                 'timestamp': row[date_col],  # タイムスタンプは常にdate_col
                 'action_type': 'review',
                 'project': row.get('project', 'unknown'),
+                'project_id': row.get('project', 'unknown'),  # Multi-project: project_id
                 'request_time': row.get('request_time', row[date_col]),
                 'response_time': row.get('first_response_time'),  # response_time計算用
                 'accepted': row.get(label_col, 0) == 1,
+                'is_cross_project': row.get('is_cross_project', False),  # Multi-project: cross-project flag
                 # IRL特徴量計算用のデータを追加
                 'files_changed': row.get('change_files_count', 0),  # 強度計算用
                 'change_files_count': row.get('change_files_count', 0),  # 強度計算用
@@ -577,6 +590,7 @@ def extract_evaluation_trajectories(
         
         # 開発者情報
         developer_info = {
+            'developer_id': reviewer,  # Multi-project: use developer_id
             'developer_email': reviewer,
             'first_seen': reviewer_history[date_col].min(),
             'changes_authored': 0,
@@ -765,8 +779,8 @@ def main():
         # - dropout=0.2: 適度な正則化（0.0だと過学習、0.1だと不十分）
         # - learning_rate=0.0001: やや高めで局所最適を回避
         config = {
-            'state_dim': 10,  # 最近の受諾率+レビュー負荷を追加
-            'action_dim': 4,
+            'state_dim': 14,  # マルチプロジェクト対応: 10→14（プロジェクト特徴量4つ追加）
+            'action_dim': 5,  # マルチプロジェクト対応: 4→5（is_cross_project追加）
             'hidden_dim': 128,  # 安定した表現力
             'sequence': True,
             'seq_len': 0,
@@ -845,8 +859,8 @@ def main():
         # 既存モデルを読み込み
         logger.info(f"既存モデルを読み込み: {args.model}")
         config = {
-            'state_dim': 10,  # 最近の受諾率+レビュー負荷を追加
-            'action_dim': 4,
+            'state_dim': 14,  # マルチプロジェクト対応: 10→14
+            'action_dim': 5,  # マルチプロジェクト対応: 4→5
             'hidden_dim': 128,  # 訓練時と同じ設定
             'sequence': True,
             'seq_len': 0,
