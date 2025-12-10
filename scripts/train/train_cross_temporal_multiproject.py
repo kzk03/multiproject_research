@@ -2,7 +2,7 @@
 """
 複数プロジェクト対応のクロス時間評価スクリプト
 
-既存のresults/review_acceptance_cross_eval_nova/と同じ期間設定:
+既存のresults/review_continuation_cross_eval_nova/と同じ期間設定:
 - 訓練期間: 2021-01-01 ～ 2022-01-01（12ヶ月、4期間 × 3ヶ月）
 - 評価期間: 2023-01-01 ～ 2024-01-01（12ヶ月、4期間 × 3ヶ月）
 
