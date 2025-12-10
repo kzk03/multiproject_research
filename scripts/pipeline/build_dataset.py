@@ -66,6 +66,7 @@ Gerrit REST APIからコードレビューデータを取得し、レビュー�
 """
 
 import argparse
+import json
 import logging
 import sys
 from collections import defaultdict
@@ -721,6 +722,10 @@ def main():
                         help='出力CSVファイルパス')
     parser.add_argument('--response-window', type=int, default=14,
                         help='レビュー応答ウィンドウ（日）（デフォルト: 14）')
+    parser.add_argument('--raw-output', required=False, default=None,
+                        help='整形前の生データ(JSON)を保存するパス。未指定なら保存しない')
+    parser.add_argument('--raw-output-dir', required=False, default=None,
+                        help='プロジェクトごとに生データ(JSON)を保存するディレクトリ。未指定なら保存しない')
     
     args = parser.parse_args()
     
@@ -742,16 +747,40 @@ def main():
     fetcher = GerritDataFetcher(args.gerrit_url)
     
     all_changes = []
+    project_changes: Dict[str, List[Dict[str, Any]]] = {}
     for project in args.project:
         logger.info(f"\nFetching data for {project}...")
         changes = fetcher.fetch_changes(project, start_date, end_date)
         all_changes.extend(changes)
+        project_changes[project] = changes
     
     logger.info(f"\nTotal changes: {len(all_changes)}")
     
     if not all_changes:
         logger.error("No changes found. Please check the project name and date range.")
         sys.exit(1)
+
+    # 生データの保存（オプション）
+    if args.raw_output:
+        raw_path = Path(args.raw_output)
+        raw_path.parent.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Raw changes をJSONで保存します: {raw_path}")
+        with raw_path.open('w', encoding='utf-8') as f:
+            json.dump(all_changes, f, ensure_ascii=False)
+
+    if args.raw_output_dir:
+        raw_dir = Path(args.raw_output_dir)
+        raw_dir.mkdir(parents=True, exist_ok=True)
+        logger.info(f"プロジェクト別のRaw changesを保存します: {raw_dir}")
+        for proj, changes in project_changes.items():
+            if not changes:
+                logger.info(f"  {proj}: 0件のためスキップ")
+                continue
+            safe_name = proj.replace('/', '__')
+            out_path = raw_dir / f"{safe_name}.json"
+            logger.info(f"  {proj}: {out_path} に保存 ({len(changes)}件)")
+            with out_path.open('w', encoding='utf-8') as f:
+                json.dump(changes, f, ensure_ascii=False)
     
     # 特徴量構築
     builder = FeatureBuilder(response_window_days=args.response_window)
