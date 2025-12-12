@@ -131,7 +131,8 @@ def train_and_evaluate_pattern(
     threshold_metric: str = "f1",
     recall_floor: float = 0.8,
     focal_alpha: float = None,
-    focal_gamma: float = None
+    focal_gamma: float = None,
+    negative_oversample_factor: int = 1
 ) -> Dict:
     """
     1つのパターンで訓練・評価を実行
@@ -209,7 +210,8 @@ def train_and_evaluate_pattern(
         future_window_start_months=future_window_start_months,
         future_window_end_months=future_window_end_months,
         min_history_requests=min_history,
-        project=project
+        project=project,
+        negative_oversample_factor=negative_oversample_factor
     )
 
     if not train_trajectories:
@@ -511,6 +513,12 @@ def main():
         default=0.0001,
         help="学習率 (デフォルト: 1e-4)"
     )
+    parser.add_argument(
+        "--negative-oversample-factor",
+        type=int,
+        default=1,
+        help="負例オーバーサンプリング係数（>1で訓練時に負例を複製）"
+    )
 
     args = parser.parse_args()
 
@@ -547,7 +555,8 @@ def main():
             threshold_metric=args.threshold_metric,
             recall_floor=args.recall_floor,
             focal_alpha=args.focal_alpha,
-            focal_gamma=args.focal_gamma
+            focal_gamma=args.focal_gamma,
+            negative_oversample_factor=args.negative_oversample_factor
         )
 
         if metrics is None:

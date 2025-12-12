@@ -143,7 +143,8 @@ def extract_review_acceptance_trajectories(
     date_col: str = 'request_time',
     label_col: str = 'label',
     project: str = None,
-    extended_label_window_months: int = 12
+    extended_label_window_months: int = 12,
+    negative_oversample_factor: int = 1
 ) -> List[Dict[str, Any]]:
     """
     レビュー承諾予測用の軌跡を抽出（データリークなし版）
@@ -404,6 +405,19 @@ def extract_review_acceptance_trajectories(
         }
         
         trajectories.append(trajectory)
+
+    # 負例が少ない場合の簡易オーバーサンプリング（訓練専用）
+    if negative_oversample_factor > 1:
+        negative_samples = [t for t in trajectories if not t['future_acceptance']]
+        if negative_samples:
+            import copy
+            import random
+
+            extra = [copy.deepcopy(random.choice(negative_samples))
+                     for _ in range(len(negative_samples) * (negative_oversample_factor - 1))]
+            trajectories.extend(extra)
+            random.shuffle(trajectories)
+            logger.info(f"負例をオーバーサンプリング: 元{len(negative_samples)}件 -> {len(negative_samples) * negative_oversample_factor}件")
     
     logger.info("=" * 80)
     logger.info(f"軌跡抽出完了: {len(trajectories)}サンプル（レビュアー）")
@@ -759,6 +773,12 @@ def main():
         help="最小履歴イベント数"
     )
     parser.add_argument(
+        "--negative-oversample-factor",
+        type=int,
+        default=1,
+        help="負例オーバーサンプリング係数（>1で訓練時に負例を複製）"
+    )
+    parser.add_argument(
         "--output",
         type=str,
         default="outputs/review_acceptance_irl",
@@ -804,7 +824,8 @@ def main():
             future_window_start_months=args.future_window_start,
             future_window_end_months=args.future_window_end,
             min_history_requests=args.min_history_events,
-            project=args.project
+            project=args.project,
+            negative_oversample_factor=args.negative_oversample_factor
         )
         
         if not train_trajectories:
