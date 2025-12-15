@@ -255,11 +255,18 @@ def train_and_evaluate_pattern(
 
     for traj in train_trajectories:
         developer = traj.get('developer', traj.get('developer_info', {}))
-        result = irl_system.predict_continuation_probability_snapshot(
+        # 時系列予測を使用（スナップショット予測から変更）
+        result = irl_system.predict_continuation_probability(
             developer,
             traj['activity_history'],
             traj['context_date']
         )
+        # スナップショット予測（旧版・コメントアウト）
+        # result = irl_system.predict_continuation_probability_snapshot(
+        #     developer,
+        #     traj['activity_history'],
+        #     traj['context_date']
+        # )
         train_y_true.append(1 if traj['future_acceptance'] else 0)
         train_y_pred.append(result['continuation_probability'])
 
@@ -315,11 +322,18 @@ def train_and_evaluate_pattern(
     predictions = []
 
     for traj in eval_trajectories:
-        result = irl_system.predict_continuation_probability_snapshot(
+        # 時系列予測を使用（スナップショット予測から変更）
+        result = irl_system.predict_continuation_probability(
             traj['developer'],
             traj['activity_history'],
             traj['context_date']
         )
+        # スナップショット予測（旧版・コメントアウト）
+        # result = irl_system.predict_continuation_probability_snapshot(
+        #     traj['developer'],
+        #     traj['activity_history'],
+        #     traj['context_date']
+        # )
         prob = result['continuation_probability']
         true_label = 1 if traj['future_acceptance'] else 0
 

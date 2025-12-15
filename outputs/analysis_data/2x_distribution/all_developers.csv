@@ -1,0 +1,184 @@
+reviewer_email,email_domain,domain_type,predicted_prob,true_label,history_request_count,eval_request_count,total_reviews,project_count,recent_activity_frequency,recent_acceptance_rate,prediction_result
+elod.illes@est.tech,est.tech,Other Company,0.924727976322174,1,371,472,295,18,6.266666666666667,0.8297872340425532,Correct
+likui@yovole.com,yovole.com,Other Company,0.8576812148094177,1,67,67,31,16,0.8,0.375,Correct
+gmaan@ghanshyammann.com,ghanshyammann.com,Other Company,0.8989439606666565,1,105,85,77,15,1.6333333333333333,0.7346938775510204,Correct
+stephenfin@redhat.com,redhat.com,Red Hat,0.8914796710014343,1,164,86,107,13,1.3666666666666667,0.4634146341463415,Correct
+gibizer@gmail.com,gmail.com,Personal (Gmail等),0.9068340063095092,1,211,29,135,12,1.8666666666666667,0.6785714285714286,Correct
+kajinamit@oss.nttdata.com,oss.nttdata.com,Other Company,0.8095893859863281,1,48,99,9,11,0.5,0.1333333333333333,Correct
+sean.mcginnis@gmail.com,gmail.com,Personal (Gmail等),0.9045610427856444,1,181,19,123,11,2.433333333333333,0.7808219178082192,Correct
+ralonsoh@redhat.com,redhat.com,Red Hat,0.9156258702278136,1,270,182,185,11,3.7666666666666666,0.7345132743362832,Correct
+frickler@offenerstapel.de,offenerstapel.de,Other Company,0.8800526261329651,1,65,167,33,10,0.8666666666666667,0.6923076923076923,Correct
+rosmaita.fossdev@gmail.com,gmail.com,Personal (Gmail等),0.9048698544502258,1,177,52,95,9,2.6333333333333333,0.6329113924050633,Correct
+amotoki@gmail.com,gmail.com,Personal (Gmail等),0.8786712884902954,1,110,4,53,9,1.7,0.3333333333333333,Correct
+katonalala@gmail.com,gmail.com,Personal (Gmail等),0.9036006927490234,1,217,187,141,9,3.2,0.7291666666666666,Correct
+dms@danplanet.com,danplanet.com,Other Company,0.8784440159797668,1,84,45,59,9,0.6,0.8333333333333334,Correct
+rajatdhasmana@gmail.com,gmail.com,Personal (Gmail等),0.8903822302818298,1,73,66,42,9,0.8666666666666667,0.7692307692307693,Correct
+herveberaud.pro@gmail.com,gmail.com,Personal (Gmail等),0.923351526260376,1,281,288,221,8,3.7,0.963963963963964,Correct
+panhongyin@yovole.com,yovole.com,Other Company,0.7882656455039978,1,25,87,0,8,0.4333333333333333,0.0,Correct
+skaplons@redhat.com,redhat.com,Red Hat,0.9158864617347716,1,293,157,219,8,3.7666666666666666,0.8141592920353983,Correct
+eharney@redhat.com,redhat.com,Red Hat,0.8646344542503357,1,60,24,30,7,0.5,0.6666666666666666,Correct
+bence.romsics@gmail.com,gmail.com,Personal (Gmail等),0.7727158665657043,1,28,3,10,7,0.1666666666666666,0.2,Correct
+juliaashleykreger@gmail.com,gmail.com,Personal (Gmail等),0.9063137173652648,1,120,39,69,7,1.3666666666666667,0.8536585365853658,Correct
+dtantsur@protonmail.com,protonmail.com,Personal (Gmail等),0.8983621001243591,1,151,64,117,7,2.0,0.7,Correct
+dmendiza@redhat.com,redhat.com,Red Hat,0.8579753637313843,1,43,39,15,7,0.8,0.5416666666666666,Correct
+akekane@redhat.com,redhat.com,Red Hat,0.8848985433578491,1,97,44,67,7,0.7,0.8095238095238095,Correct
+jungleboyj@electronicjungle.net,electronicjungle.net,Other Company,0.9050982594490052,1,121,16,62,7,1.8333333333333333,0.6727272727272727,Correct
+johnsomor@gmail.com,gmail.com,Personal (Gmail等),0.8903680443763733,1,94,148,43,7,1.8333333333333333,0.4727272727272727,Correct
+cyril@redhat.com,redhat.com,Red Hat,0.8495534658432007,1,72,47,36,7,0.2666666666666666,0.625,Correct
+smooney@redhat.com,redhat.com,Red Hat,0.8748820424079895,1,78,66,35,7,0.9,0.4074074074074074,Correct
+xek@redhat.com,redhat.com,Red Hat,0.7703904509544373,1,14,37,4,6,0.1666666666666666,0.2,Correct
+iurygregory@gmail.com,gmail.com,Personal (Gmail等),0.8984329104423523,1,118,75,79,6,1.5333333333333334,0.8260869565217391,Correct
+sbauza@redhat.com,redhat.com,Red Hat,0.8916298747062683,1,119,58,56,6,2.3,0.5652173913043478,Correct
+lsofia.enriquez@gmail.com,gmail.com,Personal (Gmail等),0.9003452062606812,1,83,5,51,6,1.1333333333333333,0.7941176470588235,Correct
+obondarev@mirantis.com,mirantis.com,Mirantis,0.9068040251731871,1,145,11,112,6,1.8666666666666667,0.8035714285714286,Correct
+wangzihao@yovole.com,yovole.com,Other Company,0.7660219669342041,1,8,41,3,6,0.1333333333333333,0.5,Correct
+elfosardo@gmail.com,gmail.com,Personal (Gmail等),0.90188330411911,1,155,87,108,6,1.9,0.6666666666666666,Correct
+ykarel@redhat.com,redhat.com,Red Hat,0.7098662257194519,1,10,44,3,6,0.1,0.0,Correct
+gouthampravi@gmail.com,gmail.com,Personal (Gmail等),0.8961934447288513,1,110,71,78,6,1.1666666666666667,0.7428571428571429,Correct
+melwittt@gmail.com,gmail.com,Personal (Gmail等),0.8816812634468079,1,67,15,38,5,0.7,0.7142857142857143,Correct
+gthiemon@redhat.com,redhat.com,Red Hat,0.8821936249732971,1,41,42,29,5,0.7666666666666667,0.9130434782608696,Correct
+victoria@redhat.com,redhat.com,Red Hat,0.8167678713798523,1,42,2,24,5,0.2666666666666666,0.375,Correct
+markgoddard86@gmail.com,gmail.com,Personal (Gmail等),0.9035879969596864,1,211,22,159,5,1.8666666666666667,0.5714285714285714,Correct
+haleyb.dev@gmail.com,gmail.com,Personal (Gmail等),0.8429341912269592,1,27,206,15,5,0.3333333333333333,0.6,Correct
+jay@jvf.cc,jvf.cc,Other Company,0.8206892013549805,1,27,96,23,5,0.1333333333333333,0.5,Correct
+thomas@goirand.fr,goirand.fr,Other Company,0.8260378241539001,1,7,5,6,5,0.2333333333333333,0.8571428571428571,Correct
+miguel@mlavalle.com,mlavalle.com,Other Company,0.8050883412361145,1,20,13,3,5,0.3333333333333333,0.2,Correct
+jokke@usr.fi,usr.fi,Other Company,0.8698942065238953,1,50,6,26,5,0.8666666666666667,0.6538461538461539,Correct
+takanattie@gmail.com,gmail.com,Personal (Gmail等),0.8992953300476074,1,78,15,48,5,1.0333333333333334,0.7741935483870968,Correct
+bcafarel@redhat.com,redhat.com,Red Hat,0.9103241562843324,1,198,121,138,5,3.2,0.7604166666666666,Correct
+sbaker@redhat.com,redhat.com,Red Hat,0.8991127014160156,1,44,34,35,5,0.8333333333333334,0.88,Correct
+pierre@stackhpc.com,stackhpc.com,StackHPC,0.8222205638885498,1,21,29,14,4,0.3333333333333333,0.6,Correct
+geguileo@redhat.com,redhat.com,Red Hat,0.8464227318763733,1,40,9,16,4,0.5,0.4666666666666667,Correct
+lucasagomes@gmail.com,gmail.com,Personal (Gmail等),0.811350405216217,1,24,23,12,4,0.2666666666666666,0.375,Correct
+alee@redhat.com,redhat.com,Red Hat,0.8389126658439636,1,20,21,10,4,0.4333333333333333,0.6923076923076923,Correct
+knikolla@bu.edu,bu.edu,Academic,0.7397924065589905,1,17,18,1,4,0.2,0.1666666666666666,Correct
+waboring@hemna.com,hemna.com,Other Company,0.7825686931610107,1,25,7,3,4,0.2333333333333333,0.2857142857142857,Correct
+simon@purestorage.com,purestorage.com,Other Company,0.7993349432945251,1,23,12,11,4,0.3,0.2222222222222222,Correct
+zhangbailin@inspur.com,inspur.com,Other Company,0.7770928144454956,1,9,18,4,4,0.1666666666666666,0.4,Correct
+artem.goncharov@gmail.com,gmail.com,Personal (Gmail等),0.8818275928497314,1,73,107,46,4,1.1,0.8787878787878788,Correct
+ashrod98@redhat.com,redhat.com,Red Hat,0.8043795228004456,1,23,12,10,4,0.0333333333333333,1.0,Correct
+ltoscano@redhat.com,redhat.com,Red Hat,0.7448997497558594,1,18,2,1,4,0.3333333333333333,0.0,Correct
+tburke@nvidia.com,nvidia.com,NVIDIA,0.8759511113166809,1,45,42,39,4,0.6666666666666666,0.75,Correct
+fungi@yuggoth.org,yuggoth.org,Other Company,0.8386712670326233,1,17,7,12,4,0.4333333333333333,0.9230769230769232,Correct
+dwilde@redhat.com,redhat.com,Red Hat,0.835557758808136,1,13,53,6,4,0.2333333333333333,0.8571428571428571,Correct
+cboylan@sapwetik.org,sapwetik.org,Other Company,0.8245574235916138,1,15,3,8,4,0.2,0.8333333333333334,Correct
+noonedeadpunk@gmail.com,gmail.com,Personal (Gmail等),0.7829443216323853,1,5,25,2,4,0.0333333333333333,1.0,Correct
+mnasiadka@gmail.com,gmail.com,Personal (Gmail等),0.8909041881561279,1,126,171,63,4,1.4666666666666666,0.6136363636363636,Correct
+wchy1001@gmail.com,gmail.com,Personal (Gmail等),0.7341554164886475,1,46,27,34,4,0.0666666666666666,0.0,Correct
+manchandavishal143@gmail.com,gmail.com,Personal (Gmail等),0.8629013299942017,1,44,29,29,4,0.7,0.5714285714285714,Correct
+mike_mp@zzzcomputing.com,zzzcomputing.com,Other Company,0.8383311629295349,1,38,5,23,3,0.0666666666666666,1.0,Correct
+openstack@lightbitslabs.com,lightbitslabs.com,Other Company,0.6748139262199402,1,21,13,0,3,0.2,0.0,Correct
+raghavendra-uddhav.tilay@hpe.com,hpe.com,Other Company,0.812118411064148,1,28,2,10,3,0.3333333333333333,0.7,Correct
+songwenping@inspur.com,inspur.com,Other Company,0.6051108241081238,1,6,9,2,3,0.1,0.0,Correct
+rafael@apache.org,apache.org,Other Company,0.7868479490280151,1,12,13,10,3,0.2,0.8333333333333334,Correct
+bartosz@stackhpc.com,stackhpc.com,StackHPC,0.6686442494392395,1,4,122,2,3,0.0,0.5,Correct
+ramishra@redhat.com,redhat.com,Red Hat,0.7171201705932617,1,24,23,7,3,0.2666666666666666,0.0,Correct
+ricolin@ricolky.com,ricolky.com,Other Company,0.8332000374794006,1,35,19,18,3,0.6666666666666666,0.65,Correct
+nahimsouza@outlook.com,outlook.com,Personal (Gmail等),0.7745140194892883,1,9,3,4,3,0.0333333333333333,1.0,Correct
+gael.therond@bitswalk.com,bitswalk.com,Other Company,0.7149010300636292,1,6,1,4,3,0.1333333333333333,0.5,Correct
+bxzhu_5355@163.com,163.com,Other Company,0.6922599673271179,1,3,6,2,3,0.1,0.6666666666666666,Correct
+haixin_haixin@qq.com,qq.com,Other Company,0.7875643968582153,1,31,19,17,3,0.1666666666666666,0.6,Correct
+eandersson@blizzard.com,blizzard.com,Other Company,0.8263749480247498,1,20,30,14,3,0.3333333333333333,1.0,Correct
+kennelson11@gmail.com,gmail.com,Personal (Gmail等),0.7833722829818726,1,17,2,9,3,0.3333333333333333,0.7,Correct
+hjensas@redhat.com,redhat.com,Red Hat,0.7421232461929321,1,4,4,4,3,0.0666666666666666,1.0,Correct
+felipefuty01@gmail.com,gmail.com,Personal (Gmail等),0.7175971865653992,1,21,7,6,3,0.1666666666666666,0.2,Correct
+zaitcev@kotori.zaitcev.us,kotori.zaitcev.us,Other Company,0.7223642468452454,1,9,23,5,3,0.0666666666666666,0.5,Correct
+i@liuyulong.me,liuyulong.me,Other Company,0.7999818921089172,1,31,7,18,3,0.2666666666666666,0.5,Correct
+mjuszkiewicz@redhat.com,redhat.com,Red Hat,0.8500311374664307,1,59,20,40,3,0.5333333333333333,0.6875,Correct
+john.garbutt@stackhpc.com,stackhpc.com,StackHPC,0.6274263858795166,1,9,7,1,3,0.0333333333333333,0.0,Correct
+mthode@mthode.org,mthode.org,Other Company,0.8367422819137573,1,28,32,25,3,0.3666666666666666,0.7272727272727273,Correct
+t.v.ovtchinnikova@gmail.com,gmail.com,Personal (Gmail等),0.7877611517906189,1,21,30,6,3,0.5,0.2666666666666666,Correct
+ces.eduardo98@gmail.com,gmail.com,Personal (Gmail等),0.8413987755775452,1,74,84,37,3,0.7333333333333333,0.5,Correct
+openstack@dopieralski.pl,dopieralski.pl,Other Company,0.853720486164093,1,40,21,22,3,0.7,0.6666666666666666,Correct
+mkopec@redhat.com,redhat.com,Red Hat,0.8149252533912659,1,35,44,17,3,0.4333333333333333,0.7692307692307693,Correct
+tobias.urdin@binero.com,binero.com,Other Company,0.7189890742301941,1,5,34,2,2,0.0666666666666666,1.0,Correct
+piotr@stackhpc.com,stackhpc.com,StackHPC,0.7137870192527771,1,16,1,11,2,0.1333333333333333,0.75,Correct
+hongbin034@gmail.com,gmail.com,Personal (Gmail等),0.7410093545913696,1,11,14,7,2,0.2666666666666666,0.625,Correct
+chen.ke14@zte.com.cn,zte.com.cn,Other Company,0.79865962266922,1,10,10,9,2,0.1,1.0,Correct
+maksim.malchuk@gmail.com,gmail.com,Personal (Gmail等),0.8020590543746948,1,10,167,5,2,0.0333333333333333,1.0,Correct
+alistairncoles@gmail.com,gmail.com,Personal (Gmail等),0.7344973683357239,1,16,20,13,2,0.1666666666666666,0.6,Correct
+dienste@weinimo.de,weinimo.de,Other Company,0.6028051972389221,1,8,57,0,2,0.1,0.0,Correct
+jobernar@redhat.com,redhat.com,Red Hat,0.6017512083053589,1,8,35,0,2,0.1333333333333333,0.0,Correct
+matt@oliver.net.au,oliver.net.au,Other Company,0.8029313683509827,1,19,12,17,2,0.2333333333333333,0.8571428571428571,Correct
+andrey.mp@gmail.com,gmail.com,Personal (Gmail等),0.7476374506950378,1,6,5,5,2,0.0666666666666666,1.0,Correct
+viroel@gmail.com,gmail.com,Personal (Gmail等),0.7499578595161438,1,47,14,17,2,0.3666666666666666,0.3636363636363636,Correct
+doug@stackhpc.com,stackhpc.com,StackHPC,0.6494978666305542,1,5,2,4,2,0.0,0.5,Correct
+thierry@openstack.org,openstack.org,Other Company,0.9032390713691713,1,189,232,177,2,1.6,0.8958333333333334,Correct
+abishop@redhat.com,redhat.com,Red Hat,0.7479789853096008,1,12,2,8,2,0.2333333333333333,0.5714285714285714,Correct
+afariasa@redhat.com,redhat.com,Red Hat,0.6524162292480469,1,4,4,0,2,0.0,0.5,Correct
+clay.gerrard@gmail.com,gmail.com,Personal (Gmail等),0.8170366883277893,1,26,28,24,2,0.3666666666666666,0.9090909090909092,Correct
+bshephar@bne-home.net,bne-home.net,Other Company,0.7647348642349243,1,10,9,5,2,0.0333333333333333,1.0,Correct
+pdeore@redhat.com,redhat.com,Red Hat,0.6943562030792236,1,7,25,2,2,0.0666666666666666,0.5,Correct
+nicolas.bock@canonical.com,canonical.com,Canonical,0.7504012584686279,1,10,1,9,2,0.2666666666666666,0.875,Correct
+amoralej@redhat.com,redhat.com,Red Hat,0.5733996629714966,1,2,2,0,2,0.0,0.5,Correct
+michal.arbet@ultimum.io,ultimum.io,Other Company,0.7940002083778381,1,48,72,33,2,0.3666666666666666,0.7272727272727273,Correct
+jim@acmegating.com,acmegating.com,Other Company,0.5128135681152344,1,4,1,0,2,0.0333333333333333,0.0,Correct
+libosvar@redhat.com,redhat.com,Red Hat,0.6661762595176697,1,19,14,4,2,0.2333333333333333,0.0,Correct
+v.belogrudov@yadro.com,yadro.com,Other Company,0.7422872185707092,1,8,3,6,2,0.1333333333333333,1.0,Correct
+pshchelokovskyy@mirantis.com,mirantis.com,Mirantis,0.6507530808448792,1,3,3,2,2,0.0,0.5,Correct
+i.pchelintsev@yadro.com,yadro.com,Other Company,0.6603795886039734,1,6,5,4,2,0.1333333333333333,0.5,Correct
+dirk@dmllr.de,dmllr.de,Other Company,0.431221067905426,0,2,1,0,2,0.0333333333333333,0.0,Correct
+aleksey.stupnikov@gmail.com,gmail.com,Personal (Gmail等),0.5264685750007629,1,5,1,2,1,0.1333333333333333,0.5,Correct
+bloodeagle40234@gmail.com,gmail.com,Personal (Gmail等),0.3952439725399017,0,3,3,0,1,0.0666666666666666,0.0,Correct
+dbengt@redhat.com,redhat.com,Red Hat,0.3217385709285736,0,1,54,0,1,0.0333333333333333,0.0,Correct
+ratailor@redhat.com,redhat.com,Red Hat,0.7348121404647827,1,3,4,2,1,0.0333333333333333,1.0,Correct
+haailani@in.ibm.com,in.ibm.com,Other Company,0.2827793955802917,0,1,1,0,1,0.0333333333333333,0.0,Correct
+kchamart@redhat.com,redhat.com,Red Hat,0.647271990776062,1,2,5,1,1,0.0333333333333333,1.0,Correct
+kinpaa@gmail.com,gmail.com,Personal (Gmail等),0.7236586809158325,1,5,1,3,1,0.0333333333333333,1.0,Correct
+liuxie_11@163.com,163.com,Other Company,0.3493061661720276,0,1,2,0,1,0.0,0.5,Correct
+cinder+hpmsa@tristero.net,tristero.net,Other Company,0.8613213300704956,1,124,42,114,1,1.4666666666666666,0.9545454545454546,Correct
+jake.yip@ardc.edu.au,ardc.edu.au,Other Company,0.5802981853485107,1,4,23,1,1,0.0,0.5,Correct
+egarciar@redhat.com,redhat.com,Red Hat,0.6836317777633667,1,10,7,7,1,0.1333333333333333,0.75,Correct
+open-e-ci-joviandss@open-e.com,open-e.com,Other Company,0.8572056293487549,1,142,57,130,1,1.8666666666666667,0.9464285714285714,Correct
+cinder+dellpvme@tristero.net,tristero.net,Other Company,0.8625133037567139,1,121,42,111,1,1.3333333333333333,0.975,Correct
+caiql@toyou.com.cn,toyou.com.cn,Other Company,0.5874478816986084,1,87,78,70,1,0.3333333333333333,0.2,Correct
+arista-openstack-test@aristanetworks.com,aristanetworks.com,Other Company,0.87175452709198,1,137,103,134,1,1.5,1.0,Correct
+mrunge@redhat.com,redhat.com,Red Hat,0.7454434037208557,1,12,16,11,1,0.2,1.0,Correct
+dalvarez@redhat.com,redhat.com,Red Hat,0.5175901055335999,1,6,2,2,1,0.0,0.5,Correct
+nasaito@nec.com,nec.com,Other Company,0.306592732667923,0,2,1,0,1,0.0333333333333333,0.0,Correct
+notartom@gmail.com,gmail.com,Personal (Gmail等),0.6520730257034302,1,10,3,8,1,0.1,0.6666666666666666,Correct
+cinder+lenovo@tristero.net,tristero.net,Other Company,0.8602402806282043,1,116,22,107,1,1.3,0.9487179487179488,Correct
+liu.xuefeng1@zte.com.cn,zte.com.cn,Other Company,0.5189726948738098,1,6,9,2,1,0.1,0.3333333333333333,Correct
+sxmatch1986@gmail.com,gmail.com,Personal (Gmail等),0.6991042494773865,1,6,9,6,1,0.1333333333333333,1.0,Correct
+eng.szaher@gmail.com,gmail.com,Personal (Gmail等),0.319893479347229,0,5,9,0,1,0.1333333333333333,0.0,Correct
+huangzhipeng@huawei.com,huawei.com,Huawei,0.3568094074726105,0,6,11,0,1,0.1,0.0,Correct
+yasufum.o@gmail.com,gmail.com,Personal (Gmail等),0.6327871680259705,1,6,15,5,1,0.1,0.6666666666666666,Correct
+proliantutils@gmail.com,gmail.com,Personal (Gmail等),0.8719677329063416,1,149,79,149,1,1.9,1.0,Correct
+radek@piliszek.it,piliszek.it,Other Company,0.9154638051986694,0,284,1,235,8,2.1666666666666665,0.9230769230769232,Incorrect
+nurmatov.mamatisa@huawei.com,huawei.com,Huawei,0.863570511341095,0,35,1,21,4,0.5666666666666667,0.6470588235294118,Incorrect
+corey.bryant@canonical.com,canonical.com,Canonical,0.5558217167854309,0,4,1,1,3,0.0333333333333333,0.0,Incorrect
+galkindmitrii@gmail.com,gmail.com,Personal (Gmail等),0.5877122282981873,0,6,2,0,3,0.0333333333333333,0.0,Incorrect
+caiquemellosbo@gmail.com,gmail.com,Personal (Gmail等),0.4987889230251312,1,7,5,5,3,0.0333333333333333,0.0,Incorrect
+anlin.kong@gmail.com,gmail.com,Personal (Gmail等),0.784876823425293,0,11,13,9,2,0.1666666666666666,0.8,Incorrect
+oschwart@redhat.com,redhat.com,Red Hat,0.4764439165592193,1,3,11,0,2,0.0666666666666666,0.0,Incorrect
+felix.huettner@stackit.cloud,stackit.cloud,Other Company,0.4923951923847198,1,7,1,6,2,0.0333333333333333,0.0,Incorrect
+cgoncalves@redhat.com,redhat.com,Red Hat,0.6327666640281677,0,29,16,7,2,0.4,0.0,Incorrect
+vhariria@redhat.com,redhat.com,Red Hat,0.48329758644104,1,5,3,2,2,0.0333333333333333,0.0,Incorrect
+maurice.escher@sap.com,sap.com,Other Company,0.4704340100288391,1,8,6,0,2,0.0333333333333333,0.0,Incorrect
+spyridon.trigazis@cern.ch,cern.ch,CERN,0.7604038715362549,0,22,14,8,2,0.2666666666666666,0.625,Incorrect
+amy@demarco.com,demarco.com,Other Company,0.4076956808567047,1,1,2,1,1,0.0,0.5,Incorrect
+ge.cong@zte.com.cn,zte.com.cn,Other Company,0.3672003149986267,1,4,9,0,1,0.1333333333333333,0.0,Incorrect
+suzhengwei@inspur.com,inspur.com,Other Company,0.3974496126174927,1,1,12,0,1,0.0,0.5,Incorrect
+chuan137@gmail.com,gmail.com,Personal (Gmail等),0.3361283540725708,1,1,3,0,1,0.0,0.5,Incorrect
+matthew.heler@hotmail.com,hotmail.com,Personal (Gmail等),0.3172743916511535,1,1,1,0,1,0.0333333333333333,0.0,Incorrect
+ianyrchoi@gmail.com,gmail.com,Personal (Gmail等),0.3877316415309906,1,1,1,1,1,0.0,0.5,Incorrect
+sven_oss@posteo.de,posteo.de,Other Company,0.4919266104698181,1,2,114,1,1,0.0,0.5,Incorrect
+wangxiyuan1007@gmail.com,gmail.com,Personal (Gmail等),0.3941918015480041,1,1,1,0,1,0.0,0.5,Incorrect
+ppiyakk2@printf.kr,printf.kr,Other Company,0.3606433868408203,1,2,2,1,1,0.0333333333333333,0.0,Incorrect
+julien.cosmao@ovhcloud.com,ovhcloud.com,Other Company,0.2971504330635071,1,1,3,0,1,0.0333333333333333,0.0,Incorrect
+tony@bakeyournoodle.com,bakeyournoodle.com,Other Company,0.3798225820064544,1,2,11,0,1,0.0666666666666666,0.0,Incorrect
+quentin.grolleau@corp.ovh.com,corp.ovh.com,Other Company,0.4195804297924042,1,10,5,2,1,0.1666666666666666,0.0,Incorrect
+406454833@qq.com,qq.com,Other Company,0.3251669108867645,1,1,2,0,1,0.0,0.5,Incorrect
+adeiter@infinidat.com,infinidat.com,Other Company,0.3323951959609985,1,1,14,0,1,0.0,0.5,Incorrect
+aaronzhu1121@gmail.com,gmail.com,Personal (Gmail等),0.4333667755126953,1,12,21,0,1,0.3,0.0,Incorrect
+eyalb1@gmail.com,gmail.com,Personal (Gmail等),0.7053882479667664,0,5,13,5,1,0.0666666666666666,1.0,Incorrect
+lkuchlan@redhat.com,redhat.com,Red Hat,0.282133400440216,1,1,1,0,1,0.0,0.5,Incorrect
+twilson@redhat.com,redhat.com,Red Hat,0.4346544742584228,1,13,9,1,1,0.1666666666666666,0.0,Incorrect
+jacob_wang1@dell.com,dell.com,Dell,0.3162645697593689,1,5,3,0,1,0.0666666666666666,0.0,Incorrect
+jeanpierre.roquesalane@dell.com,dell.com,Dell,0.3450149297714233,1,7,4,0,1,0.0666666666666666,0.0,Incorrect
+knomuracinder@gmail.com,gmail.com,Personal (Gmail等),0.4038085341453552,1,40,77,26,1,0.1333333333333333,0.0,Incorrect
+nec-v-cinder-istorage@istorage.jp.nec.com,istorage.jp.nec.com,Other Company,0.3706777393817901,1,20,82,0,1,0.2,0.0,Incorrect
+raghavendra.tilay@capgemini.com,capgemini.com,Other Company,0.3729403614997864,1,20,9,0,1,0.2333333333333333,0.0,Incorrect
+foundjem@ieee.org,ieee.org,Other Company,0.6407250165939331,0,4,1,4,1,0.0333333333333333,1.0,Incorrect
+will@stackhpc.com,stackhpc.com,StackHPC,0.5838175415992737,0,6,1,0,1,0.0,0.5,Incorrect
+atsushi.kawai.bu@hitachi.com,hitachi.com,Other Company,0.2919818162918091,1,1,4,0,1,0.0333333333333333,0.0,Incorrect
