@@ -1,0 +1,39 @@
+reviewer_email,email_domain,domain_type,predicted_prob,true_label,history_request_count,eval_request_count,total_reviews,project_count,recent_activity_frequency,recent_acceptance_rate,prediction_result
+radek@piliszek.it,piliszek.it,Other Company,0.9154638051986694,0,284,1,235,8,2.1666666666666665,0.9230769230769232,Incorrect
+nurmatov.mamatisa@huawei.com,huawei.com,Huawei,0.863570511341095,0,35,1,21,4,0.5666666666666667,0.6470588235294118,Incorrect
+corey.bryant@canonical.com,canonical.com,Canonical,0.5558217167854309,0,4,1,1,3,0.0333333333333333,0.0,Incorrect
+galkindmitrii@gmail.com,gmail.com,Personal (Gmail等),0.5877122282981873,0,6,2,0,3,0.0333333333333333,0.0,Incorrect
+caiquemellosbo@gmail.com,gmail.com,Personal (Gmail等),0.4987889230251312,1,7,5,5,3,0.0333333333333333,0.0,Incorrect
+anlin.kong@gmail.com,gmail.com,Personal (Gmail等),0.784876823425293,0,11,13,9,2,0.1666666666666666,0.8,Incorrect
+oschwart@redhat.com,redhat.com,Red Hat,0.4764439165592193,1,3,11,0,2,0.0666666666666666,0.0,Incorrect
+felix.huettner@stackit.cloud,stackit.cloud,Other Company,0.4923951923847198,1,7,1,6,2,0.0333333333333333,0.0,Incorrect
+cgoncalves@redhat.com,redhat.com,Red Hat,0.6327666640281677,0,29,16,7,2,0.4,0.0,Incorrect
+vhariria@redhat.com,redhat.com,Red Hat,0.48329758644104,1,5,3,2,2,0.0333333333333333,0.0,Incorrect
+maurice.escher@sap.com,sap.com,Other Company,0.4704340100288391,1,8,6,0,2,0.0333333333333333,0.0,Incorrect
+spyridon.trigazis@cern.ch,cern.ch,CERN,0.7604038715362549,0,22,14,8,2,0.2666666666666666,0.625,Incorrect
+amy@demarco.com,demarco.com,Other Company,0.4076956808567047,1,1,2,1,1,0.0,0.5,Incorrect
+ge.cong@zte.com.cn,zte.com.cn,Other Company,0.3672003149986267,1,4,9,0,1,0.1333333333333333,0.0,Incorrect
+suzhengwei@inspur.com,inspur.com,Other Company,0.3974496126174927,1,1,12,0,1,0.0,0.5,Incorrect
+chuan137@gmail.com,gmail.com,Personal (Gmail等),0.3361283540725708,1,1,3,0,1,0.0,0.5,Incorrect
+matthew.heler@hotmail.com,hotmail.com,Personal (Gmail等),0.3172743916511535,1,1,1,0,1,0.0333333333333333,0.0,Incorrect
+ianyrchoi@gmail.com,gmail.com,Personal (Gmail等),0.3877316415309906,1,1,1,1,1,0.0,0.5,Incorrect
+sven_oss@posteo.de,posteo.de,Other Company,0.4919266104698181,1,2,114,1,1,0.0,0.5,Incorrect
+wangxiyuan1007@gmail.com,gmail.com,Personal (Gmail等),0.3941918015480041,1,1,1,0,1,0.0,0.5,Incorrect
+ppiyakk2@printf.kr,printf.kr,Other Company,0.3606433868408203,1,2,2,1,1,0.0333333333333333,0.0,Incorrect
+julien.cosmao@ovhcloud.com,ovhcloud.com,Other Company,0.2971504330635071,1,1,3,0,1,0.0333333333333333,0.0,Incorrect
+tony@bakeyournoodle.com,bakeyournoodle.com,Other Company,0.3798225820064544,1,2,11,0,1,0.0666666666666666,0.0,Incorrect
+quentin.grolleau@corp.ovh.com,corp.ovh.com,Other Company,0.4195804297924042,1,10,5,2,1,0.1666666666666666,0.0,Incorrect
+406454833@qq.com,qq.com,Other Company,0.3251669108867645,1,1,2,0,1,0.0,0.5,Incorrect
+adeiter@infinidat.com,infinidat.com,Other Company,0.3323951959609985,1,1,14,0,1,0.0,0.5,Incorrect
+aaronzhu1121@gmail.com,gmail.com,Personal (Gmail等),0.4333667755126953,1,12,21,0,1,0.3,0.0,Incorrect
+eyalb1@gmail.com,gmail.com,Personal (Gmail等),0.7053882479667664,0,5,13,5,1,0.0666666666666666,1.0,Incorrect
+lkuchlan@redhat.com,redhat.com,Red Hat,0.282133400440216,1,1,1,0,1,0.0,0.5,Incorrect
+twilson@redhat.com,redhat.com,Red Hat,0.4346544742584228,1,13,9,1,1,0.1666666666666666,0.0,Incorrect
+jacob_wang1@dell.com,dell.com,Dell,0.3162645697593689,1,5,3,0,1,0.0666666666666666,0.0,Incorrect
+jeanpierre.roquesalane@dell.com,dell.com,Dell,0.3450149297714233,1,7,4,0,1,0.0666666666666666,0.0,Incorrect
+knomuracinder@gmail.com,gmail.com,Personal (Gmail等),0.4038085341453552,1,40,77,26,1,0.1333333333333333,0.0,Incorrect
+nec-v-cinder-istorage@istorage.jp.nec.com,istorage.jp.nec.com,Other Company,0.3706777393817901,1,20,82,0,1,0.2,0.0,Incorrect
+raghavendra.tilay@capgemini.com,capgemini.com,Other Company,0.3729403614997864,1,20,9,0,1,0.2333333333333333,0.0,Incorrect
+foundjem@ieee.org,ieee.org,Other Company,0.6407250165939331,0,4,1,4,1,0.0333333333333333,1.0,Incorrect
+will@stackhpc.com,stackhpc.com,StackHPC,0.5838175415992737,0,6,1,0,1,0.0,0.5,Incorrect
+atsushi.kawai.bu@hitachi.com,hitachi.com,Other Company,0.2919818162918091,1,1,4,0,1,0.0333333333333333,0.0,Incorrect

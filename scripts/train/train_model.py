@@ -96,6 +96,7 @@ from sklearn.metrics import (
     precision_score,
     recall_score,
     roc_auc_score,
+    roc_curve,
 )
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -137,12 +138,13 @@ def extract_review_acceptance_trajectories(
     train_end: pd.Timestamp,
     future_window_start_months: int = 0,
     future_window_end_months: int = 3,
-    min_history_requests: int = 3,
+    min_history_requests: int = 0,
     reviewer_col: str = 'reviewer_email',
     date_col: str = 'request_time',
     label_col: str = 'label',
     project: str = None,
-    extended_label_window_months: int = 12
+    extended_label_window_months: int = 12,
+    negative_oversample_factor: int = 1
 ) -> List[Dict[str, Any]]:
     """
     レビュー承諾予測用の軌跡を抽出（データリークなし版）
@@ -338,9 +340,14 @@ def extract_review_acceptance_trajectories(
                     'timestamp': row[date_col],  # タイムスタンプは常にdate_col
                     'action_type': 'review',
                     'project': row.get('project', 'unknown'),
+                    'project_id': row.get('project', 'unknown'),  # Multi-project: project_id
                     'request_time': row.get('request_time', row[date_col]),
                     'response_time': row.get('first_response_time'),  # response_time計算用
                     'accepted': row.get(label_col, 0) == 1,
+                    'is_cross_project': row.get('is_cross_project', False),  # Multi-project: cross-project flag
+                    'files_changed': row.get('change_files_count', 0),
+                    'lines_added': row.get('change_insertions', 0),
+                    'lines_deleted': row.get('change_deletions', 0),
                 }
                 monthly_activities.append(activity)
             monthly_activity_histories.append(monthly_activities)
@@ -352,14 +359,20 @@ def extract_review_acceptance_trajectories(
                 'timestamp': row[date_col],  # タイムスタンプは常にdate_col
                 'action_type': 'review',
                 'project': row.get('project', 'unknown'),
+                'project_id': row.get('project', 'unknown'),  # Multi-project: project_id
                 'request_time': row.get('request_time', row[date_col]),
                 'response_time': row.get('first_response_time'),  # response_time計算用
                 'accepted': row.get(label_col, 0) == 1,
+                'is_cross_project': row.get('is_cross_project', False),  # Multi-project: cross-project flag
+                'files_changed': row.get('change_files_count', 0),
+                'lines_added': row.get('change_insertions', 0),
+                'lines_deleted': row.get('change_deletions', 0),
             }
             activity_history.append(activity)
         
         # 開発者情報
         developer_info = {
+            'developer_id': reviewer,  # Multi-project: use developer_id
             'developer_email': reviewer,
             'first_seen': reviewer_history[date_col].min(),
             'changes_authored': 0,
@@ -392,6 +405,19 @@ def extract_review_acceptance_trajectories(
         }
         
         trajectories.append(trajectory)
+
+    # 負例が少ない場合の簡易オーバーサンプリング（訓練専用）
+    if negative_oversample_factor > 1:
+        negative_samples = [t for t in trajectories if not t['future_acceptance']]
+        if negative_samples:
+            import copy
+            import random
+
+            extra = [copy.deepcopy(random.choice(negative_samples))
+                     for _ in range(len(negative_samples) * (negative_oversample_factor - 1))]
+            trajectories.extend(extra)
+            random.shuffle(trajectories)
+            logger.info(f"負例をオーバーサンプリング: 元{len(negative_samples)}件 -> {len(negative_samples) * negative_oversample_factor}件")
     
     logger.info("=" * 80)
     logger.info(f"軌跡抽出完了: {len(trajectories)}サンプル（レビュアー）")
@@ -420,7 +446,7 @@ def extract_evaluation_trajectories(
     history_window_months: int = 12,
     future_window_start_months: int = 0,
     future_window_end_months: int = 3,
-    min_history_requests: int = 3,
+    min_history_requests: int = 0,
     reviewer_col: str = 'reviewer_email',
     date_col: str = 'request_time',
     label_col: str = 'label',
@@ -562,9 +588,11 @@ def extract_evaluation_trajectories(
                 'timestamp': row[date_col],  # タイムスタンプは常にdate_col
                 'action_type': 'review',
                 'project': row.get('project', 'unknown'),
+                'project_id': row.get('project', 'unknown'),  # Multi-project: project_id
                 'request_time': row.get('request_time', row[date_col]),
                 'response_time': row.get('first_response_time'),  # response_time計算用
                 'accepted': row.get(label_col, 0) == 1,
+                'is_cross_project': row.get('is_cross_project', False),  # Multi-project: cross-project flag
                 # IRL特徴量計算用のデータを追加
                 'files_changed': row.get('change_files_count', 0),  # 強度計算用
                 'change_files_count': row.get('change_files_count', 0),  # 強度計算用
@@ -577,6 +605,7 @@ def extract_evaluation_trajectories(
         
         # 開発者情報
         developer_info = {
+            'developer_id': reviewer,  # Multi-project: use developer_id
             'developer_email': reviewer,
             'first_seen': reviewer_history[date_col].min(),
             'changes_authored': 0,
@@ -623,28 +652,65 @@ def extract_evaluation_trajectories(
     return trajectories
 
 
-def find_optimal_threshold(y_true: np.ndarray, y_pred: np.ndarray) -> Dict[str, float]:
+def find_optimal_threshold(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    metric: str = "f1",
+    recall_floor: float = 0.8
+) -> Dict[str, float]:
     """
     最適な閾値を探索
-    
+
     Args:
         y_true: 真のラベル
         y_pred: 予測確率
-        
+        metric: 閾値選択指標
+            - "f1": F1最大化（従来動作）
+            - "precision_at_recall_floor": recallがrecall_floor以上の点でPrecision最大
+            - "youden": Youden J (TPR - FPR) 最大化
+        recall_floor: metricがprecision_at_recall_floorの場合の下限リコール
+
     Returns:
-        最適閾値と各メトリクス
+        閾値と主要指標
     """
-    precision, recall, thresholds = precision_recall_curve(y_true, y_pred)
+    metric = metric.lower()
+
+    # Precision-Recall based candidates
+    precision, recall, pr_thresholds = precision_recall_curve(y_true, y_pred)
     f1_scores = 2 * (precision * recall) / (precision + recall + 1e-10)
-    
-    best_idx = np.argmax(f1_scores)
-    best_threshold = thresholds[best_idx] if best_idx < len(thresholds) else 0.5
-    
+
+    if metric == "f1":
+        best_idx = np.argmax(f1_scores)
+    elif metric == "precision_at_recall_floor":
+        valid_idx = np.where(recall >= recall_floor)[0]
+        if len(valid_idx) == 0:
+            best_idx = np.argmax(f1_scores)
+        else:
+            best_idx = valid_idx[np.argmax(precision[valid_idx])]
+    elif metric == "youden":
+        fpr, tpr, roc_thresholds = roc_curve(y_true, y_pred)
+        j = tpr - fpr
+        j_best = np.argmax(j)
+        best_threshold = roc_thresholds[j_best] if j_best < len(roc_thresholds) else 0.5
+        return {
+            'threshold': float(best_threshold),
+            'precision': float(precision[np.argmax(f1_scores)]),
+            'recall': float(recall[np.argmax(f1_scores)]),
+            'f1': float(f1_scores[np.argmax(f1_scores)]),
+            'metric': 'youden'
+        }
+    else:
+        # フォールバックは従来のF1最大化
+        best_idx = np.argmax(f1_scores)
+
+    best_threshold = pr_thresholds[best_idx] if best_idx < len(pr_thresholds) else 0.5
+
     return {
         'threshold': float(best_threshold),
         'precision': float(precision[best_idx]),
         'recall': float(recall[best_idx]),
-        'f1': float(f1_scores[best_idx])
+        'f1': float(f1_scores[best_idx]),
+        'metric': metric
     }
 
 
@@ -703,8 +769,14 @@ def main():
     parser.add_argument(
         "--min-history-events",
         type=int,
-        default=3,
+        default=0,
         help="最小履歴イベント数"
+    )
+    parser.add_argument(
+        "--negative-oversample-factor",
+        type=int,
+        default=1,
+        help="負例オーバーサンプリング係数（>1で訓練時に負例を複製）"
     )
     parser.add_argument(
         "--output",
@@ -752,7 +824,8 @@ def main():
             future_window_start_months=args.future_window_start,
             future_window_end_months=args.future_window_end,
             min_history_requests=args.min_history_events,
-            project=args.project
+            project=args.project,
+            negative_oversample_factor=args.negative_oversample_factor
         )
         
         if not train_trajectories:
@@ -765,8 +838,8 @@ def main():
         # - dropout=0.2: 適度な正則化（0.0だと過学習、0.1だと不十分）
         # - learning_rate=0.0001: やや高めで局所最適を回避
         config = {
-            'state_dim': 10,  # 最近の受諾率+レビュー負荷を追加
-            'action_dim': 4,
+            'state_dim': 14,  # マルチプロジェクト対応: 10→14（プロジェクト特徴量4つ追加）
+            'action_dim': 5,  # マルチプロジェクト対応: 4→5（is_cross_project追加）
             'hidden_dim': 128,  # 安定した表現力
             'sequence': True,
             'seq_len': 0,
@@ -845,8 +918,8 @@ def main():
         # 既存モデルを読み込み
         logger.info(f"既存モデルを読み込み: {args.model}")
         config = {
-            'state_dim': 10,  # 最近の受諾率+レビュー負荷を追加
-            'action_dim': 4,
+            'state_dim': 14,  # マルチプロジェクト対応: 10→14
+            'action_dim': 5,  # マルチプロジェクト対応: 4→5
             'hidden_dim': 128,  # 訓練時と同じ設定
             'sequence': True,
             'seq_len': 0,

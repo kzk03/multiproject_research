@@ -22,12 +22,11 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class DeveloperState:
-    """開発者の状態表現（10次元版）"""
+    """開発者の状態表現（14次元版 - マルチプロジェクト対応）"""
     developer_id: str
     experience_days: int
     total_changes: int
     total_reviews: int
-    # project_count: int  # マルチプロジェクト対応時に有効化（現状はプロジェクトフィルタにより常に1）
     recent_activity_frequency: float
     avg_activity_gap: float
     activity_trend: str
@@ -35,17 +34,25 @@ class DeveloperState:
     code_quality_score: float
     recent_acceptance_rate: float  # 直近30日のレビュー受諾率
     review_load: float  # レビュー負荷（直近30日 / 平均）
+    # マルチプロジェクト対応: 以下4つの特徴量を追加
+    project_count: int  # 参加プロジェクト数
+    project_activity_distribution: float  # プロジェクト間の活動分散度（0-1）
+    main_project_contribution_ratio: float  # メインプロジェクトへの貢献率（0-1）
+    cross_project_collaboration_score: float  # プロジェクト横断協力スコア（0-1）
     timestamp: datetime
 
 
 @dataclass
 class DeveloperAction:
-    """開発者の行動表現（4次元版 - quality除外）"""
+    """開発者の行動表現（7次元版 - マルチプロジェクト対応）"""
     action_type: str  # 'commit', 'review', 'merge', 'documentation', etc.
     intensity: float  # 行動の強度（変更ファイル数ベース）
     collaboration: float  # 協力度
     response_time: float   # レスポンス時間（日数）
-    review_size: float  # レビュー規模（変更行数）✨ NEW
+    review_size: float  # レビュー規模（変更行数）
+    # マルチプロジェクト対応: 以下2つの特徴量を追加
+    project_id: str  # 行動が発生したプロジェクトID
+    is_cross_project: bool  # プロジェクト横断的な行動かどうか
     timestamp: datetime
 
 
@@ -257,10 +264,14 @@ class RetentionIRLSystem:
     
     def __init__(self, config: Dict[str, Any]):
         self.config = config
-        
-        # ネットワーク設定（10次元状態、5次元行動）
-        self.state_dim = config.get('state_dim', 10)
-        self.action_dim = config.get('action_dim', 5)
+
+        # ========================================
+        # ネットワーク設定（マルチプロジェクト対応）
+        # - 状態次元: 10 → 14次元（プロジェクト特徴量4つ追加）
+        # - 行動次元: 4 → 5次元（プロジェクト特徴量1つ追加）
+        # ========================================
+        self.state_dim = config.get('state_dim', 14)  # 10 → 14
+        self.action_dim = config.get('action_dim', 5)  # 4 → 5
         self.hidden_dim = config.get('hidden_dim', 128)
         self.dropout = config.get('dropout', 0.1)
         # 予測確率の温度スケーリング（1.0で無効、<1でシャープ、>1でフラット）
@@ -414,12 +425,12 @@ class RetentionIRLSystem:
         # 平均を返す（バッチ全体の損失）
         return focal_loss.mean()
     
-    def extract_developer_state(self, 
-                               developer: Dict[str, Any], 
+    def extract_developer_state(self,
+                               developer: Dict[str, Any],
                                activity_history: List[Dict[str, Any]],
                                context_date: datetime) -> DeveloperState:
-        """開発者の状態を抽出"""
-        
+        """開発者の状態を抽出（マルチプロジェクト対応版）"""
+
         # 経験日数
         first_seen = developer.get('first_seen', context_date.isoformat())
         if isinstance(first_seen, str):
@@ -427,42 +438,63 @@ class RetentionIRLSystem:
         else:
             first_date = first_seen
         experience_days = (context_date - first_date).days
-        
+
         # 活動統計
         total_changes = developer.get('changes_authored', 0)
         total_reviews = developer.get('changes_reviewed', 0)
-        # projects = developer.get('projects', [])  # マルチプロジェクト対応時に有効化
-        # project_count = len(projects) if isinstance(projects, list) else 0
-        
+
+        # ========================================
+        # マルチプロジェクト対応: プロジェクト関連の特徴量を計算
+        # ========================================
+
+        # プロジェクト数を取得
+        projects = developer.get('projects', [])
+        project_count = len(projects) if isinstance(projects, list) else 0
+
+        # プロジェクトごとに活動をグループ化
+        project_activities = self._group_by_project(activity_history)
+
+        # プロジェクト間の活動分散度（0-1）
+        project_activity_distribution = self._calculate_activity_distribution(project_activities)
+
+        # メインプロジェクト（最も活動が多い）への貢献率（0-1）
+        main_project_contribution_ratio = self._calculate_main_project_ratio(project_activities)
+
+        # プロジェクト横断協力スコア（0-1）
+        cross_project_collaboration_score = self._calculate_cross_project_collaboration(activity_history)
+
+        # ========================================
+        # 既存の特徴量計算
+        # ========================================
+
         # 最近の活動パターン
         recent_activities = self._get_recent_activities(activity_history, context_date, days=30)
         recent_activity_frequency = len(recent_activities) / 30.0
-        
+
         # 活動間隔
         activity_gaps = self._calculate_activity_gaps(activity_history)
         avg_activity_gap = np.mean(activity_gaps) if activity_gaps else 30.0
-        
+
         # 活動トレンド
         activity_trend = self._analyze_activity_trend(activity_history, context_date)
-        
+
         # 協力スコア（簡易版）
         collaboration_score = self._calculate_collaboration_score(activity_history)
-        
+
         # コード品質スコア（簡易版）
         code_quality_score = self._calculate_code_quality_score(activity_history)
-        
+
         # 最近のレビュー受諾率（直近30日）
         recent_acceptance_rate = self._calculate_recent_acceptance_rate(activity_history, context_date, days=30)
-        
+
         # レビュー負荷（直近30日 / 平均）
         review_load = self._calculate_review_load(activity_history, context_date, days=30)
-        
+
         return DeveloperState(
             developer_id=developer.get('developer_id', 'unknown'),
             experience_days=experience_days,
             total_changes=total_changes,
             total_reviews=total_reviews,
-            # project_count=project_count,  # マルチプロジェクト対応時に有効化
             recent_activity_frequency=recent_activity_frequency,
             avg_activity_gap=avg_activity_gap,
             activity_trend=activity_trend,
@@ -470,58 +502,76 @@ class RetentionIRLSystem:
             code_quality_score=code_quality_score,
             recent_acceptance_rate=recent_acceptance_rate,
             review_load=review_load,
+            # マルチプロジェクト対応: 新しい特徴量を追加
+            project_count=project_count,
+            project_activity_distribution=project_activity_distribution,
+            main_project_contribution_ratio=main_project_contribution_ratio,
+            cross_project_collaboration_score=cross_project_collaboration_score,
             timestamp=context_date
         )
     
-    def extract_developer_actions(self, 
+    def extract_developer_actions(self,
                                 activity_history: List[Dict[str, Any]],
                                 context_date: datetime) -> List[DeveloperAction]:
-        """開発者の行動を抽出"""
-        
+        """開発者の行動を抽出（マルチプロジェクト対応版）"""
+
         actions = []
-        
+
         for activity in activity_history:
             try:
                 # 行動タイプ
                 action_type = activity.get('type', 'unknown')
-                
+
                 # 行動の強度（変更ファイル数ベース）
                 intensity = self._calculate_action_intensity(activity)
-                
+
                 # 協力度
                 collaboration = self._calculate_action_collaboration(activity)
-                
+
                 # レスポンス時間（レビューリクエストから応答までの日数）
                 response_time = self._calculate_response_time(activity)
-                
+
                 # レビュー規模（変更行数ベース）
                 review_size = self._calculate_review_size(activity)
-                
+
+                # ========================================
+                # マルチプロジェクト対応: プロジェクト関連の情報を抽出
+                # ========================================
+
+                # プロジェクトID
+                project_id = activity.get('project_id', 'unknown')
+
+                # プロジェクト横断的な行動かどうか
+                is_cross_project = activity.get('is_cross_project', False)
+
                 # タイムスタンプ
                 timestamp_str = activity.get('timestamp', context_date.isoformat())
                 if isinstance(timestamp_str, str):
                     timestamp = datetime.fromisoformat(timestamp_str.replace('Z', '+00:00'))
                 else:
                     timestamp = timestamp_str
-                
+
                 actions.append(DeveloperAction(
                     action_type=action_type,
                     intensity=intensity,
                     collaboration=collaboration,
                     response_time=response_time,
-                    review_size=review_size,  # quality → review_sizeに変更
+                    review_size=review_size,
+                    # マルチプロジェクト対応: 新しい特徴量を追加
+                    project_id=project_id,
+                    is_cross_project=is_cross_project,
                     timestamp=timestamp
                 ))
-                
+
             except Exception as e:
                 logger.warning(f"行動抽出エラー: {e}")
                 continue
-        
+
         return actions
     
     def state_to_tensor(self, state: DeveloperState) -> torch.Tensor:
-        """状態をテンソルに変換（10次元版 - 全特徴量を0-1に正規化）"""
-        
+        """状態をテンソルに変換（14次元版 - マルチプロジェクト対応）"""
+
         # 活動トレンドのエンコーディング
         trend_encoding = {
             'increasing': 1.0,
@@ -529,40 +579,48 @@ class RetentionIRLSystem:
             'decreasing': 0.0,
             'unknown': 0.25
         }
-        
+
         # 全特徴量を0-1の範囲に正規化（上限でクリップ）
         features = [
+            # 既存の特徴量（10次元）
             min(state.experience_days / 730.0, 1.0),  # 2年でキャップ
             min(state.total_changes / 500.0, 1.0),    # 500件でキャップ
             min(state.total_reviews / 500.0, 1.0),    # 500件でキャップ
-            # min(state.project_count / 5.0, 1.0),    # マルチプロジェクト対応時に有効化
             min(state.recent_activity_frequency, 1.0), # 既に0-1
             min(state.avg_activity_gap / 60.0, 1.0),  # 60日でキャップ
             trend_encoding.get(state.activity_trend, 0.25), # 既に0-1
             min(state.collaboration_score, 1.0),      # 既に0-1
             min(state.code_quality_score, 1.0),       # 既に0-1
             min(state.recent_acceptance_rate, 1.0),   # 既に0-1（直近30日の受諾率）
-            min(state.review_load, 1.0)               # 既に0-1（負荷比率、正規化済み）
+            min(state.review_load, 1.0),              # 既に0-1（負荷比率、正規化済み）
+            # マルチプロジェクト対応: 新しい特徴量（4次元）
+            min(state.project_count / 5.0, 1.0),      # 5プロジェクトでキャップ
+            min(state.project_activity_distribution, 1.0),  # 既に0-1（活動分散度）
+            min(state.main_project_contribution_ratio, 1.0),  # 既に0-1（メイン貢献率）
+            min(state.cross_project_collaboration_score, 1.0)  # 既に0-1（横断協力スコア）
         ]
-        
+
         return torch.tensor(features, dtype=torch.float32, device=self.device)
     
     def action_to_tensor(self, action: DeveloperAction) -> torch.Tensor:
-        """行動をテンソルに変換（4次元版 - quality除外、review_size追加）"""
-        
+        """行動をテンソルに変換（5次元版 - マルチプロジェクト対応）"""
+
         # レスポンス時間を「素早さ」に変換（0-1の範囲に正規化）
         # response_time が短い（素早い）ほど値が大きくなる
         # 3日でおよそ0.5、即日で1.0に近い値
         response_speed = 1.0 / (1.0 + action.response_time / 3.0)
-        
+
         # 全特徴量を0-1の範囲に正規化
         features = [
+            # 既存の特徴量（4次元）
             min(action.intensity, 1.0),        # 強度（変更ファイル数、0-1）
             min(action.collaboration, 1.0),    # 協力度（0-1）
-            min(response_speed, 1.0),           # レスポンス速度（素早いほど大きい、0-1）
-            min(action.review_size, 1.0)        # レビュー規模（変更行数、0-1）✨ NEW
+            min(response_speed, 1.0),          # レスポンス速度（素早いほど大きい、0-1）
+            min(action.review_size, 1.0),      # レビュー規模（変更行数、0-1）
+            # マルチプロジェクト対応: 新しい特徴量（1次元）
+            1.0 if action.is_cross_project else 0.0,  # クロスプロジェクト行動フラグ（0 or 1）
         ]
-        
+
         return torch.tensor(features, dtype=torch.float32, device=self.device)
     
     def predict_continuation_probability(self,
@@ -924,6 +982,160 @@ class RetentionIRLSystem:
         # デフォルト値（データがない場合）: 未応答を表す最大値を使用
         return 14.0  # 最大レスポンス時間（未応答/非アクティブ）
     
+    def _group_by_project(self, activity_history: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, Any]]]:
+        """
+        活動履歴をプロジェクトごとにグループ化
+
+        Args:
+            activity_history: 活動履歴のリスト
+
+        Returns:
+            プロジェクトIDをキーとした活動履歴の辞書
+        """
+        project_activities: Dict[str, List[Dict[str, Any]]] = {}
+
+        for activity in activity_history:
+            project_id = activity.get('project_id', 'unknown')
+            if project_id not in project_activities:
+                project_activities[project_id] = []
+            project_activities[project_id].append(activity)
+
+        return project_activities
+
+    def _calculate_activity_distribution(self, project_activities: Dict[str, List[Dict[str, Any]]]) -> float:
+        """
+        プロジェクト間の活動分散度を計算（0-1の範囲）
+
+        活動が1つのプロジェクトに集中している場合は0に近く、
+        複数のプロジェクトに均等に分散している場合は1に近い値を返す。
+
+        Args:
+            project_activities: プロジェクトごとの活動履歴
+
+        Returns:
+            分散度（0.0-1.0）
+        """
+        if len(project_activities) <= 1:
+            return 0.0  # プロジェクトが1つ以下なら分散なし
+
+        # 各プロジェクトの活動数を取得
+        counts = [len(activities) for activities in project_activities.values()]
+        total = sum(counts)
+
+        if total == 0:
+            return 0.0
+
+        # 標準偏差を使った分散度（正規化版）
+        mean_count = np.mean(counts)
+        std_count = np.std(counts)
+
+        # 標準偏差を平均で割って正規化（変動係数）
+        # 0に近い = 均等分散、1に近い = 偏った分散
+        coefficient_of_variation = std_count / (mean_count + 1e-6)
+
+        # 0-1の範囲に正規化（CV=1.0を最大分散とする）
+        distribution_score = min(coefficient_of_variation, 1.0)
+
+        return distribution_score
+
+    def _calculate_main_project_ratio(self, project_activities: Dict[str, List[Dict[str, Any]]]) -> float:
+        """
+        メインプロジェクト（最も活動が多い）への貢献率を計算
+
+        Args:
+            project_activities: プロジェクトごとの活動履歴
+
+        Returns:
+            メインプロジェクトへの貢献率（0.0-1.0）
+        """
+        if not project_activities:
+            return 0.0
+
+        # 各プロジェクトの活動数を取得
+        counts = [len(activities) for activities in project_activities.values()]
+        total = sum(counts)
+
+        if total == 0:
+            return 0.0
+
+        # 最も活動が多いプロジェクトの活動数
+        max_count = max(counts)
+
+        # 全体に対する割合
+        return max_count / total
+
+    def _calculate_cross_project_collaboration(self, activity_history: List[Dict[str, Any]]) -> float:
+        """
+        プロジェクト横断的な協力スコアを計算
+
+        異なるプロジェクトのメンバーとのレビューや協力活動を検出し、
+        プロジェクトを跨いだ協力の度合いを0-1で返す。
+
+        Args:
+            activity_history: 活動履歴のリスト
+
+        Returns:
+            クロスプロジェクト協力スコア（0.0-1.0）
+        """
+        if not activity_history:
+            return 0.0
+
+        # プロジェクト横断的な活動をカウント
+        cross_project_count = 0
+
+        for activity in activity_history:
+            # is_cross_projectフラグがある場合はそれを使用
+            if activity.get('is_cross_project', False):
+                cross_project_count += 1
+            # または、複数のproject_idsが関連している場合
+            elif 'related_projects' in activity:
+                related = activity.get('related_projects', [])
+                if isinstance(related, list) and len(related) > 1:
+                    cross_project_count += 1
+
+        # 全活動に対する割合
+        return cross_project_count / len(activity_history)
+
+    def _calculate_project_switching_frequency(self, activity_history: List[Dict[str, Any]]) -> float:
+        """
+        プロジェクト切り替え頻度を計算
+
+        時系列順に活動を並べたとき、プロジェクトが切り替わる回数をカウント。
+        頻繁に切り替わる場合は1に近く、ずっと同じプロジェクトなら0に近い。
+
+        Args:
+            activity_history: 活動履歴のリスト（タイムスタンプでソート済み想定）
+
+        Returns:
+            切り替え頻度（0.0-1.0）
+        """
+        if len(activity_history) <= 1:
+            return 0.0
+
+        # タイムスタンプでソート（念のため）
+        sorted_activities = sorted(
+            activity_history,
+            key=lambda x: x.get('timestamp', datetime.min)
+        )
+
+        # プロジェクト切り替え回数をカウント
+        switch_count = 0
+        prev_project = sorted_activities[0].get('project_id', 'unknown')
+
+        for activity in sorted_activities[1:]:
+            current_project = activity.get('project_id', 'unknown')
+            if current_project != prev_project:
+                switch_count += 1
+            prev_project = current_project
+
+        # 最大切り替え回数で正規化（全活動で毎回切り替わる場合）
+        max_switches = len(sorted_activities) - 1
+
+        if max_switches == 0:
+            return 0.0
+
+        return switch_count / max_switches
+
     def _generate_irl_reasoning(self, 
                               state: DeveloperState, 
                               action: DeveloperAction, 
@@ -1279,17 +1491,19 @@ class RetentionIRLSystem:
 
 
 if __name__ == "__main__":
-    # テスト用の設定
+    # テスト用の設定（マルチプロジェクト対応版）
     config = {
-        'state_dim': 10,
-        'action_dim': 5,
+        'state_dim': 14,  # 10 → 14（プロジェクト特徴量4つ追加）
+        'action_dim': 5,  # 4 → 5（プロジェクト特徴量1つ追加）
         'hidden_dim': 128,
         'learning_rate': 0.001
     }
-    
+
     # IRLシステムを初期化
     irl_system = RetentionIRLSystem(config)
-    
-    print("継続予測IRLシステムのテスト完了")
+
+    print("継続予測IRLシステムのテスト完了（マルチプロジェクト対応版）")
     print(f"ネットワーク: {irl_system.network}")
     print(f"デバイス: {irl_system.device}")
+    print(f"状態次元: {irl_system.state_dim}")
+    print(f"行動次元: {irl_system.action_dim}")

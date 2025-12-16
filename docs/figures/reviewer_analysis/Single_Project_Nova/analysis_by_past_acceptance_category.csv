@@ -1,0 +1,5 @@
+experiment,attribute,category,count,positive_count,positive_rate,precision,recall,f1_score,mean_predicted_prob,std_predicted_prob,tp,fp,tn,fn
+Single Project (Nova),past_acceptance_category,Low (<30%),636,208,0.3270440251572327,0.5481481481481482,0.7115384615384616,0.6192468619246863,0.46766990774644995,0.012518351850190972,148,122,306,60
+Single Project (Nova),past_acceptance_category,Medium (30-50%),100,52,0.52,0.6428571428571429,0.6923076923076923,0.6666666666666666,0.4697626754641533,0.012419891550908706,36,20,28,16
+Single Project (Nova),past_acceptance_category,High (50-70%),32,8,0.25,0.5,0.5,0.5,0.4637829326093197,0.013476283222606496,4,4,20,4
+Single Project (Nova),past_acceptance_category,Very High (>70%),16,4,0.25,0.25,0.5,0.3333333333333333,0.46537673473358154,0.013294839585632937,2,6,6,2

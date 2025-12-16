@@ -1,0 +1,5 @@
+experiment,attribute,category,count,positive_count,positive_rate,precision,recall,f1_score,mean_predicted_prob,std_predicted_prob,tp,fp,tn,fn
+Multi-Project (No OS),activity_level,Inactive (≤5),208,109,0.5240384615384616,0.5265700483091788,1.0,0.6898734177215189,0.6107394231053499,0.13007022208695967,109,98,1,0
+Multi-Project (No OS),activity_level,Moderate (6-20),167,154,0.9221556886227545,0.9221556886227545,1.0,0.9595015576323989,0.6319970629529325,0.13103950762704855,154,13,0,0
+Multi-Project (No OS),activity_level,Active (21-50),135,135,1.0,1.0,1.0,1.0,0.7080459047246862,0.11073688551848063,135,0,0,0
+Multi-Project (No OS),activity_level,Very Active (>50),159,159,1.0,1.0,1.0,1.0,0.7557847421124296,0.12073510674451446,159,0,0,0

@@ -41,15 +41,16 @@ cross_evaluate.pyで生成されたクロス評価結果（16通りの組み合�
 5. PNGファイルとして保存
 """
 import json
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 from pathlib import Path
+
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
 
 # ========================================
 # 設定: 入力ディレクトリと期間定義
 # ========================================
-BASE_DIR = Path("outputs/review_acceptance_cross_eval_nova")
+BASE_DIR = Path("outputs/review_continuation_cross_eval_nova")
 train_periods = ['0-3m', '3-6m', '6-9m', '9-12m']
 eval_periods = ['0-3m', '3-6m', '6-9m', '9-12m']
 

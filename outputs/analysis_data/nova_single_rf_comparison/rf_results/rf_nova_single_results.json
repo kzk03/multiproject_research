@@ -1,0 +1,29 @@
+{
+  "model": "Random Forest (Nova Single Project)",
+  "feature_config": {
+    "state_dim": 10,
+    "action_dim": 4,
+    "total_features": 14,
+    "excluded_features": [
+      "project_count",
+      "project_activity_distribution",
+      "main_project_contribution_ratio",
+      "cross_project_collaboration_score",
+      "cross_project_action_ratio"
+    ]
+  },
+  "f1": 0.4,
+  "auc_roc": 0.638095238095238,
+  "auc_pr": 0.7648766048766048,
+  "precision": 0.8,
+  "recall": 0.26666666666666666,
+  "accuracy": 0.45454545454545453,
+  "tp": 4,
+  "tn": 6,
+  "fp": 1,
+  "fn": 11,
+  "train_time": 0.08583307266235352,
+  "predict_time": 0.025866985321044922,
+  "train_samples": 76,
+  "eval_samples": 22
+}

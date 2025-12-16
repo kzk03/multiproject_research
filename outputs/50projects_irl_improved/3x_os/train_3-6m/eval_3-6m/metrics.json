@@ -1,0 +1,12 @@
+{
+  "auc_roc": 0.7026182432432433,
+  "auc_pr": 0.9115852423716115,
+  "optimal_threshold": 0.25350403785705566,
+  "threshold_source": "train_data",
+  "precision": 0.8229166666666666,
+  "recall": 0.9875,
+  "f1_score": 0.8977272727272727,
+  "positive_count": 160,
+  "negative_count": 37,
+  "total_count": 197
+}
