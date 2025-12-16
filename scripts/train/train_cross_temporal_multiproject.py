@@ -42,6 +42,9 @@ ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.append(str(SRC))
+ANALYSIS = ROOT / "scripts" / "analysis"
+if str(ANALYSIS) not in sys.path:
+    sys.path.append(str(ANALYSIS))
 
 logging.basicConfig(
     level=logging.INFO,
@@ -132,7 +135,8 @@ def train_and_evaluate_pattern(
     recall_floor: float = 0.8,
     focal_alpha: float = None,
     focal_gamma: float = None,
-    negative_oversample_factor: int = 1
+    negative_oversample_factor: int = 1,
+    run_rf_baseline: bool = False
 ) -> Dict:
     """
     1つのパターンで訓練・評価を実行
@@ -173,6 +177,11 @@ def train_and_evaluate_pattern(
 
     import numpy as np
     import torch
+    from rf_10patterns_evaluation import (
+        extract_features_for_window,
+        prepare_rf_features,
+        train_and_evaluate_rf,
+    )
     from sklearn.metrics import (
         auc,
         f1_score,
@@ -189,6 +198,35 @@ def train_and_evaluate_pattern(
     )
 
     from review_predictor.model.irl_predictor import RetentionIRLSystem
+
+    def _prepare_rf_dataframe(df_src: pd.DataFrame, project_name: str = None) -> pd.DataFrame:
+        """RF用にtimestamp/email/プロジェクトを整える"""
+        df_rf = df_src.copy()
+
+        if project_name and 'project' in df_rf.columns:
+            df_rf = df_rf[df_rf['project'] == project_name].copy()
+
+        if 'timestamp' not in df_rf.columns:
+            if 'created' in df_rf.columns:
+                df_rf['timestamp'] = pd.to_datetime(df_rf['created'])
+            elif 'request_time' in df_rf.columns:
+                df_rf['timestamp'] = pd.to_datetime(df_rf['request_time'])
+            elif 'context_date' in df_rf.columns:
+                df_rf['timestamp'] = pd.to_datetime(df_rf['context_date'])
+            else:
+                raise ValueError("timestamp列が見つかりません (created/request_time/context_date いずれもなし)")
+
+        if 'email' not in df_rf.columns:
+            if 'developer_email' in df_rf.columns:
+                df_rf['email'] = df_rf['developer_email']
+            elif 'reviewer_email' in df_rf.columns:
+                df_rf['email'] = df_rf['reviewer_email']
+            elif 'owner_email' in df_rf.columns:
+                df_rf['email'] = df_rf['owner_email']
+            else:
+                raise ValueError("email列が見つかりません (developer_email/reviewer_email/owner_email いずれもなし)")
+
+        return df_rf
 
     # データ読み込み
     df = load_review_requests(reviews_csv)
@@ -397,7 +435,47 @@ def train_and_evaluate_pattern(
 
     logger.info(f"結果を保存: {eval_dir}")
 
-    return metrics
+    rf_metrics = None
+    if run_rf_baseline:
+        logger.info("RFベースラインを評価...")
+        try:
+            df_rf = _prepare_rf_dataframe(df, project)
+            project_type = 'nova' if project else 'multi'
+
+            train_features_df = extract_features_for_window(
+                df_rf,
+                pattern['train_start'],
+                pattern['train_end'],
+                pattern['train_start'],
+                pattern['train_end'],
+                project_type
+            )
+            eval_features_df = extract_features_for_window(
+                df_rf,
+                pattern['train_start'],
+                pattern['train_end'],
+                pattern['eval_start'],
+                pattern['eval_end'],
+                project_type
+            )
+
+            if len(train_features_df) < 2 or len(eval_features_df) < 2:
+                logger.warning("RFベースライン: サンプル数が不足のためスキップ")
+            else:
+                X_train, y_train = prepare_rf_features(train_features_df, project_type)
+                X_eval, y_eval = prepare_rf_features(eval_features_df, project_type)
+                rf_metrics = train_and_evaluate_rf(X_train, y_train, X_eval, y_eval)
+
+                if rf_metrics:
+                    rf_metrics['pattern'] = f"{train_name} → {eval_name}"
+                    rf_metrics_path = eval_dir / "rf_metrics.json"
+                    with open(rf_metrics_path, "w") as f:
+                        json.dump(rf_metrics, f, indent=2)
+                    logger.info(f"RFベースライン結果を保存: {rf_metrics_path}")
+        except Exception as e:
+            logger.exception(f"RFベースライン評価で例外: {e}")
+
+    return {'irl': metrics, 'rf': rf_metrics}
 
 
 def create_matrices(output_base: Path, patterns: List[Dict]):
@@ -533,6 +611,11 @@ def main():
         default=1,
         help="負例オーバーサンプリング係数（>1で訓練時に負例を複製）"
     )
+    parser.add_argument(
+        "--run-rf",
+        action="store_true",
+        help="RFベースラインも同じパターンで評価する"
+    )
 
     args = parser.parse_args()
 
@@ -570,7 +653,8 @@ def main():
             recall_floor=args.recall_floor,
             focal_alpha=args.focal_alpha,
             focal_gamma=args.focal_gamma,
-            negative_oversample_factor=args.negative_oversample_factor
+            negative_oversample_factor=args.negative_oversample_factor,
+            run_rf_baseline=args.run_rf
         )
 
         if metrics is None:
