@@ -1,0 +1,5 @@
+Platform,past_reviews_30d_mean,past_reviews_30d_std,past_reviews_30d_median,past_reviews_90d_mean,past_reviews_90d_std,past_reviews_90d_median,past_reviews_180d_mean,past_reviews_180d_std,past_reviews_180d_median,response_rate_30d_mean,response_rate_30d_std,response_rate_30d_median,response_rate_90d_mean,response_rate_90d_std,response_rate_90d_median,path_jaccard_global_mean,path_jaccard_global_std,path_jaccard_global_median,is_cross_project_mean,is_cross_project_std,is_cross_project_median,reviewer_project_count_mean,reviewer_project_count_std,reviewer_project_count_median
+OpenStack,,,,,,,,,,,,,,,,,,,0.8564658432064532,0.3506182191385213,1.0,9.724754222334258,8.69835579050146,8.0
+Qt,,,,,,,,,,,,,,,,,,,0.7388657481576418,0.4393233377726384,1.0,4.095802627363025,3.7920444309316528,3.0
+Android,,,,,,,,,,,,,,,,,,,0.76701607267645,0.42276163059459076,1.0,3.942417889587701,3.445454927119192,3.0
+Chromium,,,,,,,,,,,,,,,,,,,0.046610169491525424,0.2112504627777202,0.0,0.8813559322033898,0.540598431613089,1.0

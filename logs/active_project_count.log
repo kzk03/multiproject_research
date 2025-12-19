@@ -1,0 +1,461 @@
+================================================================================
+2021-2024年にアクティブなプロジェクト数の調査
+================================================================================
+
+================================================================================
+サーバー: https://chromium-review.googlesource.com
+プレフィックス: chromium/
+期間: 2021-01-01 - 2024-01-01
+================================================================================
+
+chromium/で始まるプロジェクト数: 225
+
+各プロジェクトの活動状況をチェック中...
+  [1/100] ✗ chromium/android_webview_next - 活動なし
+  [2/100] ✗ chromium/buildtools - 活動なし
+  [3/100] ✗ chromium/canvas_bench - 活動なし
+  [4/100] ✗ chromium/cdm - 活動なし
+  [5/100] ✗ chromium/deps - 活動なし
+  [6/100] ✗ chromium/deps/acid3 - 活動なし
+  [7/100] ✗ chromium/deps/aosp - 活動なし
+  [8/100] ✗ chromium/deps/apache-mime4j - 活動なし
+  [9/100] ✗ chromium/deps/bison - 活動なし
+  [10/100] ✗ chromium/deps/class-dump - 活動なし
+  [11/100] ✗ chromium/deps/cygwin - 活動なし
+  [12/100] ✗ chromium/deps/findbugs - 活動なし
+  [13/100] ✗ chromium/deps/flac - 活動なし
+  [14/100] ✗ chromium/deps/gold - 活動なし
+  [15/100] ✗ chromium/deps/gperf - 活動なし
+  [16/100] ✗ chromium/deps/gpu/software_rendering_list - 活動なし
+  [17/100] ✗ chromium/deps/httpcomponents-client - 活動なし
+  [18/100] ✗ chromium/deps/httpcomponents-core - 活動なし
+  [19/100] ✗ chromium/deps/hunspell - 活動なし
+  [20/100] ✗ chromium/deps/hunspell_dictionaries - 活動なし
+  [21/100] ✗ chromium/deps/icu - 活動なし
+  [22/100] ✗ chromium/deps/icu46 - 活動なし
+  [23/100] ✗ chromium/deps/icu52 - 活動なし
+  [24/100] ✗ chromium/deps/jarjar - 活動なし
+  [25/100] ✗ chromium/deps/libexif - 活動なし
+  [26/100] ✗ chromium/deps/libexif/sources - 活動なし
+  [27/100] ✗ chromium/deps/libjpeg_turbo - 活動なし
+  [28/100] ✗ chromium/deps/libmtp - 活動なし
+  [29/100] ✗ chromium/deps/libsrtp - 活動なし
+  [30/100] ✗ chromium/deps/libvpx - 活動なし
+  [31/100] ✗ chromium/deps/lighttpd - 活動なし
+  [32/100] ✗ chromium/deps/manifestdestiny - 活動なし
+  [33/100] ✗ chromium/deps/mesa - 活動なし
+  [34/100] ✗ chromium/deps/mozdownload - 活動なし
+  [35/100] ✗ chromium/deps/mozinfo - 活動なし
+  [36/100] ✗ chromium/deps/mozprocess - 活動なし
+  [37/100] ✗ chromium/deps/mozprofile - 活動なし
+  [38/100] ✗ chromium/deps/mozrunner - 活動なし
+  [39/100] ✗ chromium/deps/nacl_sdk_binaries - 活動なし
+  [40/100] ✗ chromium/deps/nasm - 活動なし
+  [41/100] ✗ chromium/deps/nss - 活動なし
+  [42/100] ✗ chromium/deps/openssl - 活動なし
+  [43/100] ✗ chromium/deps/perl - 活動なし
+  [44/100] ✗ chromium/deps/psyco_win32 - 活動なし
+  [45/100] ✗ chromium/deps/speex - 活動なし
+  [46/100] ✗ chromium/deps/sqlite - 活動なし
+  [47/100] ✗ chromium/deps/swig/Lib - 活動なし
+  [48/100] ✗ chromium/deps/swig/linux - 活動なし
+  [49/100] ✗ chromium/deps/swig/mac - 活動なし
+  [50/100] ✗ chromium/deps/swig/win - 活動なし
+  [51/100] ✗ chromium/deps/undoview - 活動なし
+  [52/100] ✗ chromium/deps/valgrind - 活動なし
+  [53/100] ✗ chromium/deps/valgrind/binaries - 活動なし
+  [54/100] ✗ chromium/deps/valgrind/scripts - 活動なし
+  [55/100] ✗ chromium/deps/webdriver - 活動なし
+  [56/100] ✗ chromium/deps/webgl/sdk/tests - 活動なし
+  [57/100] ✗ chromium/deps/webrtc/webrtc.DEPS - 活動なし
+  [58/100] ✗ chromium/deps/xdg-utils - 活動なし
+  [59/100] ✗ chromium/deps/xulrunner-sdk - 活動なし
+  [60/100] ✗ chromium/deps/xz - 活動なし
+  [61/100] ✗ chromium/deps/yasm/binaries - 活動なし
+  [62/100] ✗ chromium/deps/yasm/patched-yasm - 活動なし
+  [63/100] ✗ chromium/dom-distiller - 活動なし
+  [64/100] ✗ chromium/dom-distiller/dist - 活動なし
+  [65/100] ✗ chromium/extensions-by-google - 活動なし
+  [66/100] ✗ chromium/frame_rate/content - 活動なし
+  [67/100] ✗ chromium/heap-query - 活動なし
+  [68/100] ✗ chromium/html-office-public - 活動なし
+  [69/100] ✗ chromium/llvm-project/cfe/tools/scan-build - 活動なし
+  [70/100] ✗ chromium/llvm-project/cfe/tools/scan-build-py - 活動なし
+  [71/100] ✗ chromium/llvm-project/compiler-rt/lib/fuzzer - 活動なし
+  [72/100] ✗ chromium/llvm-project/llvm/lib/Fuzzer - 活動なし
+  [73/100] ✗ chromium/mini_chromium - 活動なし
+  [74/100] ✗ chromium/pipa - 活動なし
+  [75/100] ✗ chromium/reference_builds/chrome_linux - 活動なし
+  [76/100] ✗ chromium/reference_builds/chrome_linux64 - 活動なし
+  [77/100] ✗ chromium/reference_builds/chrome_mac - 活動なし
+  [78/100] ✗ chromium/reference_builds/chrome_win - 活動なし
+  [79/100] ✗ chromium/src - 活動なし
+  [80/100] ✗ chromium/src/android_webview/glue - 活動なし
+  [81/100] ✗ chromium/src/android_webview/support_library/boundary_interfaces - 活動なし
+  [82/100] ✗ chromium/src/base - 活動なし
+  [83/100] ✗ chromium/src/base/allocator/partition_allocator - 活動なし
+  [84/100] ✗ chromium/src/base/trace_event/common - 活動なし
+  [85/100] ✗ chromium/src/breakpad - 活動なし
+  [86/100] ✗ chromium/src/build - 活動なし
+  [87/100] ✗ chromium/src/build/config - 活動なし
+  [88/100] ✗ chromium/src/build/toolchain - 活動なし
+  [89/100] ✗ chromium/src/build_overrides - 活動なし
+  [90/100] ✗ chromium/src/buildtools - 活動なし
+  [91/100] ✗ chromium/src/chrome/browser/chromeos/policy/proto - 活動なし
+  [92/100] ✗ chromium/src/chrome/browser/policy/proto - 活動なし
+  [93/100] ✗ chromium/src/chrome/test/data/dromaeo - 活動なし
+  [94/100] ✗ chromium/src/chrome/test/data/reliability - 活動なし
+  [95/100] ✗ chromium/src/components/arc/mojom - 活動なし
+  [96/100] ✗ chromium/src/components/cbor - 活動なし
+  [97/100] ✗ chromium/src/components/chrome_cleaner - 活動なし
+  [98/100] ✗ chromium/src/components/feedback - 活動なし
+  [99/100] ✗ chromium/src/components/feedback/redaction_tool - 活動なし
+  [100/100] ✗ chromium/src/components/metrics - 活動なし
+
+Chromium: 0個のアクティブプロジェクト
+
+================================================================================
+サーバー: https://android-review.googlesource.com
+プレフィックス: platform/
+期間: 2021-01-01 - 2024-01-01
+================================================================================
+
+platform/で始まるプロジェクト数: 591
+
+各プロジェクトの活動状況をチェック中...
+  [1/100] ✗ platform/abi/cpp - 活動なし
+  [2/100] ✗ platform/apisurface - 活動なし
+  [3/100] ✗ platform/art - 活動なし
+  [4/100] ✗ platform/bbuildbot_config - 活動なし
+  [5/100] ✗ platform/bionic - 活動なし
+  [6/100] ✗ platform/bootable/bootloader/legacy - 活動なし
+  [7/100] ✗ platform/bootable/deprecated-ota - 活動なし
+  [8/100] ✗ platform/bootable/diskinstaller - 活動なし
+  [9/100] ✗ platform/bootable/libbootloader - 活動なし
+  [10/100] ✗ platform/bootable/recovery - 活動なし
+  [11/100] ✗ platform/brillo - 活動なし
+  [12/100] ✗ platform/build - 活動なし
+  [13/100] ✗ platform/build/abfs - 活動なし
+  [14/100] ✗ platform/build/bazel - 活動なし
+  [15/100] ✗ platform/build/bazel_common_rules - 活動なし
+  [16/100] ✗ platform/build/blueprint - 活動なし
+  [17/100] ✗ platform/build/docker - 活動なし
+  [18/100] ✗ platform/build/kati - 活動なし
+  [19/100] ✗ platform/build/orchestrator - 活動なし
+  [20/100] ✗ platform/build/pesto - 活動なし
+  [21/100] ✗ platform/build/release - 活動なし
+  [22/100] ✗ platform/build/soong - 活動なし
+  [23/100] ✗ platform/build/trunk_release - 活動なし
+  [24/100] ✗ platform/compatibility/cdd - 活動なし
+  [25/100] ✗ platform/cts - 活動なし
+  [26/100] ✗ platform/dalvik - 活動なし
+  [27/100] ✗ platform/dalvik-snapshot - 活動なし
+  [28/100] ✗ platform/dalvik2 - 活動なし
+  [29/100] ✗ platform/developers/build - 活動なし
+  [30/100] ✗ platform/developers/demos - 活動なし
+  [31/100] ✗ platform/developers/docs - 活動なし
+  [32/100] ✗ platform/developers/samples/android - 活動なし
+  [33/100] ✗ platform/development - 活動なし
+  [34/100] ✗ platform/docs/source.android.com - 活動なし
+  [35/100] ✗ platform/external/AFLplusplus - 活動なし
+  [36/100] ✗ platform/external/ARMComputeLibrary - 活動なし
+  [37/100] ✗ platform/external/AntennaPod/AntennaPod - 活動なし
+  [38/100] ✗ platform/external/AntennaPod/AudioPlayer - 活動なし
+  [39/100] ✗ platform/external/AntennaPod/afollestad - 活動なし
+  [40/100] ✗ platform/external/ComputeLibrary - 活動なし
+  [41/100] ✗ platform/external/FP16 - 活動なし
+  [42/100] ✗ platform/external/FXdiv - 活動なし
+  [43/100] ✗ platform/external/GhostAWT - 活動なし
+  [44/100] ✗ platform/external/ImageMagick - 活動なし
+  [45/100] ✗ platform/external/Little-CMS - 活動なし
+  [46/100] ✗ platform/external/MPAndroidChart - 活動なし
+  [47/100] ✗ platform/external/Mako - 活動なし
+  [48/100] ✗ platform/external/Microsoft-GSL - 活動なし
+  [49/100] ✗ platform/external/Microsoft-unittest-cpp - 活動なし
+  [50/100] ✗ platform/external/OpenCL-CLHPP - 活動なし
+  [51/100] ✗ platform/external/OpenCL-CTS - 活動なし
+  [52/100] ✗ platform/external/OpenCL-Headers - 活動なし
+  [53/100] ✗ platform/external/OpenCL-ICD-Loader - 活動なし
+  [54/100] ✗ platform/external/OpenCSD - 活動なし
+  [55/100] ✗ platform/external/Reactive-Extensions/RxCpp - 活動なし
+  [56/100] ✗ platform/external/SPIRV-Headers - 活動なし
+  [57/100] ✗ platform/external/SPIRV-Reflect - 活動なし
+  [58/100] ✗ platform/external/SPIRV-Tools - 活動なし
+  [59/100] ✗ platform/external/TestParameterInjector - 活動なし
+  [60/100] ✗ platform/external/ThrowTheSwitch-Unity - 活動なし
+  [61/100] ✗ platform/external/XMP-Toolkit-SDK - 活動なし
+  [62/100] ✗ platform/external/XNNPACK - 活動なし
+  [63/100] ✗ platform/external/aac - 活動なし
+  [64/100] ✗ platform/external/abi-compliance-checker - 活動なし
+  [65/100] ✗ platform/external/abi-dumper - 活動なし
+  [66/100] ✗ platform/external/abseil-cpp - 活動なし
+  [67/100] ✗ platform/external/accessibility-test-framework - 活動なし
+  [68/100] ✗ platform/external/accompanist - 活動なし
+  [69/100] ✗ platform/external/actionbarsherlock - 活動なし
+  [70/100] ✗ platform/external/adeb - 活動なし
+  [71/100] ✗ platform/external/adhd - 活動なし
+  [72/100] ✗ platform/external/adt-infra - 活動なし
+  [73/100] ✗ platform/external/aehd - 活動なし
+  [74/100] ✗ platform/external/aes - 活動なし
+  [75/100] ✗ platform/external/alsa-lib - 活動なし
+  [76/100] ✗ platform/external/android-clat - 活動なし
+  [77/100] ✗ platform/external/android-cmake - 活動なし
+  [78/100] ✗ platform/external/android-key-attestation - 活動なし
+  [79/100] ✗ platform/external/android-kotlin-demo - 活動なし
+  [80/100] ✗ platform/external/android-mock - 活動なし
+  [81/100] ✗ platform/external/android-nn-driver - 活動なし
+  [82/100] ✗ platform/external/android-studio-gradle-test - 活動なし
+  [83/100] ✗ platform/external/android_onboarding - 活動なし
+  [84/100] ✗ platform/external/androidplot - 活動なし
+  [85/100] ✗ platform/external/angle - 活動なし
+  [86/100] ✗ platform/external/annotation-tools - 活動なし
+  [87/100] ✗ platform/external/anonymous-counting-tokens - 活動なし
+  [88/100] ✗ platform/external/ant-glob - 活動なし
+  [89/100] ✗ platform/external/antlr - 活動なし
+  [90/100] ✗ platform/external/apache-apr - 活動なし
+  [91/100] ✗ platform/external/apache-apr-util - 活動なし
+  [92/100] ✗ platform/external/apache-commons-bcel - 活動なし
+  [93/100] ✗ platform/external/apache-commons-compress - 活動なし
+  [94/100] ✗ platform/external/apache-commons-io - 活動なし
+  [95/100] ✗ platform/external/apache-commons-lang - 活動なし
+  [96/100] ✗ platform/external/apache-commons-math - 活動なし
+  [97/100] ✗ platform/external/apache-harmony - 活動なし
+  [98/100] ✗ platform/external/apache-http - 活動なし
+  [99/100] ✗ platform/external/apache-log4cxx - 活動なし
+  [100/100] ✗ platform/external/apache-qp - 活動なし
+
+Android: 0個のアクティブプロジェクト
+
+================================================================================
+サーバー: https://codereview.qt-project.org
+プレフィックス: qt/
+期間: 2021-01-01 - 2024-01-01
+================================================================================
+
+qt/で始まるプロジェクト数: 104
+
+各プロジェクトの活動状況をチェック中...
+  [1/100] ✗ qt/qlalr - 活動なし
+  [2/100] ✗ qt/qmake2cmake - 活動なし
+  [3/100] ✗ qt/qt - 活動なし
+  [4/100] ✗ qt/qt-conan-common - 活動なし
+  [5/100] ✗ qt/qt-conan-config - 活動なし
+  [6/100] ✗ qt/qt3d - 活動なし
+  [7/100] ✗ qt/qt5 - 活動なし
+  [8/100] ✗ qt/qt5compat - 活動なし
+  [9/100] ✗ qt/qtactiveqt - 活動なし
+  [10/100] ✗ qt/qtanalytics - 活動なし
+  [11/100] ✗ qt/qtandroidextras - 活動なし
+  [12/100] ✗ qt/qtapplicationmanager - 活動なし
+  [13/100] ✗ qt/qtbase - 活動なし
+  [14/100] ✗ qt/qtcanvas3d - 活動なし
+  [15/100] ✗ qt/qtcanvaspainter - 活動なし
+  [16/100] ✗ qt/qtcharts - 活動なし
+  [17/100] ✗ qt/qtcloudmessaging - 活動なし
+  [18/100] ✗ qt/qtcoap - 活動なし
+  [19/100] ✗ qt/qtconnectivity - 活動なし
+  [20/100] ✗ qt/qtdatavis3d - 活動なし
+  [21/100] ✗ qt/qtdeclarative - 活動なし
+  [22/100] ✗ qt/qtdeclarative-render2d - 活動なし
+  [23/100] ✗ qt/qtdeclarative-testsuites - 活動なし
+  [24/100] ✗ qt/qtdesignviewer - 活動なし
+  [25/100] ✗ qt/qtdeviceutilities - 活動なし
+  [26/100] ✗ qt/qtdltlogging - 活動なし
+  [27/100] ✗ qt/qtdoc - 活動なし
+  [28/100] ✗ qt/qtdocgallery - 活動なし
+  [29/100] ✗ qt/qtenginio - 活動なし
+  [30/100] ✗ qt/qtfeedback - 活動なし
+  [31/100] ✗ qt/qtftp - 活動なし
+  [32/100] ✗ qt/qtgamepad - 活動なし
+  [33/100] ✗ qt/qtgraphicaleffects - 活動なし
+  [34/100] ✗ qt/qtgraphs - 活動なし
+  [35/100] ✗ qt/qtgrpc - 活動なし
+  [36/100] ✗ qt/qthttp - 活動なし
+  [37/100] ✗ qt/qthttpserver - 活動なし
+  [38/100] ✗ qt/qtimageformats - 活動なし
+  [39/100] ✗ qt/qtinterfaceframework - 活動なし
+  [40/100] ✗ qt/qtinterfaceframework-qface - 活動なし
+  [41/100] ✗ qt/qtinterfaceframework-taglib - 活動なし
+  [42/100] ✗ qt/qtivi - 活動なし
+  [43/100] ✗ qt/qtivi-qface - 活動なし
+  [44/100] ✗ qt/qtivi-taglib - 活動なし
+  [45/100] ✗ qt/qtknx - 活動なし
+  [46/100] ✗ qt/qtlanguageserver - 活動なし
+  [47/100] ✗ qt/qtlocation - 活動なし
+  [48/100] ✗ qt/qtlocation-mapboxgl - 活動なし
+  [49/100] ✗ qt/qtlottie - 活動なし
+  [50/100] ✗ qt/qtmacextras - 活動なし
+  [51/100] ✗ qt/qtmodeling - 活動なし
+  [52/100] ✗ qt/qtmqtt - 活動なし
+  [53/100] ✗ qt/qtmultimedia - 活動なし
+  [54/100] ✗ qt/qtnetworkauth - 活動なし
+  [55/100] ✗ qt/qtopcua - 活動なし
+  [56/100] ✗ qt/qtopenapi - 活動なし
+  [57/100] ✗ qt/qtotaupdate - 活動なし
+  [58/100] ✗ qt/qtpim - 活動なし
+  [59/100] ✗ qt/qtpositioning - 活動なし
+  [60/100] ✗ qt/qtpurchasing - 活動なし
+  [61/100] ✗ qt/qtqa - 活動なし
+  [62/100] ✗ qt/qtquick1 - 活動なし
+  [63/100] ✗ qt/qtquick3d - 活動なし
+  [64/100] ✗ qt/qtquick3d-assimp - 活動なし
+  [65/100] ✗ qt/qtquick3dphysics - 活動なし
+  [66/100] ✗ qt/qtquickcontrols - 活動なし
+  [67/100] ✗ qt/qtquickcontrols-tizen - 活動なし
+  [68/100] ✗ qt/qtquickcontrols2 - 活動なし
+  [69/100] ✗ qt/qtquickeffectmaker - 活動なし
+  [70/100] ✗ qt/qtquicktimeline - 活動なし
+  [71/100] ✗ qt/qtreleasenotes - 活動なし
+  [72/100] ✗ qt/qtremoteobjects - 活動なし
+  [73/100] ✗ qt/qtrepotools - 活動なし
+  [74/100] ✗ qt/qtscript - 活動なし
+  [75/100] ✗ qt/qtscxml - 活動なし
+  [76/100] ✗ qt/qtsensors - 活動なし
+  [77/100] ✗ qt/qtserialbus - 活動なし
+  [78/100] ✗ qt/qtserialport - 活動なし
+  [79/100] ✗ qt/qtshadertools - 活動なし
+  [80/100] ✗ qt/qtspeech - 活動なし
+  [81/100] ✗ qt/qtstatemachines - 活動なし
+  [82/100] ✗ qt/qtstyleplugins - 活動なし
+  [83/100] ✗ qt/qtsvg - 活動なし
+  [84/100] ✗ qt/qtsystems - 活動なし
+  [85/100] ✗ qt/qttasktree - 活動なし
+  [86/100] ✗ qt/qttools - 活動なし
+  [87/100] ✗ qt/qttools-litehtml - 活動なし
+  [88/100] ✗ qt/qttranslations - 活動なし
+  [89/100] ✗ qt/qtvirtualkeyboard - 活動なし
+  [90/100] ✗ qt/qtvoiceassistant - 活動なし
+  [91/100] ✗ qt/qtwayland - 活動なし
+  [92/100] ✗ qt/qtwebchannel - 活動なし
+  [93/100] ✗ qt/qtwebengine - 活動なし
+  [94/100] ✗ qt/qtwebengine-chromium - 活動なし
+  [95/100] ✗ qt/qtwebglplugin - 活動なし
+  [96/100] ✗ qt/qtwebkit - 活動なし
+  [97/100] ✗ qt/qtwebkit-examples - 活動なし
+  [98/100] ✗ qt/qtwebsockets - 活動なし
+  [99/100] ✗ qt/qtwebview - 活動なし
+  [100/100] ✗ qt/qtwinextras - 活動なし
+
+Qt: 0個のアクティブプロジェクト
+
+================================================================================
+サーバー: https://review.opendev.org
+プレフィックス: openstack/
+期間: 2021-01-01 - 2024-01-01
+================================================================================
+
+openstack/で始まるプロジェクト数: 728
+
+各プロジェクトの活動状況をチェック中...
+  [1/100] ✗ openstack/activity-board - 活動なし
+  [2/100] ✗ openstack/adjutant - 活動なし
+  [3/100] ✗ openstack/adjutant-ui - 活動なし
+  [4/100] ✗ openstack/aetos - 活動なし
+  [5/100] ✗ openstack/anchor - 活動なし
+  [6/100] ✗ openstack/ansible-collection-kolla - 活動なし
+  [7/100] ✗ openstack/ansible-collections-openstack - 活動なし
+  [8/100] ✗ openstack/ansible-config_template - 活動なし
+  [9/100] ✗ openstack/ansible-hardening - 活動なし
+  [10/100] ✗ openstack/ansible-plugin-container-connection - 活動なし
+  [11/100] ✗ openstack/ansible-role-atos-hsm - 活動なし
+  [12/100] ✗ openstack/ansible-role-chrony - 活動なし
+  [13/100] ✗ openstack/ansible-role-collect-logs - 活動なし
+  [14/100] ✗ openstack/ansible-role-container-registry - 活動なし
+  [15/100] ✗ openstack/ansible-role-frrouting - 活動なし
+  [16/100] ✗ openstack/ansible-role-httpd - 活動なし
+  [17/100] ✗ openstack/ansible-role-k8s-cinder - 活動なし
+  [18/100] ✗ openstack/ansible-role-k8s-cookiecutter - 活動なし
+  [19/100] ✗ openstack/ansible-role-k8s-glance - 活動なし
+  [20/100] ✗ openstack/ansible-role-k8s-keystone - 活動なし
+  [21/100] ✗ openstack/ansible-role-k8s-mariadb - 活動なし
+  [22/100] ✗ openstack/ansible-role-k8s-rabbitmq - 活動なし
+  [23/100] ✗ openstack/ansible-role-k8s-tripleo - 活動なし
+  [24/100] ✗ openstack/ansible-role-lunasa-hsm - 活動なし
+  [25/100] ✗ openstack/ansible-role-openstack-operations - 活動なし
+  [26/100] ✗ openstack/ansible-role-pki - 活動なし
+  [27/100] ✗ openstack/ansible-role-proxysql - 活動なし
+  [28/100] ✗ openstack/ansible-role-python_venv_build - 活動なし
+  [29/100] ✗ openstack/ansible-role-qdrouterd - 活動なし
+  [30/100] ✗ openstack/ansible-role-redhat-subscription - 活動なし
+  [31/100] ✗ openstack/ansible-role-systemd_mount - 活動なし
+  [32/100] ✗ openstack/ansible-role-systemd_networkd - 活動なし
+  [33/100] ✗ openstack/ansible-role-systemd_service - 活動なし
+  [34/100] ✗ openstack/ansible-role-thales-hsm - 活動なし
+  [35/100] ✗ openstack/ansible-role-tripleo-aodh - 活動なし
+  [36/100] ✗ openstack/ansible-role-tripleo-barbican - 活動なし
+  [37/100] ✗ openstack/ansible-role-tripleo-ceilometer - 活動なし
+  [38/100] ✗ openstack/ansible-role-tripleo-cinder - 活動なし
+  [39/100] ✗ openstack/ansible-role-tripleo-cookiecutter - 活動なし
+  [40/100] ✗ openstack/ansible-role-tripleo-designate - 活動なし
+  [41/100] ✗ openstack/ansible-role-tripleo-glance - 活動なし
+  [42/100] ✗ openstack/ansible-role-tripleo-gnocchi - 活動なし
+  [43/100] ✗ openstack/ansible-role-tripleo-haproxy - 活動なし
+  [44/100] ✗ openstack/ansible-role-tripleo-heat - 活動なし
+  [45/100] ✗ openstack/ansible-role-tripleo-horizon - 活動なし
+  [46/100] ✗ openstack/ansible-role-tripleo-ironic - 活動なし
+  [47/100] ✗ openstack/ansible-role-tripleo-keepalived - 活動なし
+  [48/100] ✗ openstack/ansible-role-tripleo-keystone - 活動なし
+  [49/100] ✗ openstack/ansible-role-tripleo-manila - 活動なし
+  [50/100] ✗ openstack/ansible-role-tripleo-memcached - 活動なし
+  [51/100] ✗ openstack/ansible-role-tripleo-mistral - 活動なし
+  [52/100] ✗ openstack/ansible-role-tripleo-modify-image - 活動なし
+  [53/100] ✗ openstack/ansible-role-tripleo-neutron - 活動なし
+  [54/100] ✗ openstack/ansible-role-tripleo-nova - 活動なし
+  [55/100] ✗ openstack/ansible-role-tripleo-octavia - 活動なし
+  [56/100] ✗ openstack/ansible-role-tripleo-opendaylight - 活動なし
+  [57/100] ✗ openstack/ansible-role-tripleo-ovn - 活動なし
+  [58/100] ✗ openstack/ansible-role-tripleo-panko - 活動なし
+  [59/100] ✗ openstack/ansible-role-tripleo-qdrouterd - 活動なし
+  [60/100] ✗ openstack/ansible-role-tripleo-rabbitmq - 活動なし
+  [61/100] ✗ openstack/ansible-role-tripleo-rsyslog-sidecar - 活動なし
+  [62/100] ✗ openstack/ansible-role-tripleo-sahara - 活動なし
+  [63/100] ✗ openstack/ansible-role-tripleo-sensu - 活動なし
+  [64/100] ✗ openstack/ansible-role-tripleo-swift - 活動なし
+  [65/100] ✗ openstack/ansible-role-tripleo-tacker - 活動なし
+  [66/100] ✗ openstack/ansible-role-tripleo-tempest - 活動なし
+  [67/100] ✗ openstack/ansible-role-tripleo-ui - 活動なし
+  [68/100] ✗ openstack/ansible-role-tripleo-zaqar - 活動なし
+  [69/100] ✗ openstack/ansible-role-uwsgi - 活動なし
+  [70/100] ✗ openstack/ansible-role-vault - 活動なし
+  [71/100] ✗ openstack/ansible-role-zookeeper - 活動なし
+  [72/100] ✗ openstack/aodh - 活動なし
+  [73/100] ✗ openstack/api-sig - 活動なし
+  [74/100] ✗ openstack/api-site - 活動なし
+  [75/100] ✗ openstack/app-catalog - 活動なし
+  [76/100] ✗ openstack/app-catalog-common - 活動なし
+  [77/100] ✗ openstack/app-catalog-ui - 活動なし
+  [78/100] ✗ openstack/arch-design - 活動なし
+  [79/100] ✗ openstack/arch-wg - 活動なし
+  [80/100] ✗ openstack/astara - 活動なし
+  [81/100] ✗ openstack/astara-appliance - 活動なし
+  [82/100] ✗ openstack/astara-horizon - 活動なし
+  [83/100] ✗ openstack/astara-neutron - 活動なし
+  [84/100] ✗ openstack/auto-scaling-sig - 活動なし
+  [85/100] ✗ openstack/automaton - 活動なし
+  [86/100] ✗ openstack/bandit - 活動なし
+  [87/100] ✗ openstack/barbican - 活動なし
+  [88/100] ✗ openstack/barbican-specs - 活動なし
+  [89/100] ✗ openstack/barbican-tempest-plugin - 活動なし
+  [90/100] ✗ openstack/barbican-ui - 活動なし
+  [91/100] ✗ openstack/bashate - 活動なし
+  [92/100] ✗ openstack/bifrost - 活動なし
+  [93/100] ✗ openstack/blazar - 活動なし
+  [94/100] ✗ openstack/blazar-dashboard - 活動なし
+  [95/100] ✗ openstack/blazar-nova - 活動なし
+  [96/100] ✗ openstack/blazar-specs - 活動なし
+  [97/100] ✗ openstack/blazar-tempest-plugin - 活動なし
+  [98/100] ✗ openstack/bugdaystats - 活動なし
+  [99/100] ✗ openstack/castellan - 活動なし
+  [100/100] ✗ openstack/castellan-ui - 活動なし
+
+OpenStack: 0個のアクティブプロジェクト
+
+================================================================================
+サマリー
+================================================================================
+Chromium    :   0個のアクティブプロジェクト - ⚠️ 0個のみ（50個未満）
+Android     :   0個のアクティブプロジェクト - ⚠️ 0個のみ（50個未満）
+Qt          :   0個のアクティブプロジェクト - ⚠️ 0個のみ（50個未満）
+OpenStack   :   0個のアクティブプロジェクト - ⚠️ 0個のみ（50個未満）
+
+詳細結果: outputs/platform_comparison/active_projects_count.json

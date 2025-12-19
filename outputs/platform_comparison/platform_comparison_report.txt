@@ -1,0 +1,50 @@
+================================================================================
+4プラットフォーム比較分析レポート
+================================================================================
+
+## 1. 基本統計量
+
+           Total Reviews  Positive Rate  Negative Rate  N Projects  N Reviewers  Cross-Project Rate  Avg Project Count  Avg Past Reviews (30d)  Avg Past Reviews (90d)  Avg Path Jaccard
+Platform                                                                                                                                                                                
+OpenStack         119010       0.617427       0.382573          48         1855            0.856466           9.724754                     NaN                     NaN               NaN
+Qt                  3121       0.437680       0.562320          39          249            0.738866           4.095803                     NaN                     NaN               NaN
+Android             7155       0.670580       0.329420          26          366            0.767016           3.942418                     NaN                     NaN               NaN
+Chromium             236       0.716102       0.283898          10           44            0.046610           0.881356                     NaN                     NaN               NaN
+
+## 2. 予測性能比較
+
+### OpenStack
+  F1スコア平均: 0.9057
+  F1スコア標準偏差: 0.0288
+
+### Qt
+  F1スコア平均: 0.8161
+  F1スコア標準偏差: 0.0549
+
+### Android
+  F1スコア平均: 0.9434
+  F1スコア標準偏差: 0.0544
+
+### Chromium
+  F1スコア平均: 0.8556
+  F1スコア標準偏差: 0.1511
+
+## 3. 主な発見
+
+### データサイズ順:
+  OpenStack: 119,010 レビューリクエスト
+  Android: 7,155 レビューリクエスト
+  Qt: 3,121 レビューリクエスト
+  Chromium: 236 レビューリクエスト
+
+### クロスプロジェクト活動率:
+  OpenStack: 85.6%
+  Qt: 73.9%
+  Android: 76.7%
+  Chromium: 4.7%
+
+### F1スコア順:
+  Android: 0.9434
+  OpenStack: 0.9057
+  Chromium: 0.8556
+  Qt: 0.8161

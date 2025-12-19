@@ -1,0 +1,5 @@
+Platform,Total_Reviews,Cross_Project_Rate,F1_Score,N_Projects
+OpenStack,119010.0,0.856,0.9057,48.0
+Qt,3121.0,0.739,0.8161,39.0
+Android,7155.0,0.767,0.9434,26.0
+Chromium,236.0,0.047,0.8556,10.0

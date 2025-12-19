@@ -1,0 +1,309 @@
+==========================================
+Android 50プロジェクトデータ収集
+==========================================
+
+対象プロジェクト数: 50
+
+期間: 2021-01-01 ～ 2024-01-01
+出力: data/android_50proj_2021_2024.csv
+
+プロジェクトリスト（先頭10件）:
+  platform/build
+  platform/build/abfs
+  platform/build/bazel
+  platform/build/bazel_common_rules
+  platform/build/blueprint
+  platform/art
+  platform/bionic
+  platform/development
+  platform/external/AFLplusplus
+  platform/external/ARMComputeLibrary
+
+データ収集を開始...
+
+2025-12-17 15:38:53,787 - INFO - ============================================================
+2025-12-17 15:38:53,787 - INFO - データセット構築パイプライン
+2025-12-17 15:38:53,787 - INFO - ============================================================
+2025-12-17 15:38:53,787 - INFO - Gerrit URL: https://android-review.googlesource.com
+2025-12-17 15:38:53,787 - INFO - Projects: ['platform/build', 'platform/build/abfs', 'platform/build/bazel', 'platform/build/bazel_common_rules', 'platform/build/blueprint', 'platform/art', 'platform/bionic', 'platform/development', 'platform/external/AFLplusplus', 'platform/external/ARMComputeLibrary', 'platform/external/AntennaPod/AntennaPod', 'platform/external/AntennaPod/AudioPlayer', 'platform/external/AntennaPod/afollestad', 'platform/cts', 'platform/abi/cpp', 'platform/apisurface', 'platform/bbuildbot_config', 'platform/bootable/bootloader/legacy', 'platform/bootable/deprecated-ota', 'platform/bootable/diskinstaller', 'platform/bootable/libbootloader', 'platform/bootable/recovery', 'platform/brillo', 'platform/build/docker', 'platform/build/kati', 'platform/build/orchestrator', 'platform/build/pesto', 'platform/build/release', 'platform/build/soong', 'platform/build/trunk_release', 'platform/compatibility/cdd', 'platform/dalvik', 'platform/dalvik-snapshot', 'platform/dalvik2', 'platform/developers/build', 'platform/developers/demos', 'platform/developers/docs', 'platform/developers/samples/android', 'platform/docs/source.android.com', 'platform/external/ComputeLibrary', 'platform/external/FP16', 'platform/external/FXdiv', 'platform/external/ImageMagick', 'platform/external/Little-CMS', 'platform/external/MPAndroidChart', 'platform/external/Mako', 'platform/external/Microsoft-GSL', 'platform/external/Microsoft-unittest-cpp', 'platform/external/OpenCL-CLHPP', 'platform/external/OpenCL-CTS']
+2025-12-17 15:38:53,787 - INFO - Period: 2021-01-01 to 2024-01-01
+2025-12-17 15:38:53,787 - INFO - Response window: 14 days
+2025-12-17 15:38:53,787 - INFO - Output: data/android_50proj_2021_2024.csv
+2025-12-17 15:38:53,787 - INFO - ============================================================
+2025-12-17 15:38:53,787 - INFO - 
+Fetching data for platform/build...
+2025-12-17 15:38:53,787 - INFO - Fetching changes for platform/build from 2021-01-01 to 2024-01-01
+2025-12-17 15:39:25,061 - ERROR - API request failed: https://android-review.googlesource.com/changes/ - HTTPSConnectionPool(host='android-review.googlesource.com', port=443): Read timed out. (read timeout=30)
+2025-12-17 15:39:25,061 - ERROR - Error fetching changes: HTTPSConnectionPool(host='android-review.googlesource.com', port=443): Read timed out. (read timeout=30)
+2025-12-17 15:39:25,062 - INFO - Total changes fetched: 0
+2025-12-17 15:39:25,062 - INFO - 
+Fetching data for platform/build/abfs...
+2025-12-17 15:39:25,062 - INFO - Fetching changes for platform/build/abfs from 2021-01-01 to 2024-01-01
+2025-12-17 15:39:25,541 - INFO - Total changes fetched: 0
+2025-12-17 15:39:25,541 - INFO - 
+Fetching data for platform/build/bazel...
+2025-12-17 15:39:25,541 - INFO - Fetching changes for platform/build/bazel from 2021-01-01 to 2024-01-01
+2025-12-17 15:39:55,445 - INFO -   Fetched 500 changes so far...
+2025-12-17 15:40:20,446 - INFO -   Fetched 1000 changes so far...
+2025-12-17 15:40:39,064 - INFO -   Fetched 1500 changes so far...
+2025-12-17 15:41:03,994 - INFO -   Fetched 2000 changes so far...
+2025-12-17 15:41:24,419 - INFO -   Fetched 2500 changes so far...
+2025-12-17 15:41:30,471 - INFO -   Fetched 2629 changes so far...
+2025-12-17 15:41:30,471 - INFO - Total changes fetched: 2629
+2025-12-17 15:41:30,471 - INFO - 
+Fetching data for platform/build/bazel_common_rules...
+2025-12-17 15:41:30,471 - INFO - Fetching changes for platform/build/bazel_common_rules from 2021-01-01 to 2024-01-01
+2025-12-17 15:41:38,613 - INFO -   Fetched 199 changes so far...
+2025-12-17 15:41:38,613 - INFO - Total changes fetched: 199
+2025-12-17 15:41:38,613 - INFO - 
+Fetching data for platform/build/blueprint...
+2025-12-17 15:41:38,613 - INFO - Fetching changes for platform/build/blueprint from 2021-01-01 to 2024-01-01
+2025-12-17 15:41:59,336 - INFO -   Fetched 500 changes so far...
+2025-12-17 15:42:01,971 - INFO -   Fetched 537 changes so far...
+2025-12-17 15:42:01,971 - INFO - Total changes fetched: 537
+2025-12-17 15:42:01,971 - INFO - 
+Fetching data for platform/art...
+2025-12-17 15:42:01,971 - INFO - Fetching changes for platform/art from 2021-01-01 to 2024-01-01
+2025-12-17 15:42:31,974 - ERROR - API request failed: https://android-review.googlesource.com/changes/ - HTTPSConnectionPool(host='android-review.googlesource.com', port=443): Read timed out. (read timeout=30)
+2025-12-17 15:42:31,976 - ERROR - Error fetching changes: HTTPSConnectionPool(host='android-review.googlesource.com', port=443): Read timed out. (read timeout=30)
+2025-12-17 15:42:31,976 - INFO - Total changes fetched: 0
+2025-12-17 15:42:31,976 - INFO - 
+Fetching data for platform/bionic...
+2025-12-17 15:42:31,976 - INFO - Fetching changes for platform/bionic from 2021-01-01 to 2024-01-01
+2025-12-17 15:43:02,087 - ERROR - API request failed: https://android-review.googlesource.com/changes/ - HTTPSConnectionPool(host='android-review.googlesource.com', port=443): Read timed out. (read timeout=30)
+2025-12-17 15:43:02,088 - ERROR - Error fetching changes: HTTPSConnectionPool(host='android-review.googlesource.com', port=443): Read timed out. (read timeout=30)
+2025-12-17 15:43:02,088 - INFO - Total changes fetched: 0
+2025-12-17 15:43:02,088 - INFO - 
+Fetching data for platform/development...
+2025-12-17 15:43:02,088 - INFO - Fetching changes for platform/development from 2021-01-01 to 2024-01-01
+2025-12-17 15:43:32,186 - ERROR - API request failed: https://android-review.googlesource.com/changes/ - HTTPSConnectionPool(host='android-review.googlesource.com', port=443): Read timed out. (read timeout=30)
+2025-12-17 15:43:32,187 - ERROR - Error fetching changes: HTTPSConnectionPool(host='android-review.googlesource.com', port=443): Read timed out. (read timeout=30)
+2025-12-17 15:43:32,187 - INFO - Total changes fetched: 0
+2025-12-17 15:43:32,187 - INFO - 
+Fetching data for platform/external/AFLplusplus...
+2025-12-17 15:43:32,187 - INFO - Fetching changes for platform/external/AFLplusplus from 2021-01-01 to 2024-01-01
+2025-12-17 15:43:37,109 - INFO -   Fetched 38 changes so far...
+2025-12-17 15:43:37,109 - INFO - Total changes fetched: 38
+2025-12-17 15:43:37,109 - INFO - 
+Fetching data for platform/external/ARMComputeLibrary...
+2025-12-17 15:43:37,110 - INFO - Fetching changes for platform/external/ARMComputeLibrary from 2021-01-01 to 2024-01-01
+2025-12-17 15:43:37,638 - INFO - Total changes fetched: 0
+2025-12-17 15:43:37,638 - INFO - 
+Fetching data for platform/external/AntennaPod/AntennaPod...
+2025-12-17 15:43:37,639 - INFO - Fetching changes for platform/external/AntennaPod/AntennaPod from 2021-01-01 to 2024-01-01
+2025-12-17 15:43:37,759 - INFO - Total changes fetched: 0
+2025-12-17 15:43:37,759 - INFO - 
+Fetching data for platform/external/AntennaPod/AudioPlayer...
+2025-12-17 15:43:37,759 - INFO - Fetching changes for platform/external/AntennaPod/AudioPlayer from 2021-01-01 to 2024-01-01
+2025-12-17 15:43:38,018 - INFO - Total changes fetched: 0
+2025-12-17 15:43:38,018 - INFO - 
+Fetching data for platform/external/AntennaPod/afollestad...
+2025-12-17 15:43:38,018 - INFO - Fetching changes for platform/external/AntennaPod/afollestad from 2021-01-01 to 2024-01-01
+2025-12-17 15:43:38,123 - INFO - Total changes fetched: 0
+2025-12-17 15:43:38,123 - INFO - 
+Fetching data for platform/cts...
+2025-12-17 15:43:38,123 - INFO - Fetching changes for platform/cts from 2021-01-01 to 2024-01-01
+2025-12-17 15:44:08,128 - ERROR - API request failed: https://android-review.googlesource.com/changes/ - HTTPSConnectionPool(host='android-review.googlesource.com', port=443): Read timed out. (read timeout=30)
+2025-12-17 15:44:08,129 - ERROR - Error fetching changes: HTTPSConnectionPool(host='android-review.googlesource.com', port=443): Read timed out. (read timeout=30)
+2025-12-17 15:44:08,129 - INFO - Total changes fetched: 0
+2025-12-17 15:44:08,129 - INFO - 
+Fetching data for platform/abi/cpp...
+2025-12-17 15:44:08,129 - INFO - Fetching changes for platform/abi/cpp from 2021-01-01 to 2024-01-01
+2025-12-17 15:44:08,739 - INFO -   Fetched 1 changes so far...
+2025-12-17 15:44:08,739 - INFO - Total changes fetched: 1
+2025-12-17 15:44:08,739 - INFO - 
+Fetching data for platform/apisurface...
+2025-12-17 15:44:08,739 - INFO - Fetching changes for platform/apisurface from 2021-01-01 to 2024-01-01
+2025-12-17 15:44:09,557 - INFO -   Fetched 1 changes so far...
+2025-12-17 15:44:09,557 - INFO - Total changes fetched: 1
+2025-12-17 15:44:09,557 - INFO - 
+Fetching data for platform/bbuildbot_config...
+2025-12-17 15:44:09,558 - INFO - Fetching changes for platform/bbuildbot_config from 2021-01-01 to 2024-01-01
+2025-12-17 15:44:11,041 - INFO -   Fetched 3 changes so far...
+2025-12-17 15:44:11,041 - INFO - Total changes fetched: 3
+2025-12-17 15:44:11,041 - INFO - 
+Fetching data for platform/bootable/bootloader/legacy...
+2025-12-17 15:44:11,041 - INFO - Fetching changes for platform/bootable/bootloader/legacy from 2021-01-01 to 2024-01-01
+2025-12-17 15:44:11,153 - INFO - Total changes fetched: 0
+2025-12-17 15:44:11,154 - INFO - 
+Fetching data for platform/bootable/deprecated-ota...
+2025-12-17 15:44:11,154 - INFO - Fetching changes for platform/bootable/deprecated-ota from 2021-01-01 to 2024-01-01
+2025-12-17 15:44:11,291 - INFO - Total changes fetched: 0
+2025-12-17 15:44:11,291 - INFO - 
+Fetching data for platform/bootable/diskinstaller...
+2025-12-17 15:44:11,292 - INFO - Fetching changes for platform/bootable/diskinstaller from 2021-01-01 to 2024-01-01
+2025-12-17 15:44:11,745 - INFO - Total changes fetched: 0
+2025-12-17 15:44:11,745 - INFO - 
+Fetching data for platform/bootable/libbootloader...
+2025-12-17 15:44:11,745 - INFO - Fetching changes for platform/bootable/libbootloader from 2021-01-01 to 2024-01-01
+2025-12-17 15:44:23,006 - INFO -   Fetched 136 changes so far...
+2025-12-17 15:44:23,006 - INFO - Total changes fetched: 136
+2025-12-17 15:44:23,006 - INFO - 
+Fetching data for platform/bootable/recovery...
+2025-12-17 15:44:23,007 - INFO - Fetching changes for platform/bootable/recovery from 2021-01-01 to 2024-01-01
+2025-12-17 15:44:46,229 - INFO -   Fetched 344 changes so far...
+2025-12-17 15:44:46,229 - INFO - Total changes fetched: 344
+2025-12-17 15:44:46,229 - INFO - 
+Fetching data for platform/brillo...
+2025-12-17 15:44:46,229 - INFO - Fetching changes for platform/brillo from 2021-01-01 to 2024-01-01
+2025-12-17 15:44:46,537 - INFO - Total changes fetched: 0
+2025-12-17 15:44:46,537 - INFO - 
+Fetching data for platform/build/docker...
+2025-12-17 15:44:46,538 - INFO - Fetching changes for platform/build/docker from 2021-01-01 to 2024-01-01
+2025-12-17 15:44:47,359 - INFO -   Fetched 1 changes so far...
+2025-12-17 15:44:47,359 - INFO - Total changes fetched: 1
+2025-12-17 15:44:47,359 - INFO - 
+Fetching data for platform/build/kati...
+2025-12-17 15:44:47,359 - INFO - Fetching changes for platform/build/kati from 2021-01-01 to 2024-01-01
+2025-12-17 15:44:50,231 - INFO -   Fetched 35 changes so far...
+2025-12-17 15:44:50,231 - INFO - Total changes fetched: 35
+2025-12-17 15:44:50,231 - INFO - 
+Fetching data for platform/build/orchestrator...
+2025-12-17 15:44:50,231 - INFO - Fetching changes for platform/build/orchestrator from 2021-01-01 to 2024-01-01
+2025-12-17 15:44:56,773 - INFO -   Fetched 200 changes so far...
+2025-12-17 15:44:56,774 - INFO - Total changes fetched: 200
+2025-12-17 15:44:56,774 - INFO - 
+Fetching data for platform/build/pesto...
+2025-12-17 15:44:56,774 - INFO - Fetching changes for platform/build/pesto from 2021-01-01 to 2024-01-01
+2025-12-17 15:44:58,531 - INFO -   Fetched 27 changes so far...
+2025-12-17 15:44:58,532 - INFO - Total changes fetched: 27
+2025-12-17 15:44:58,532 - INFO - 
+Fetching data for platform/build/release...
+2025-12-17 15:44:58,532 - INFO - Fetching changes for platform/build/release from 2021-01-01 to 2024-01-01
+2025-12-17 15:45:08,944 - INFO -   Fetched 138 changes so far...
+2025-12-17 15:45:08,945 - INFO - Total changes fetched: 138
+2025-12-17 15:45:08,945 - INFO - 
+Fetching data for platform/build/soong...
+2025-12-17 15:45:08,945 - INFO - Fetching changes for platform/build/soong from 2021-01-01 to 2024-01-01
+2025-12-17 15:45:38,947 - ERROR - API request failed: https://android-review.googlesource.com/changes/ - HTTPSConnectionPool(host='android-review.googlesource.com', port=443): Read timed out. (read timeout=30)
+2025-12-17 15:45:38,948 - ERROR - Error fetching changes: HTTPSConnectionPool(host='android-review.googlesource.com', port=443): Read timed out. (read timeout=30)
+2025-12-17 15:45:38,948 - INFO - Total changes fetched: 0
+2025-12-17 15:45:38,948 - INFO - 
+Fetching data for platform/build/trunk_release...
+2025-12-17 15:45:38,948 - INFO - Fetching changes for platform/build/trunk_release from 2021-01-01 to 2024-01-01
+2025-12-17 15:45:39,224 - INFO - Total changes fetched: 0
+2025-12-17 15:45:39,224 - INFO - 
+Fetching data for platform/compatibility/cdd...
+2025-12-17 15:45:39,224 - INFO - Fetching changes for platform/compatibility/cdd from 2021-01-01 to 2024-01-01
+2025-12-17 15:45:44,436 - INFO -   Fetched 59 changes so far...
+2025-12-17 15:45:44,436 - INFO - Total changes fetched: 59
+2025-12-17 15:45:44,436 - INFO - 
+Fetching data for platform/dalvik...
+2025-12-17 15:45:44,436 - INFO - Fetching changes for platform/dalvik from 2021-01-01 to 2024-01-01
+2025-12-17 15:45:53,452 - INFO -   Fetched 147 changes so far...
+2025-12-17 15:45:53,452 - INFO - Total changes fetched: 147
+2025-12-17 15:45:53,453 - INFO - 
+Fetching data for platform/dalvik-snapshot...
+2025-12-17 15:45:53,453 - INFO - Fetching changes for platform/dalvik-snapshot from 2021-01-01 to 2024-01-01
+2025-12-17 15:45:53,717 - INFO - Total changes fetched: 0
+2025-12-17 15:45:53,717 - INFO - 
+Fetching data for platform/dalvik2...
+2025-12-17 15:45:53,717 - INFO - Fetching changes for platform/dalvik2 from 2021-01-01 to 2024-01-01
+2025-12-17 15:45:54,075 - INFO - Total changes fetched: 0
+2025-12-17 15:45:54,076 - INFO - 
+Fetching data for platform/developers/build...
+2025-12-17 15:45:54,076 - INFO - Fetching changes for platform/developers/build from 2021-01-01 to 2024-01-01
+2025-12-17 15:45:57,192 - INFO -   Fetched 37 changes so far...
+2025-12-17 15:45:57,194 - INFO - Total changes fetched: 37
+2025-12-17 15:45:57,194 - INFO - 
+Fetching data for platform/developers/demos...
+2025-12-17 15:45:57,194 - INFO - Fetching changes for platform/developers/demos from 2021-01-01 to 2024-01-01
+2025-12-17 15:45:57,459 - INFO - Total changes fetched: 0
+2025-12-17 15:45:57,459 - INFO - 
+Fetching data for platform/developers/docs...
+2025-12-17 15:45:57,460 - INFO - Fetching changes for platform/developers/docs from 2021-01-01 to 2024-01-01
+2025-12-17 15:46:00,056 - INFO -   Fetched 100 changes so far...
+2025-12-17 15:46:00,057 - INFO - Total changes fetched: 100
+2025-12-17 15:46:00,057 - INFO - 
+Fetching data for platform/developers/samples/android...
+2025-12-17 15:46:00,057 - INFO - Fetching changes for platform/developers/samples/android from 2021-01-01 to 2024-01-01
+2025-12-17 15:46:01,690 - INFO -   Fetched 40 changes so far...
+2025-12-17 15:46:01,690 - INFO - Total changes fetched: 40
+2025-12-17 15:46:01,690 - INFO - 
+Fetching data for platform/docs/source.android.com...
+2025-12-17 15:46:01,690 - INFO - Fetching changes for platform/docs/source.android.com from 2021-01-01 to 2024-01-01
+2025-12-17 15:46:06,099 - INFO -   Fetched 3 changes so far...
+2025-12-17 15:46:06,100 - INFO - Total changes fetched: 3
+2025-12-17 15:46:06,100 - INFO - 
+Fetching data for platform/external/ComputeLibrary...
+2025-12-17 15:46:06,100 - INFO - Fetching changes for platform/external/ComputeLibrary from 2021-01-01 to 2024-01-01
+2025-12-17 15:46:31,755 - INFO -   Fetched 30 changes so far...
+2025-12-17 15:46:31,755 - INFO - Total changes fetched: 30
+2025-12-17 15:46:31,755 - INFO - 
+Fetching data for platform/external/FP16...
+2025-12-17 15:46:31,755 - INFO - Fetching changes for platform/external/FP16 from 2021-01-01 to 2024-01-01
+2025-12-17 15:46:36,113 - INFO -   Fetched 71 changes so far...
+2025-12-17 15:46:36,113 - INFO - Total changes fetched: 71
+2025-12-17 15:46:36,113 - INFO - 
+Fetching data for platform/external/FXdiv...
+2025-12-17 15:46:36,113 - INFO - Fetching changes for platform/external/FXdiv from 2021-01-01 to 2024-01-01
+2025-12-17 15:46:37,574 - INFO -   Fetched 34 changes so far...
+2025-12-17 15:46:37,574 - INFO - Total changes fetched: 34
+2025-12-17 15:46:37,574 - INFO - 
+Fetching data for platform/external/ImageMagick...
+2025-12-17 15:46:37,575 - INFO - Fetching changes for platform/external/ImageMagick from 2021-01-01 to 2024-01-01
+2025-12-17 15:46:45,680 - INFO -   Fetched 46 changes so far...
+2025-12-17 15:46:45,680 - INFO - Total changes fetched: 46
+2025-12-17 15:46:45,680 - INFO - 
+Fetching data for platform/external/Little-CMS...
+2025-12-17 15:46:45,680 - INFO - Fetching changes for platform/external/Little-CMS from 2021-01-01 to 2024-01-01
+2025-12-17 15:46:46,009 - INFO - Total changes fetched: 0
+2025-12-17 15:46:46,009 - INFO - 
+Fetching data for platform/external/MPAndroidChart...
+2025-12-17 15:46:46,009 - INFO - Fetching changes for platform/external/MPAndroidChart from 2021-01-01 to 2024-01-01
+2025-12-17 15:46:47,710 - INFO -   Fetched 16 changes so far...
+2025-12-17 15:46:47,710 - INFO - Total changes fetched: 16
+2025-12-17 15:46:47,710 - INFO - 
+Fetching data for platform/external/Mako...
+2025-12-17 15:46:47,710 - INFO - Fetching changes for platform/external/Mako from 2021-01-01 to 2024-01-01
+2025-12-17 15:46:47,823 - INFO - Total changes fetched: 0
+2025-12-17 15:46:47,823 - INFO - 
+Fetching data for platform/external/Microsoft-GSL...
+2025-12-17 15:46:47,823 - INFO - Fetching changes for platform/external/Microsoft-GSL from 2021-01-01 to 2024-01-01
+2025-12-17 15:46:48,359 - INFO -   Fetched 1 changes so far...
+2025-12-17 15:46:48,359 - INFO - Total changes fetched: 1
+2025-12-17 15:46:48,359 - INFO - 
+Fetching data for platform/external/Microsoft-unittest-cpp...
+2025-12-17 15:46:48,359 - INFO - Fetching changes for platform/external/Microsoft-unittest-cpp from 2021-01-01 to 2024-01-01
+2025-12-17 15:46:48,504 - INFO - Total changes fetched: 0
+2025-12-17 15:46:48,504 - INFO - 
+Fetching data for platform/external/OpenCL-CLHPP...
+2025-12-17 15:46:48,504 - INFO - Fetching changes for platform/external/OpenCL-CLHPP from 2021-01-01 to 2024-01-01
+2025-12-17 15:46:48,875 - INFO - Total changes fetched: 0
+2025-12-17 15:46:48,875 - INFO - 
+Fetching data for platform/external/OpenCL-CTS...
+2025-12-17 15:46:48,875 - INFO - Fetching changes for platform/external/OpenCL-CTS from 2021-01-01 to 2024-01-01
+2025-12-17 15:46:50,448 - INFO -   Fetched 46 changes so far...
+2025-12-17 15:46:50,448 - INFO - Total changes fetched: 46
+2025-12-17 15:46:50,448 - INFO - 
+Total changes: 4919
+2025-12-17 15:46:50,448 - INFO - Extracting review requests...
+Extracting review requests:   0%|          | 0/4919 [00:00<?, ?it/s]Extracting review requests:  77%|███████▋  | 3783/4919 [00:00<00:00, 37822.82it/s]Extracting review requests: 100%|██████████| 4919/4919 [00:00<00:00, 42409.55it/s]
+2025-12-17 15:46:50,582 - INFO - Extracted 7155 review requests
+2025-12-17 15:46:50,582 - INFO - Computing history-based features...
+Computing features:   0%|          | 0/7155 [00:00<?, ?it/s]Computing features:   3%|▎         | 183/7155 [00:00<00:03, 1820.90it/s]Computing features:   5%|▌         | 366/7155 [00:00<00:05, 1247.17it/s]Computing features:   7%|▋         | 502/7155 [00:00<00:05, 1142.35it/s]Computing features:   9%|▊         | 622/7155 [00:00<00:05, 1109.51it/s]Computing features:  10%|█         | 736/7155 [00:00<00:06, 1010.95it/s]Computing features:  12%|█▏        | 839/7155 [00:00<00:06, 975.14it/s] Computing features:  13%|█▎        | 938/7155 [00:00<00:06, 939.44it/s]Computing features:  15%|█▍        | 1044/7155 [00:00<00:06, 971.51it/s]Computing features:  16%|█▌        | 1142/7155 [00:01<00:06, 969.39it/s]Computing features:  17%|█▋        | 1240/7155 [00:01<00:06, 923.47it/s]Computing features:  19%|█▊        | 1340/7155 [00:01<00:06, 944.58it/s]Computing features:  20%|██        | 1436/7155 [00:01<00:06, 912.49it/s]Computing features:  22%|██▏       | 1550/7155 [00:01<00:05, 974.52it/s]Computing features:  23%|██▎       | 1649/7155 [00:01<00:05, 920.80it/s]Computing features:  24%|██▍       | 1743/7155 [00:01<00:05, 921.94it/s]Computing features:  26%|██▌       | 1836/7155 [00:01<00:05, 889.54it/s]Computing features:  27%|██▋       | 1930/7155 [00:01<00:05, 903.36it/s]Computing features:  28%|██▊       | 2027/7155 [00:02<00:05, 920.32it/s]Computing features:  30%|██▉       | 2120/7155 [00:02<00:05, 914.88it/s]Computing features:  31%|███       | 2223/7155 [00:02<00:05, 946.65it/s]Computing features:  32%|███▏      | 2318/7155 [00:02<00:05, 898.02it/s]Computing features:  34%|███▍      | 2426/7155 [00:02<00:04, 946.06it/s]Computing features:  35%|███▌      | 2522/7155 [00:02<00:04, 939.68it/s]Computing features:  37%|███▋      | 2617/7155 [00:02<00:04, 908.59it/s]Computing features:  38%|███▊      | 2709/7155 [00:02<00:04, 891.07it/s]Computing features:  39%|███▉      | 2799/7155 [00:02<00:04, 889.05it/s]Computing features:  40%|████      | 2889/7155 [00:03<00:04, 890.90it/s]Computing features:  42%|████▏     | 3009/7155 [00:03<00:04, 979.83it/s]Computing features:  43%|████▎     | 3108/7155 [00:03<00:04, 968.12it/s]Computing features:  45%|████▌     | 3229/7155 [00:03<00:03, 1037.11it/s]Computing features:  47%|████▋     | 3334/7155 [00:03<00:03, 963.09it/s] Computing features:  48%|████▊     | 3432/7155 [00:03<00:04, 920.35it/s]Computing features:  49%|████▉     | 3539/7155 [00:03<00:03, 960.72it/s]Computing features:  51%|█████     | 3637/7155 [00:03<00:03, 958.87it/s]Computing features:  52%|█████▏    | 3734/7155 [00:03<00:03, 909.15it/s]Computing features:  54%|█████▎    | 3838/7155 [00:03<00:03, 942.30it/s]Computing features:  55%|█████▍    | 3934/7155 [00:04<00:03, 939.06it/s]Computing features:  56%|█████▋    | 4029/7155 [00:04<00:03, 936.23it/s]Computing features:  58%|█████▊    | 4124/7155 [00:04<00:03, 850.72it/s]Computing features:  59%|█████▉    | 4211/7155 [00:04<00:03, 845.32it/s]Computing features:  60%|██████    | 4308/7155 [00:04<00:03, 875.61it/s]Computing features:  61%|██████▏   | 4397/7155 [00:04<00:03, 780.96it/s]Computing features:  63%|██████▎   | 4478/7155 [00:04<00:03, 748.41it/s]Computing features:  64%|██████▎   | 4555/7155 [00:04<00:03, 692.04it/s]Computing features:  65%|██████▍   | 4632/7155 [00:05<00:03, 711.61it/s]Computing features:  66%|██████▌   | 4710/7155 [00:05<00:03, 724.72it/s]Computing features:  67%|██████▋   | 4800/7155 [00:05<00:03, 771.67it/s]Computing features:  68%|██████▊   | 4884/7155 [00:05<00:02, 790.36it/s]Computing features:  69%|██████▉   | 4964/7155 [00:05<00:02, 734.31it/s]Computing features:  70%|███████   | 5039/7155 [00:05<00:03, 702.84it/s]Computing features:  71%|███████▏  | 5111/7155 [00:05<00:03, 655.56it/s]Computing features:  72%|███████▏  | 5178/7155 [00:05<00:03, 637.47it/s]Computing features:  73%|███████▎  | 5243/7155 [00:05<00:03, 614.51it/s]Computing features:  74%|███████▍  | 5305/7155 [00:06<00:03, 604.65it/s]Computing features:  75%|███████▌  | 5370/7155 [00:06<00:02, 615.85it/s]Computing features:  76%|███████▌  | 5436/7155 [00:06<00:02, 627.46it/s]Computing features:  77%|███████▋  | 5500/7155 [00:06<00:02, 596.05it/s]Computing features:  78%|███████▊  | 5565/7155 [00:06<00:02, 609.92it/s]Computing features:  79%|███████▊  | 5632/7155 [00:06<00:02, 625.83it/s]Computing features:  80%|███████▉  | 5698/7155 [00:06<00:02, 631.71it/s]Computing features:  81%|████████  | 5765/7155 [00:06<00:02, 640.23it/s]Computing features:  81%|████████▏ | 5831/7155 [00:06<00:02, 642.44it/s]Computing features:  82%|████████▏ | 5896/7155 [00:07<00:02, 581.00it/s]Computing features:  83%|████████▎ | 5957/7155 [00:07<00:02, 585.81it/s]Computing features:  84%|████████▍ | 6022/7155 [00:07<00:01, 603.51it/s]Computing features:  85%|████████▌ | 6086/7155 [00:07<00:01, 613.71it/s]Computing features:  86%|████████▌ | 6159/7155 [00:07<00:01, 646.01it/s]Computing features:  87%|████████▋ | 6225/7155 [00:07<00:01, 642.13it/s]Computing features:  88%|████████▊ | 6292/7155 [00:07<00:01, 649.48it/s]Computing features:  89%|████████▉ | 6358/7155 [00:07<00:01, 603.43it/s]Computing features:  90%|████████▉ | 6420/7155 [00:07<00:01, 577.58it/s]Computing features:  91%|█████████ | 6483/7155 [00:07<00:01, 591.14it/s]Computing features:  92%|█████████▏| 6564/7155 [00:08<00:00, 652.62it/s]Computing features:  93%|█████████▎| 6631/7155 [00:08<00:00, 636.89it/s]Computing features:  94%|█████████▎| 6705/7155 [00:08<00:00, 661.04it/s]Computing features:  95%|█████████▍| 6772/7155 [00:08<00:00, 647.38it/s]Computing features:  96%|█████████▌| 6838/7155 [00:08<00:00, 640.95it/s]Computing features:  97%|█████████▋| 6922/7155 [00:08<00:00, 697.91it/s]Computing features:  98%|█████████▊| 7014/7155 [00:08<00:00, 762.20it/s]Computing features:  99%|█████████▉| 7101/7155 [00:08<00:00, 790.79it/s]Computing features: 100%|██████████| 7155/7155 [00:08<00:00, 806.17it/s]
+2025-12-17 15:47:00,236 - INFO - 
+Dataset shape: (7155, 67)
+2025-12-17 15:47:00,236 - INFO - Positive labels: 4798 (67.1%)
+2025-12-17 15:47:00,236 - INFO - Negative labels: 2357 (32.9%)
+2025-12-17 15:47:00,347 - INFO - 
+Dataset saved to: data/android_50proj_2021_2024.csv
+2025-12-17 15:47:00,347 - INFO - ============================================================
+2025-12-17 15:47:00,347 - INFO - 完了！
+2025-12-17 15:47:00,347 - INFO - ============================================================
+
+==========================================
+収集完了！
+==========================================
+
+データサマリー:
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pandas/__init__.py", line 49, in <module>
+    from pandas.core.api import (
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pandas/core/api.py", line 1, in <module>
+    from pandas._libs import (
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pandas/_libs/__init__.py", line 16, in <module>
+    import pandas._libs.pandas_parser  # isort: skip # type: ignore[reportUnusedImport]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ImportError: dlopen(/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pandas/_libs/pandas_parser.cpython-311-darwin.so, 0x0002): tried: '/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pandas/_libs/pandas_parser.cpython-311-darwin.so' (mach-o file, but is an incompatible architecture (have 'x86_64', need 'arm64e' or 'arm64')), '/System/Volumes/Preboot/Cryptexes/OS/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pandas/_libs/pandas_parser.cpython-311-darwin.so' (no such file), '/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pandas/_libs/pandas_parser.cpython-311-darwin.so' (mach-o file, but is an incompatible architecture (have 'x86_64', need 'arm64e' or 'arm64'))

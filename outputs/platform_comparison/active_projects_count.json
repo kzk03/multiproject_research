@@ -1,0 +1,18 @@
+{
+  "Chromium": {
+    "active_count": 0,
+    "projects": []
+  },
+  "Android": {
+    "active_count": 0,
+    "projects": []
+  },
+  "Qt": {
+    "active_count": 0,
+    "projects": []
+  },
+  "OpenStack": {
+    "active_count": 0,
+    "projects": []
+  }
+}

@@ -102,14 +102,14 @@ class GerritDataFetcher:
     - エラーハンドリングでAPI障害に対応
     """
 
-    def __init__(self, gerrit_url: str, timeout: int = 30):
+    def __init__(self, gerrit_url: str, timeout: int = 300):
         """
         GerritDataFetcherの初期化
 
         Args:
             gerrit_url: GerritサーバーのベースURL
                         例: https://review.opendev.org
-            timeout: HTTPリクエストのタイムアウト（秒、デフォルト: 30）
+            timeout: HTTPリクエストのタイムアウト（秒、デフォルト: 300）
                      大規模プロジェクトでは長めに設定
         """
         self.gerrit_url = gerrit_url.rstrip('/')  # 末尾のスラッシュを削除
@@ -241,8 +241,44 @@ class FeatureBuilder:
         """
         self.response_window_days = response_window_days
         self.bot_patterns = bot_patterns or [
+            # 従来のパターン
             'zuul', 'jenkins', 'ci@', 'bot@', 'gerrit@',
-            'noreply', 'openstack-infra', 'review@'
+            'noreply', 'openstack-infra', 'review@',
+            # Google service accounts
+            'gserviceaccount.com',
+            'appspot.gserviceaccount.com',
+            # LUCI automation
+            'luci-project-accounts',
+            'luci-bisection',
+            # Auto-rollers and automation
+            'autoroll',
+            'auto-roller',
+            'automerger',
+            'autosubmit',
+            'autorerun',
+            # Infrastructure and system accounts
+            'infra-',
+            'test-infra-',
+            '-infra@',
+            'system.gserviceaccount',
+            # Service accounts
+            'rubber-stamper',
+            'findit-for-me',
+            'tricium',
+            'chromeperf',
+            # Bot-related keywords
+            '-bot@',
+            '-robot',
+            'sheriffs-robots',
+            # Build and CI services
+            'android-build-',
+            'android-test-infra-',
+            'boq-android-',
+            # Other automation
+            'culprit-assistant',
+            'stale-change-watcher',
+            'presubmit-',
+            'workplan-finisher'
         ]
         
         # 各種履歴を保持

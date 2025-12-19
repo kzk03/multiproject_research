@@ -1,0 +1,282 @@
+==========================================
+Chromium 50プロジェクトデータ収集
+==========================================
+
+対象プロジェクト数: 50
+
+期間: 2021-01-01 ～ 2024-01-01
+出力: data/chromium_50proj_2021_2024.csv
+
+プロジェクトリスト（先頭10件）:
+  chromium/src
+  chromium/src/android_webview/glue
+  chromium/src/android_webview/support_library/boundary_interfaces
+  chromium/src/base
+  chromium/src/base/allocator/partition_allocator
+  chromium/src/base/trace_event/common
+  chromium/src/breakpad
+  chromium/src/build
+  chromium/src/build/config
+  chromium/src/build/toolchain
+
+データ収集を開始...
+
+2025-12-17 15:38:53,787 - INFO - ============================================================
+2025-12-17 15:38:53,787 - INFO - データセット構築パイプライン
+2025-12-17 15:38:53,787 - INFO - ============================================================
+2025-12-17 15:38:53,787 - INFO - Gerrit URL: https://chromium-review.googlesource.com
+2025-12-17 15:38:53,787 - INFO - Projects: ['chromium/src', 'chromium/src/android_webview/glue', 'chromium/src/android_webview/support_library/boundary_interfaces', 'chromium/src/base', 'chromium/src/base/allocator/partition_allocator', 'chromium/src/base/trace_event/common', 'chromium/src/breakpad', 'chromium/src/build', 'chromium/src/build/config', 'chromium/src/build/toolchain', 'chromium/tools/build', 'chromium/tools/chrome-devtools-frontend', 'chromium/tools/depot_tools', 'chromium/tools/deps2git', 'chromium/tools/perf', 'chromium/tools/third_party/xvfb', 'chromium/deps', 'chromium/deps/acid3', 'chromium/deps/aosp', 'chromium/deps/apache-mime4j', 'chromium/deps/bison', 'chromium/deps/class-dump', 'chromium/deps/cygwin', 'chromium/deps/findbugs', 'chromium/deps/flac', 'chromium/deps/gold', 'chromium/android_webview_next', 'chromium/buildtools', 'chromium/canvas_bench', 'chromium/cdm', 'chromium/deps/gperf', 'chromium/deps/gpu/software_rendering_list', 'chromium/deps/httpcomponents-client', 'chromium/deps/httpcomponents-core', 'chromium/deps/hunspell', 'chromium/deps/hunspell_dictionaries', 'chromium/deps/icu', 'chromium/deps/icu46', 'chromium/deps/icu52', 'chromium/deps/jarjar', 'chromium/deps/libexif', 'chromium/deps/libexif/sources', 'chromium/deps/libjpeg_turbo', 'chromium/deps/libmtp', 'chromium/deps/libsrtp', 'chromium/deps/libvpx', 'chromium/deps/lighttpd', 'chromium/deps/manifestdestiny', 'chromium/deps/mesa', 'chromium/deps/mozdownload']
+2025-12-17 15:38:53,787 - INFO - Period: 2021-01-01 to 2024-01-01
+2025-12-17 15:38:53,787 - INFO - Response window: 14 days
+2025-12-17 15:38:53,787 - INFO - Output: data/chromium_50proj_2021_2024.csv
+2025-12-17 15:38:53,787 - INFO - ============================================================
+2025-12-17 15:38:53,787 - INFO - 
+Fetching data for chromium/src...
+2025-12-17 15:38:53,787 - INFO - Fetching changes for chromium/src from 2021-01-01 to 2024-01-01
+2025-12-17 15:39:25,040 - ERROR - API request failed: https://chromium-review.googlesource.com/changes/ - HTTPSConnectionPool(host='chromium-review.googlesource.com', port=443): Read timed out. (read timeout=30)
+2025-12-17 15:39:25,040 - ERROR - Error fetching changes: HTTPSConnectionPool(host='chromium-review.googlesource.com', port=443): Read timed out. (read timeout=30)
+2025-12-17 15:39:25,040 - INFO - Total changes fetched: 0
+2025-12-17 15:39:25,040 - INFO - 
+Fetching data for chromium/src/android_webview/glue...
+2025-12-17 15:39:25,040 - INFO - Fetching changes for chromium/src/android_webview/glue from 2021-01-01 to 2024-01-01
+2025-12-17 15:39:25,394 - INFO - Total changes fetched: 0
+2025-12-17 15:39:25,395 - INFO - 
+Fetching data for chromium/src/android_webview/support_library/boundary_interfaces...
+2025-12-17 15:39:25,395 - INFO - Fetching changes for chromium/src/android_webview/support_library/boundary_interfaces from 2021-01-01 to 2024-01-01
+2025-12-17 15:39:25,578 - INFO - Total changes fetched: 0
+2025-12-17 15:39:25,578 - INFO - 
+Fetching data for chromium/src/base...
+2025-12-17 15:39:25,579 - INFO - Fetching changes for chromium/src/base from 2021-01-01 to 2024-01-01
+2025-12-17 15:39:25,820 - INFO - Total changes fetched: 0
+2025-12-17 15:39:25,821 - INFO - 
+Fetching data for chromium/src/base/allocator/partition_allocator...
+2025-12-17 15:39:25,821 - INFO - Fetching changes for chromium/src/base/allocator/partition_allocator from 2021-01-01 to 2024-01-01
+2025-12-17 15:39:26,197 - INFO - Total changes fetched: 0
+2025-12-17 15:39:26,197 - INFO - 
+Fetching data for chromium/src/base/trace_event/common...
+2025-12-17 15:39:26,197 - INFO - Fetching changes for chromium/src/base/trace_event/common from 2021-01-01 to 2024-01-01
+2025-12-17 15:39:26,315 - INFO - Total changes fetched: 0
+2025-12-17 15:39:26,315 - INFO - 
+Fetching data for chromium/src/breakpad...
+2025-12-17 15:39:26,316 - INFO - Fetching changes for chromium/src/breakpad from 2021-01-01 to 2024-01-01
+2025-12-17 15:39:26,431 - INFO - Total changes fetched: 0
+2025-12-17 15:39:26,431 - INFO - 
+Fetching data for chromium/src/build...
+2025-12-17 15:39:26,431 - INFO - Fetching changes for chromium/src/build from 2021-01-01 to 2024-01-01
+2025-12-17 15:39:26,542 - INFO - Total changes fetched: 0
+2025-12-17 15:39:26,542 - INFO - 
+Fetching data for chromium/src/build/config...
+2025-12-17 15:39:26,543 - INFO - Fetching changes for chromium/src/build/config from 2021-01-01 to 2024-01-01
+2025-12-17 15:39:26,740 - INFO - Total changes fetched: 0
+2025-12-17 15:39:26,740 - INFO - 
+Fetching data for chromium/src/build/toolchain...
+2025-12-17 15:39:26,740 - INFO - Fetching changes for chromium/src/build/toolchain from 2021-01-01 to 2024-01-01
+2025-12-17 15:39:26,853 - INFO - Total changes fetched: 0
+2025-12-17 15:39:26,853 - INFO - 
+Fetching data for chromium/tools/build...
+2025-12-17 15:39:26,853 - INFO - Fetching changes for chromium/tools/build from 2021-01-01 to 2024-01-01
+2025-12-17 15:39:56,857 - ERROR - API request failed: https://chromium-review.googlesource.com/changes/ - HTTPSConnectionPool(host='chromium-review.googlesource.com', port=443): Read timed out. (read timeout=30)
+2025-12-17 15:39:56,858 - ERROR - Error fetching changes: HTTPSConnectionPool(host='chromium-review.googlesource.com', port=443): Read timed out. (read timeout=30)
+2025-12-17 15:39:56,858 - INFO - Total changes fetched: 0
+2025-12-17 15:39:56,858 - INFO - 
+Fetching data for chromium/tools/chrome-devtools-frontend...
+2025-12-17 15:39:56,858 - INFO - Fetching changes for chromium/tools/chrome-devtools-frontend from 2021-01-01 to 2024-01-01
+2025-12-17 15:39:59,964 - INFO -   Fetched 45 changes so far...
+2025-12-17 15:39:59,964 - INFO - Total changes fetched: 45
+2025-12-17 15:39:59,964 - INFO - 
+Fetching data for chromium/tools/depot_tools...
+2025-12-17 15:39:59,964 - INFO - Fetching changes for chromium/tools/depot_tools from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:29,967 - ERROR - API request failed: https://chromium-review.googlesource.com/changes/ - HTTPSConnectionPool(host='chromium-review.googlesource.com', port=443): Read timed out. (read timeout=30)
+2025-12-17 15:40:29,968 - ERROR - Error fetching changes: HTTPSConnectionPool(host='chromium-review.googlesource.com', port=443): Read timed out. (read timeout=30)
+2025-12-17 15:40:29,968 - INFO - Total changes fetched: 0
+2025-12-17 15:40:29,968 - INFO - 
+Fetching data for chromium/tools/deps2git...
+2025-12-17 15:40:29,968 - INFO - Fetching changes for chromium/tools/deps2git from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:30,233 - INFO -   Fetched 1 changes so far...
+2025-12-17 15:40:30,233 - INFO - Total changes fetched: 1
+2025-12-17 15:40:30,233 - INFO - 
+Fetching data for chromium/tools/perf...
+2025-12-17 15:40:30,234 - INFO - Fetching changes for chromium/tools/perf from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:30,352 - INFO - Total changes fetched: 0
+2025-12-17 15:40:30,352 - INFO - 
+Fetching data for chromium/tools/third_party/xvfb...
+2025-12-17 15:40:30,352 - INFO - Fetching changes for chromium/tools/third_party/xvfb from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:30,463 - INFO - Total changes fetched: 0
+2025-12-17 15:40:30,463 - INFO - 
+Fetching data for chromium/deps...
+2025-12-17 15:40:30,463 - INFO - Fetching changes for chromium/deps from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:30,581 - INFO - Total changes fetched: 0
+2025-12-17 15:40:30,581 - INFO - 
+Fetching data for chromium/deps/acid3...
+2025-12-17 15:40:30,581 - INFO - Fetching changes for chromium/deps/acid3 from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:30,809 - INFO -   Fetched 2 changes so far...
+2025-12-17 15:40:30,810 - INFO - Total changes fetched: 2
+2025-12-17 15:40:30,810 - INFO - 
+Fetching data for chromium/deps/aosp...
+2025-12-17 15:40:30,810 - INFO - Fetching changes for chromium/deps/aosp from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:30,951 - INFO - Total changes fetched: 0
+2025-12-17 15:40:30,951 - INFO - 
+Fetching data for chromium/deps/apache-mime4j...
+2025-12-17 15:40:30,951 - INFO - Fetching changes for chromium/deps/apache-mime4j from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:31,098 - INFO - Total changes fetched: 0
+2025-12-17 15:40:31,099 - INFO - 
+Fetching data for chromium/deps/bison...
+2025-12-17 15:40:31,099 - INFO - Fetching changes for chromium/deps/bison from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:31,206 - INFO - Total changes fetched: 0
+2025-12-17 15:40:31,206 - INFO - 
+Fetching data for chromium/deps/class-dump...
+2025-12-17 15:40:31,206 - INFO - Fetching changes for chromium/deps/class-dump from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:31,343 - INFO - Total changes fetched: 0
+2025-12-17 15:40:31,343 - INFO - 
+Fetching data for chromium/deps/cygwin...
+2025-12-17 15:40:31,343 - INFO - Fetching changes for chromium/deps/cygwin from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:31,452 - INFO - Total changes fetched: 0
+2025-12-17 15:40:31,452 - INFO - 
+Fetching data for chromium/deps/findbugs...
+2025-12-17 15:40:31,452 - INFO - Fetching changes for chromium/deps/findbugs from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:31,561 - INFO - Total changes fetched: 0
+2025-12-17 15:40:31,561 - INFO - 
+Fetching data for chromium/deps/flac...
+2025-12-17 15:40:31,561 - INFO - Fetching changes for chromium/deps/flac from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:32,389 - INFO -   Fetched 4 changes so far...
+2025-12-17 15:40:32,389 - INFO - Total changes fetched: 4
+2025-12-17 15:40:32,389 - INFO - 
+Fetching data for chromium/deps/gold...
+2025-12-17 15:40:32,389 - INFO - Fetching changes for chromium/deps/gold from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:32,502 - INFO - Total changes fetched: 0
+2025-12-17 15:40:32,502 - INFO - 
+Fetching data for chromium/android_webview_next...
+2025-12-17 15:40:32,502 - INFO - Fetching changes for chromium/android_webview_next from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:32,856 - INFO - Total changes fetched: 0
+2025-12-17 15:40:32,856 - INFO - 
+Fetching data for chromium/buildtools...
+2025-12-17 15:40:32,856 - INFO - Fetching changes for chromium/buildtools from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:34,525 - INFO -   Fetched 6 changes so far...
+2025-12-17 15:40:34,525 - INFO - Total changes fetched: 6
+2025-12-17 15:40:34,525 - INFO - 
+Fetching data for chromium/canvas_bench...
+2025-12-17 15:40:34,525 - INFO - Fetching changes for chromium/canvas_bench from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:34,641 - INFO - Total changes fetched: 0
+2025-12-17 15:40:34,641 - INFO - 
+Fetching data for chromium/cdm...
+2025-12-17 15:40:34,641 - INFO - Fetching changes for chromium/cdm from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:36,213 - INFO -   Fetched 4 changes so far...
+2025-12-17 15:40:36,213 - INFO - Total changes fetched: 4
+2025-12-17 15:40:36,213 - INFO - 
+Fetching data for chromium/deps/gperf...
+2025-12-17 15:40:36,213 - INFO - Fetching changes for chromium/deps/gperf from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:36,759 - INFO - Total changes fetched: 0
+2025-12-17 15:40:36,759 - INFO - 
+Fetching data for chromium/deps/gpu/software_rendering_list...
+2025-12-17 15:40:36,759 - INFO - Fetching changes for chromium/deps/gpu/software_rendering_list from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:36,866 - INFO - Total changes fetched: 0
+2025-12-17 15:40:36,867 - INFO - 
+Fetching data for chromium/deps/httpcomponents-client...
+2025-12-17 15:40:36,867 - INFO - Fetching changes for chromium/deps/httpcomponents-client from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:37,183 - INFO - Total changes fetched: 0
+2025-12-17 15:40:37,183 - INFO - 
+Fetching data for chromium/deps/httpcomponents-core...
+2025-12-17 15:40:37,183 - INFO - Fetching changes for chromium/deps/httpcomponents-core from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:37,324 - INFO - Total changes fetched: 0
+2025-12-17 15:40:37,325 - INFO - 
+Fetching data for chromium/deps/hunspell...
+2025-12-17 15:40:37,325 - INFO - Fetching changes for chromium/deps/hunspell from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:37,665 - INFO - Total changes fetched: 0
+2025-12-17 15:40:37,665 - INFO - 
+Fetching data for chromium/deps/hunspell_dictionaries...
+2025-12-17 15:40:37,665 - INFO - Fetching changes for chromium/deps/hunspell_dictionaries from 2021-01-01 to 2024-01-01
+2025-12-17 15:40:40,469 - INFO -   Fetched 12 changes so far...
+2025-12-17 15:40:40,469 - INFO - Total changes fetched: 12
+2025-12-17 15:40:40,469 - INFO - 
+Fetching data for chromium/deps/icu...
+2025-12-17 15:40:40,469 - INFO - Fetching changes for chromium/deps/icu from 2021-01-01 to 2024-01-01
+2025-12-17 15:41:10,473 - ERROR - API request failed: https://chromium-review.googlesource.com/changes/ - HTTPSConnectionPool(host='chromium-review.googlesource.com', port=443): Read timed out. (read timeout=30)
+2025-12-17 15:41:10,474 - ERROR - Error fetching changes: HTTPSConnectionPool(host='chromium-review.googlesource.com', port=443): Read timed out. (read timeout=30)
+2025-12-17 15:41:10,474 - INFO - Total changes fetched: 0
+2025-12-17 15:41:10,474 - INFO - 
+Fetching data for chromium/deps/icu46...
+2025-12-17 15:41:10,474 - INFO - Fetching changes for chromium/deps/icu46 from 2021-01-01 to 2024-01-01
+2025-12-17 15:41:10,671 - INFO - Total changes fetched: 0
+2025-12-17 15:41:10,671 - INFO - 
+Fetching data for chromium/deps/icu52...
+2025-12-17 15:41:10,671 - INFO - Fetching changes for chromium/deps/icu52 from 2021-01-01 to 2024-01-01
+2025-12-17 15:41:10,785 - INFO - Total changes fetched: 0
+2025-12-17 15:41:10,786 - INFO - 
+Fetching data for chromium/deps/jarjar...
+2025-12-17 15:41:10,786 - INFO - Fetching changes for chromium/deps/jarjar from 2021-01-01 to 2024-01-01
+2025-12-17 15:41:10,912 - INFO - Total changes fetched: 0
+2025-12-17 15:41:10,912 - INFO - 
+Fetching data for chromium/deps/libexif...
+2025-12-17 15:41:10,912 - INFO - Fetching changes for chromium/deps/libexif from 2021-01-01 to 2024-01-01
+2025-12-17 15:41:11,083 - INFO - Total changes fetched: 0
+2025-12-17 15:41:11,083 - INFO - 
+Fetching data for chromium/deps/libexif/sources...
+2025-12-17 15:41:11,083 - INFO - Fetching changes for chromium/deps/libexif/sources from 2021-01-01 to 2024-01-01
+2025-12-17 15:41:11,575 - INFO -   Fetched 1 changes so far...
+2025-12-17 15:41:11,576 - INFO - Total changes fetched: 1
+2025-12-17 15:41:11,576 - INFO - 
+Fetching data for chromium/deps/libjpeg_turbo...
+2025-12-17 15:41:11,576 - INFO - Fetching changes for chromium/deps/libjpeg_turbo from 2021-01-01 to 2024-01-01
+2025-12-17 15:41:15,042 - INFO -   Fetched 25 changes so far...
+2025-12-17 15:41:15,042 - INFO - Total changes fetched: 25
+2025-12-17 15:41:15,043 - INFO - 
+Fetching data for chromium/deps/libmtp...
+2025-12-17 15:41:15,043 - INFO - Fetching changes for chromium/deps/libmtp from 2021-01-01 to 2024-01-01
+2025-12-17 15:41:15,152 - INFO - Total changes fetched: 0
+2025-12-17 15:41:15,152 - INFO - 
+Fetching data for chromium/deps/libsrtp...
+2025-12-17 15:41:15,152 - INFO - Fetching changes for chromium/deps/libsrtp from 2021-01-01 to 2024-01-01
+2025-12-17 15:41:16,725 - INFO -   Fetched 6 changes so far...
+2025-12-17 15:41:16,725 - INFO - Total changes fetched: 6
+2025-12-17 15:41:16,726 - INFO - 
+Fetching data for chromium/deps/libvpx...
+2025-12-17 15:41:16,726 - INFO - Fetching changes for chromium/deps/libvpx from 2021-01-01 to 2024-01-01
+2025-12-17 15:41:16,831 - INFO - Total changes fetched: 0
+2025-12-17 15:41:16,831 - INFO - 
+Fetching data for chromium/deps/lighttpd...
+2025-12-17 15:41:16,831 - INFO - Fetching changes for chromium/deps/lighttpd from 2021-01-01 to 2024-01-01
+2025-12-17 15:41:16,935 - INFO - Total changes fetched: 0
+2025-12-17 15:41:16,935 - INFO - 
+Fetching data for chromium/deps/manifestdestiny...
+2025-12-17 15:41:16,935 - INFO - Fetching changes for chromium/deps/manifestdestiny from 2021-01-01 to 2024-01-01
+2025-12-17 15:41:17,042 - INFO - Total changes fetched: 0
+2025-12-17 15:41:17,042 - INFO - 
+Fetching data for chromium/deps/mesa...
+2025-12-17 15:41:17,043 - INFO - Fetching changes for chromium/deps/mesa from 2021-01-01 to 2024-01-01
+2025-12-17 15:41:17,156 - INFO - Total changes fetched: 0
+2025-12-17 15:41:17,156 - INFO - 
+Fetching data for chromium/deps/mozdownload...
+2025-12-17 15:41:17,157 - INFO - Fetching changes for chromium/deps/mozdownload from 2021-01-01 to 2024-01-01
+2025-12-17 15:41:17,265 - INFO - Total changes fetched: 0
+2025-12-17 15:41:17,265 - INFO - 
+Total changes: 106
+2025-12-17 15:41:17,265 - INFO - Extracting review requests...
+Extracting review requests:   0%|          | 0/106 [00:00<?, ?it/s]Extracting review requests: 100%|██████████| 106/106 [00:00<00:00, 24612.28it/s]
+2025-12-17 15:41:17,286 - INFO - Extracted 236 review requests
+2025-12-17 15:41:17,286 - INFO - Computing history-based features...
+Computing features:   0%|          | 0/236 [00:00<?, ?it/s]Computing features: 100%|██████████| 236/236 [00:00<00:00, 4007.48it/s]
+2025-12-17 15:41:17,358 - INFO - 
+Dataset shape: (236, 67)
+2025-12-17 15:41:17,358 - INFO - Positive labels: 169 (71.6%)
+2025-12-17 15:41:17,358 - INFO - Negative labels: 67 (28.4%)
+2025-12-17 15:41:17,364 - INFO - 
+Dataset saved to: data/chromium_50proj_2021_2024.csv
+2025-12-17 15:41:17,364 - INFO - ============================================================
+2025-12-17 15:41:17,364 - INFO - 完了！
+2025-12-17 15:41:17,364 - INFO - ============================================================
+
+==========================================
+収集完了！
+==========================================
+
+データサマリー:
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pandas/__init__.py", line 49, in <module>
+    from pandas.core.api import (
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pandas/core/api.py", line 1, in <module>
+    from pandas._libs import (
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pandas/_libs/__init__.py", line 16, in <module>
+    import pandas._libs.pandas_parser  # isort: skip # type: ignore[reportUnusedImport]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ImportError: dlopen(/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pandas/_libs/pandas_parser.cpython-311-darwin.so, 0x0002): tried: '/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pandas/_libs/pandas_parser.cpython-311-darwin.so' (mach-o file, but is an incompatible architecture (have 'x86_64', need 'arm64e' or 'arm64')), '/System/Volumes/Preboot/Cryptexes/OS/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pandas/_libs/pandas_parser.cpython-311-darwin.so' (no such file), '/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pandas/_libs/pandas_parser.cpython-311-darwin.so' (mach-o file, but is an incompatible architecture (have 'x86_64', need 'arm64e' or 'arm64'))
