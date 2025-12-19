@@ -1,6 +1,0 @@
-,accuracy,accuracy,accuracy,project_count,cross_project_collaboration_score
-,mean,std,count,mean,mean
-project_type,,,,,
-Contributor (2-3 proj),0.806,0.398,67,2.328,0.898
-Expert (4+ proj),0.92,0.273,75,6.893,1.0
-Specialist (1 proj),0.614,0.49,83,1.0,0.367
