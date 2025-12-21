@@ -5,15 +5,20 @@ Random Forest Nova単体評価 - 案2: シンプルベースライン
 評価データ: IRLと完全一致 (2023年)
 """
 
-import pandas as pd
-import numpy as np
-from pathlib import Path
 import json
 import logging
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import (
-    roc_auc_score, f1_score, precision_score, recall_score,
-    accuracy_score, confusion_matrix
+    accuracy_score,
+    confusion_matrix,
+    f1_score,
+    precision_score,
+    recall_score,
+    roc_auc_score,
 )
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -272,6 +277,25 @@ def evaluate_10_patterns_case2(df, min_history_requests=1):
         logger.info(f"  F1: {metrics['f1']:.4f}, AUC-ROC: {metrics['auc_roc']:.4f}, Recall: {metrics['recall']:.4f}")
 
         results.append(metrics)
+
+        # 全パターンの個別予測を保存
+        if '→' in pattern['name']:
+            train_period, eval_period = pattern['name'].split(' → ')
+            output_dir = Path("/Users/kazuki-h/research/multiproject_research/outputs/rf_nova_case2_simple")
+            output_dir.mkdir(parents=True, exist_ok=True)
+
+            predictions_df = pd.DataFrame({
+                'reviewer_email': eval_features['reviewer_email'],
+                'predicted_prob': y_pred_proba,
+                'predicted_label': y_pred,
+                'true_label': y_eval,
+                'history_request_count': [f[0] for f in eval_features['features']],
+                'history_acceptance_rate': [f[1] for f in eval_features['features']],
+            })
+
+            predictions_file = output_dir / f"predictions_{train_period}_to_{eval_period}.csv"
+            predictions_df.to_csv(predictions_file, index=False)
+            logger.info(f"  個別予測保存: {predictions_file}")
 
     return results
 

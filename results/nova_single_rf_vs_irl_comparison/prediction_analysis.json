@@ -1,0 +1,14 @@
+{
+  "irl_best_pattern": {
+    "train": "0-3m",
+    "eval": "6-9m",
+    "auc_roc": 0.91,
+    "threshold": 0.471,
+    "total": 42,
+    "accuracy": 0.8333333333333334,
+    "tp": 6,
+    "tn": 29,
+    "fp": 0,
+    "fn": 7
+  }
+}

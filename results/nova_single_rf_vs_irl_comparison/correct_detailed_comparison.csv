@@ -1,0 +1,16 @@
+reviewer_email,predicted_prob_irl,predicted_prob,true_label_irl,pred_irl,pred_rf,correct_irl,correct_rf,category,history_request_count,history_acceptance_rate
+gibizer@gmail.com,0.4843966066837311,0.92,1,1,1,1,1,both_correct,905,0.3005524861878453
+stephenfin@redhat.com,0.4932312071323395,0.97,1,1,1,1,1,both_correct,680,0.2220588235294117
+mlnx-openstack-ci@dev.mellanox.co.il,0.4626842439174652,0.24,0,0,0,1,1,both_correct,407,0.0
+smooney@redhat.com,0.4873204827308655,0.83,1,1,1,1,1,both_correct,641,0.2776911076443057
+sbauza@redhat.com,0.4752845168113708,0.96,1,1,1,1,1,both_correct,473,0.2304439746300211
+takanattie@gmail.com,0.4633601009845733,0.66,0,0,1,1,0,irl_only,451,0.0532150776053215
+notartom@gmail.com,0.4579748511314392,0.86,1,0,1,0,1,rf_only,106,0.1320754716981132
+melwittt@gmail.com,0.4631525576114654,0.97,1,0,1,0,1,rf_only,463,0.203023758099352
+elod.illes@est.tech,0.4714786112308502,0.99,1,1,1,1,1,both_correct,428,0.1775700934579439
+likui@yovole.com,0.4691327214241028,0.25,0,0,0,1,1,both_correct,79,0.0759493670886076
+gmaan@ghanshyammann.com,0.4642974138259887,0.86,1,0,1,0,1,rf_only,164,0.3109756097560975
+john.garbutt@stackhpc.com,0.4652204811573028,0.43,1,0,0,0,0,both_wrong,53,0.0377358490566037
+dms@danplanet.com,0.4596205353736877,0.96,1,0,1,0,1,rf_only,128,0.2265625
+wangzihao@yovole.com,0.4666472673416137,0.54,0,0,1,1,0,irl_only,44,0.0909090909090909
+openstack@fried.cc,0.4362975656986236,0.03,0,0,0,1,1,both_correct,7,0.1428571428571428
