@@ -18,7 +18,7 @@ plt.rcParams['font.family'] = 'sans-serif'
 
 
 def create_single_heatmap(matrix: pd.DataFrame, title: str, output_path: Path,
-                          vmin: float = None, vmax: float = None, cmap: str = 'YlOrRd'):
+                          vmin: float = None, vmax: float = None, cmap: str = 'Blues'):
     """
     単一メトリクスのヒートマップを作成
 
@@ -37,17 +37,20 @@ def create_single_heatmap(matrix: pd.DataFrame, title: str, output_path: Path,
         matrix.astype(float),
         annot=True,
         fmt='.3f',
-        cmap=cmap,
+        cmap='Blues',
         vmin=vmin,
         vmax=vmax,
+        annot_kws={'size': 18, 'weight': 'bold'},
         cbar_kws={'label': 'Score'},
         linewidths=0.5,
         linecolor='gray'
     )
 
-    plt.title(title, fontsize=16, pad=20)
-    plt.xlabel('評価期間', fontsize=14)
-    plt.ylabel('訓練期間', fontsize=14)
+    plt.title(title, fontsize=20, pad=20)
+    plt.xlabel('訓練期間', fontsize=16)
+    plt.ylabel('評価期間', fontsize=16)
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
     plt.tight_layout()
 
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
@@ -65,13 +68,13 @@ def create_combined_heatmap(matrices: dict, output_path: Path):
         output_path: 出力パス
     """
     fig, axes = plt.subplots(2, 2, figsize=(20, 16))
-    fig.suptitle('クロス時間評価: 4メトリクス統合ヒートマップ', fontsize=20, y=0.995)
+    fig.suptitle('クロス時間評価: 4メトリクス統合ヒートマップ', fontsize=24, y=0.995)
 
     metrics_info = [
-        ('AUC_ROC', 'AUC-ROC', 'RdYlGn', 0.5, 1.0),
-        ('AUC_PR', 'AUC-PR', 'RdYlGn', 0.5, 1.0),
+        ('AUC_ROC', 'AUC-ROC', 'Blues', 0.5, 1.0),
+        ('AUC_PR', 'AUC-PR', 'Blues', 0.5, 1.0),
         ('PRECISION', 'Precision', 'Blues', 0.0, 1.0),
-        ('RECALL', 'Recall', 'Oranges', 0.0, 1.0)
+        ('RECALL', 'Recall', 'Blues', 0.0, 1.0)
     ]
 
     for idx, (metric_key, metric_name, cmap, vmin, vmax) in enumerate(metrics_info):
@@ -84,18 +87,20 @@ def create_combined_heatmap(matrices: dict, output_path: Path):
                 matrix,
                 annot=True,
                 fmt='.3f',
-                cmap=cmap,
+                cmap='Blues',
                 vmin=vmin,
                 vmax=vmax,
+                annot_kws={'size': 16, 'weight': 'bold'},
                 cbar_kws={'label': 'Score'},
                 linewidths=0.5,
                 linecolor='gray',
                 ax=ax
             )
 
-            ax.set_title(metric_name, fontsize=16, pad=15)
-            ax.set_xlabel('評価期間', fontsize=14)
-            ax.set_ylabel('訓練期間', fontsize=14)
+            ax.set_title(metric_name, fontsize=18, pad=15)
+            ax.set_xlabel('訓練期間', fontsize=14)
+            ax.set_ylabel('評価期間', fontsize=14)
+            ax.tick_params(labelsize=12)
 
     plt.tight_layout()
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
@@ -201,11 +206,11 @@ def main():
     print("=" * 80)
 
     heatmap_configs = {
-        'AUC_ROC': ('AUC-ROC ヒートマップ', 'RdYlGn', 0.5, 1.0),
-        'AUC_PR': ('AUC-PR ヒートマップ', 'RdYlGn', 0.5, 1.0),
+        'AUC_ROC': ('AUC-ROC ヒートマップ', 'Blues', 0.5, 1.0),
+        'AUC_PR': ('AUC-PR ヒートマップ', 'Blues', 0.5, 1.0),
         'PRECISION': ('Precision ヒートマップ', 'Blues', 0.0, 1.0),
-        'RECALL': ('Recall ヒートマップ', 'Oranges', 0.0, 1.0),
-        'f1_score': ('F1 Score ヒートマップ', 'Purples', 0.0, 1.0)
+        'RECALL': ('Recall ヒートマップ', 'Blues', 0.0, 1.0),
+        'f1_score': ('F1 Score ヒートマップ', 'Blues', 0.0, 1.0)
     }
 
     for metric_name, (title, cmap, vmin, vmax) in heatmap_configs.items():
