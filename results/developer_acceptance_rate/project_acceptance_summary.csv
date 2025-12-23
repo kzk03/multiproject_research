@@ -1,0 +1,5 @@
+project,developer_count,avg_acceptance_rate,median_acceptance_rate,std_acceptance_rate,min_acceptance_rate,max_acceptance_rate,total_requests,total_accepted,total_rejected
+Android,1234,0.5908,0.6471,0.3296,0.0,1.0,27197,17163,10034
+Chromium,541,0.7393,0.8333,0.2918,0.0,1.0,6111,4638,1473
+OpenStack,1558,0.572,0.6382,0.3356,0.0,1.0,51148,35997,15151
+Qt,393,0.4973,0.5,0.395,0.0,1.0,1371,754,617
