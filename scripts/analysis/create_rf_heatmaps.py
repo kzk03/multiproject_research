@@ -24,8 +24,8 @@ plt.rcParams['font.family'] = 'sans-serif'
 
 # パス設定
 BASE_DIR = Path(__file__).parent.parent.parent
-RF_RESULTS = BASE_DIR / "outputs" / "rf_nova_case2_simple" / "results.json"
-OUTPUT_DIR = BASE_DIR / "outputs" / "rf_nova_case2_simple" / "heatmaps"
+RF_RESULTS = BASE_DIR / "outputs" / "singleproject" /"rf_nova_case2_simple" / "results.json"
+OUTPUT_DIR = BASE_DIR / "outputs" / "singleproject" /"rf_nova_case2_simple" / "heatmaps"
 
 # 期間ラベル
 PERIODS = ['0-3m', '3-6m', '6-9m', '9-12m']
@@ -117,7 +117,7 @@ def create_4_metrics_heatmap(matrices: dict, output_path: Path):
     4つのメトリクス(F1, AUC-ROC, Precision, Recall)を統合したヒートマップを作成
     """
     fig, axes = plt.subplots(2, 2, figsize=(18, 14))
-    fig.suptitle('RF Case2 Nova: クロス時間評価ヒートマップ\n(特徴量: history_request_count, history_acceptance_rate)', 
+    fig.suptitle('RF:クロス時間評価ヒートマップ', 
                  fontsize=22, y=0.995)
 
     metrics_info = [

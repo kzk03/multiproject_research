@@ -13,7 +13,7 @@ import pandas as pd
 
 # パス設定
 IRL_DIR = Path("/Users/kazuki-h/research/multiproject_research/results/review_continuation_cross_eval_nova")
-RF_DIR = Path("/Users/kazuki-h/research/multiproject_research/outputs/rf_nova_case2_simple")
+RF_DIR = Path("/Users/kazuki-h/research/multiproject_research/outputs/singleproject/rf_nova_case2_simple")
 OUTPUT_DIR = Path("/Users/kazuki-h/research/multiproject_research/outputs/irl_rf_10pattern_analysis")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
