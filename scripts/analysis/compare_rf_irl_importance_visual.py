@@ -101,9 +101,9 @@ def create_comparison_plot(rf_df, irl_df):
     ax = axes[1]
     
     # カテゴリ分け（状態 vs 行動）
-    state_features = ['経験日数', '総コミット数', '総レビュー数', '最近の活動頻度', 
+    state_features = ['経験日数', '総レビュー依頼数', '総レビュー数', '最近の活動頻度',
                      '平均活動間隔', 'レビュー負荷', '最近の受諾率', '活動トレンド',
-                     '協力スコア', 'コード品質スコア']
+                     '協力スコア', '総承諾率']
     
     merged['category'] = merged['feature'].apply(
         lambda x: 'State' if x in state_features else 'Action'

@@ -50,9 +50,9 @@ def load_rf_data():
     rf_df = pd.read_csv(RF_CSV)
 
     # State vs Action分類
-    state_features = ['経験日数', '総コミット数', '総レビュー数', '最近の活動頻度',
+    state_features = ['経験日数', '総レビュー依頼数', '総レビュー数', '最近の活動頻度',
                      '平均活動間隔', 'レビュー負荷', '最近の受諾率', '活動トレンド',
-                     '協力スコア', 'コード品質スコア']
+                     '協力スコア', '総承諾率']
 
     rf_df['category'] = rf_df['feature'].apply(
         lambda x: 'state' if x in state_features else 'action'

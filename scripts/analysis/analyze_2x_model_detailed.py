@@ -115,7 +115,7 @@ def analyze_feature_importance(df: pd.DataFrame, output_dir: Path):
         'avg_activity_gap': '平均活動間隔',
         'activity_trend': '活動トレンド',
         'collaboration_score': 'コラボレーションスコア',
-        'code_quality_score': 'コード品質スコア',
+        'code_quality_score': '総承諾率',
         'recent_acceptance_rate': '最近の承諾率',
         'review_load': 'レビュー負荷',
         'project_count': 'プロジェクト数',

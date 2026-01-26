@@ -26,9 +26,9 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 # 特徴量名（14次元）
 FEATURE_NAMES = [
     # State features (10)
-    "経験日数", "総コミット数", "総レビュー数", "最近の活動頻度",
+    "経験日数", "総レビュー依頼数", "総レビュー数", "最近の活動頻度",
     "平均活動間隔", "レビュー負荷", "最近の受諾率", "活動トレンド",
-    "協力スコア", "コード品質スコア",
+    "協力スコア", "総承諾率",
     # Action features (4)
     "応答速度", "協力度", "強度（ファイル数）", "レビュー規模（行数）"
 ]
@@ -64,7 +64,7 @@ def train_rf_for_period(train_period: str):
         # 14次元の特徴量を推定
         features = [
             np.random.uniform(0.3, 0.9),  # 経験日数
-            min(hist_count / 200.0, 1.0),  # 総コミット数
+            min(hist_count / 200.0, 1.0),  # 総レビュー依頼数
             min(hist_count / 200.0, 1.0),  # 総レビュー数
             np.random.uniform(0.3, 0.8),  # 最近の活動頻度
             np.random.uniform(0.2, 0.6),  # 平均活動間隔
@@ -72,7 +72,7 @@ def train_rf_for_period(train_period: str):
             hist_rate,  # 最近の受諾率
             np.random.uniform(-0.2, 0.3),  # 活動トレンド
             hist_rate * 0.8,  # 協力スコア
-            np.random.uniform(0.6, 0.95),  # コード品質スコア
+            np.random.uniform(0.6, 0.95),  # 総承諾率
             np.random.uniform(0.5, 0.95),  # 応答速度
             min(hist_rate * 1.2, 1.0),  # 協力度
             np.random.uniform(0.3, 0.7),  # 強度

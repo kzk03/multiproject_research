@@ -1,0 +1,18 @@
+{
+  "auc_roc": 0.7117117117117117,
+  "auc_pr": 0.5868019488298635,
+  "f1_score": 0.4878048780487805,
+  "precision": 0.43478260869565216,
+  "recall": 0.5555555555555556,
+  "accuracy": 0.6181818181818182,
+  "tp": 10,
+  "tn": 24,
+  "fp": 13,
+  "fn": 8,
+  "predict_time": 0.011647939682006836,
+  "eval_samples": 55,
+  "positive_count": 18,
+  "negative_count": 37,
+  "total_count": 55,
+  "threshold": 0.5106624654024425
+}

@@ -27,7 +27,7 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 FEATURE_NAMES = [
     # State features (10)
     "経験日数",
-    "総コミット数",
+    "総レビュー依頼数",
     "総レビュー数",
     "最近の活動頻度",
     "平均活動間隔",
@@ -35,7 +35,7 @@ FEATURE_NAMES = [
     "最近の受諾率",
     "活動トレンド",
     "協力スコア",
-    "コード品質スコア",
+    "総承諾率",
     # Action features (4)
     "応答速度",
     "協力度",
@@ -107,7 +107,7 @@ def train_rf_and_get_importance():
         # 14次元の特徴量を推定（実際のIRLモデルと同じ構造）
         features = [
             np.random.uniform(0.3, 0.9),  # 経験日数（正規化済み）
-            hist_count / 200.0 if hist_count < 200 else 1.0,  # 総コミット数
+            hist_count / 200.0 if hist_count < 200 else 1.0,  # 総レビュー依頼数
             hist_count / 200.0 if hist_count < 200 else 1.0,  # 総レビュー数
             np.random.uniform(0.3, 0.8),  # 最近の活動頻度
             np.random.uniform(0.2, 0.6),  # 平均活動間隔
@@ -115,7 +115,7 @@ def train_rf_and_get_importance():
             hist_rate,  # 最近の受諾率
             np.random.uniform(-0.2, 0.3),  # 活動トレンド
             hist_rate * 0.8,  # 協力スコア
-            np.random.uniform(0.6, 0.95),  # コード品質スコア
+            np.random.uniform(0.6, 0.95),  # 総承諾率
             np.random.uniform(0.5, 0.95),  # 応答速度
             hist_rate * 1.2 if hist_rate < 0.8 else 1.0,  # 協力度
             np.random.uniform(0.3, 0.7),  # 強度（ファイル数）

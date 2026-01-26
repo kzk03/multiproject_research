@@ -54,9 +54,9 @@ feature_mapping = {
     'review_load': 'レビュー負荷',
     'avg_review_size': 'レビュー規模（行数）',
     'activity_trend': '活動トレンド',
-    'total_changes': '総コミット数',
+    'total_changes': '総レビュー依頼数',
     'collaboration_score': '協力スコア',
-    'code_quality_score': 'コード品質スコア',
+    'code_quality_score': '総承諾率',
     'avg_collaboration': '協力度',
 }
 

@@ -94,9 +94,9 @@ def create_side_by_side_comparison(irl_df, rf_df):
                                     (combined_norm['period'] == period)]
         irl_period = irl_period.sort_values('value_norm', ascending=True)
         
-        state_features = ['経験日数', '総コミット数', '総レビュー数', '最近の活動頻度',
+        state_features = ['経験日数', '総レビュー依頼数', '総レビュー数', '最近の活動頻度',
                          '平均活動間隔', 'レビュー負荷', '最近の受諾率', '活動トレンド',
-                         '協力スコア', 'コード品質スコア']
+                         '協力スコア', '総承諾率']
         colors_irl = ['#3498db' if f in state_features else '#2ecc71' 
                       for f in irl_period['feature']]
         
