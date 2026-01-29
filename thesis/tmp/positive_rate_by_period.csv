@@ -1,0 +1,5 @@
+period,reviewer_count,positive_count,negative_count,positive_rate
+0-3m,39,31,8,0.7948717948717948
+3-6m,42,27,15,0.6428571428571429
+6-9m,32,24,8,0.75
+9-12m,27,25,2,0.9259259259259259
