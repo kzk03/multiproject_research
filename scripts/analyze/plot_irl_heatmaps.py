@@ -69,7 +69,7 @@ def plot_heatmap(df: pd.DataFrame, title: str, out_path: pathlib.Path, vmin: flo
         vmin=vmin,
         vmax=vmax,
     )
-    ax.set_xlabel("訓練期間")
+    ax.set_xlabel("学習期間")
     ax.set_ylabel("評価期間")
     ax.invert_yaxis()  # 0-3m を下に揃える
     plt.tight_layout()
@@ -98,7 +98,7 @@ def plot_four_panel(matrices: Dict[str, pd.DataFrame], out_path: pathlib.Path, v
             vmax=vmax,
         )
         ax.set_title(MetricNameMap[metric])
-        ax.set_xlabel("訓練期間")
+        ax.set_xlabel("学習期間")
         ax.set_ylabel("評価期間")
         ax.invert_yaxis()
     fig.suptitle(PanelTitle, fontsize=14, y=0.98)
