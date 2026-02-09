@@ -28,7 +28,7 @@ FEATURE_NAME_JA: Dict[str, str] = {
     "activity_trend": "月次活動変化率",
     "collaboration_score": "協力スコア",
     "code_quality_score": "総承諾率",
-    "recent_acceptance_rate": "最近の受諾率",
+    "recent_acceptance_rate": "最近の承諾率",
     "review_load": "レビュー負荷",
     "avg_action_intensity": "レビューファイル数",
     "avg_collaboration": "協力度",
@@ -47,7 +47,7 @@ FEATURE_COLORS: Dict[str, str] = {
     "月次活動変化率": "#8c564b",
     "協力スコア": "#e377c2",
     "総承諾率": "#7f7f7f",
-    "最近の受諾率": "#bcbd22",
+    "最近の承諾率": "#bcbd22",
     "レビュー負荷": "#17becf",
     # 行動特徴量（4次元）
     "レビューファイル数": "#aec7e8",
@@ -88,7 +88,9 @@ def load_irl_importances(base_dir: Path) -> pd.DataFrame:
         df = pd.DataFrame(flat.items(), columns=["feature_ja", "importance"])
         df["period"] = period
         rows.append(df)
-    return pd.concat(rows, ignore_index=True)
+    result = pd.concat(rows, ignore_index=True)
+    result["feature_ja"] = result["feature_ja"].replace({"最近の受諾率": "最近の承諾率"})
+    return result
 
 
 def plot_lines(df: pd.DataFrame, periods: Iterable[str], title: str, out_base: Path, ylabel: str = "重要度") -> None:
@@ -104,7 +106,6 @@ def plot_lines(df: pd.DataFrame, periods: Iterable[str], title: str, out_base: P
         plt.plot(periods, row[periods], marker="o", label=feature, color=color, linewidth=2)
     plt.xlabel("期間")
     plt.ylabel(ylabel)
-    plt.title(title)
     plt.grid(True, linestyle=":", alpha=0.5)
     # 凡例を右側に寄せ、余白を圧縮
     plt.legend(loc="center left", bbox_to_anchor=(1.02, 0.5), ncol=1, fontsize=9)
