@@ -27,7 +27,7 @@ TRAIN_PERIODS = ['0-3m', '3-6m', '6-9m', '9-12m']
 FEATURE_COLORS = {
     # State features
     '経験日数': '#1f77b4',
-    '総コミット数': '#ff7f0e',
+    '総レビュー依頼数': '#ff7f0e',
     '総レビュー数': '#2ca02c',
     '最近の活動頻度': '#d62728',
     '平均活動間隔': '#9467bd',
@@ -35,7 +35,7 @@ FEATURE_COLORS = {
     '最近の受諾率': '#e377c2',
     '活動トレンド': '#7f7f7f',
     '協力スコア': '#bcbd22',
-    'コード品質スコア': '#17becf',
+    '総承諾率': '#17becf',
     # Action features
     '応答速度': '#aec7e8',
     '協力度': '#ffbb78',
@@ -77,9 +77,9 @@ def load_rf_data():
     rf_df = pd.read_csv(RF_CSV)
 
     # State vs Action分類
-    state_features = ['経験日数', '総コミット数', '総レビュー数', '最近の活動頻度',
+    state_features = ['経験日数', '総レビュー依頼数', '総レビュー数', '最近の活動頻度',
                      '平均活動間隔', 'レビュー負荷', '最近の受諾率', '活動トレンド',
-                     '協力スコア', 'コード品質スコア']
+                     '協力スコア', '総承諾率']
 
     rf_df['category'] = rf_df['feature'].apply(
         lambda x: 'state' if x in state_features else 'action'
@@ -206,7 +206,7 @@ def create_overlay_comparison(irl_df, rf_df):
 
     # 両方で重要な特徴量を選択
     selected_features = [
-        '総レビュー数', '総コミット数', '最近の活動頻度', '平均活動間隔',
+        '総レビュー数', '総レビュー依頼数', '最近の活動頻度', '平均活動間隔',
         '協力度', '応答速度', '最近の受諾率', 'レビュー負荷'
     ]
 

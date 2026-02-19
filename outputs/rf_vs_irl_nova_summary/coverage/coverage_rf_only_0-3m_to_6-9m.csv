@@ -1,0 +1,5 @@
+reviewer_email,predicted_prob,true_label
+kchamart@redhat.com,0.6086738960096594,1
+aleksey.stupnikov@gmail.com,0.5934997971959748,0
+openstack@lightbitslabs.com,0.56476704824456,0
+tobias.urdin@binero.com,0.5627377256876934,0
